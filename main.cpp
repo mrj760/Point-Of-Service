@@ -1,3 +1,5 @@
+// Micah Johnson
+
 #include "mainwindow.h"
 
 #include <QApplication>
