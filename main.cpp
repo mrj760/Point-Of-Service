@@ -1,4 +1,5 @@
 // Micah Johnson
+//Jorge Munoz
 
 #include "mainwindow.h"
 
