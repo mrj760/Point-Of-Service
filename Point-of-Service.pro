@@ -9,11 +9,17 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    backbone.cpp \
+    item.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    message.cpp
 
 HEADERS += \
-    mainwindow.h
+    backbone.h \
+    item.h \
+    mainwindow.h \
+    message.h
 
 FORMS += \
     mainwindow.ui
