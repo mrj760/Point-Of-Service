@@ -1,7 +1,7 @@
 // Micah Johnson
 // Jorge Munoz
 // Laijy Loiseau
-
+// Nam Cuong Tran
 #include "mainwindow.h"
 
 #include <QApplication>
