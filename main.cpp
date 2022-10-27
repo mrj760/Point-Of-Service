@@ -1,5 +1,6 @@
 // Micah Johnson
-//Jorge Munoz
+// Jorge Munoz
+// Laijy Loiseau
 
 #include "mainwindow.h"
 
