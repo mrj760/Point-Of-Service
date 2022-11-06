@@ -1,16 +1,23 @@
 #ifndef BACKBONE_H
 #define BACKBONE_H
-#include "message.h"
+#include "WorkOrder.h"
+#include "Message.h"
 
-
-class Backbone
+class Module : Backbone
 {
-public:
-    Backbone();
+public:	
+	Backbone();
+	
+	void receiveMsg(Message msg);
+	void sendMsg(Message msg);
 
-    void receiveMsg(Message msg);
-
-    void sendMsg(Message msg);
+	void postJob(WorkOrder wo);
+	WorkOrder takeJob(Module mod);
+	
+	
+private: 
+	
+	
 };
 
 #endif // BACKBONE_H
