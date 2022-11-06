@@ -2,10 +2,10 @@
 #define POS_REGISTER_H
 
 
-class pos_register
+class Register
 {
 public:
-    pos_register();
+    Register();
 };
 
 #endif // POS_REGISTER_H
