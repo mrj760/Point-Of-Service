@@ -17,7 +17,8 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
-    pos_register.cpp
+    pos_register.cpp \
+    workorder.cpp
 
 HEADERS += \
     cart.h \
@@ -29,7 +30,8 @@ HEADERS += \
     main_pos.h \
     cart.h \
     customer.h \
-    pos_register.h
+    pos_register.h \
+    workorder.h
 
 FORMS += \
     mainwindow.ui
