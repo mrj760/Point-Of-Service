@@ -1,8 +1,9 @@
 #ifndef BACKBONE_H
 #define BACKBONE_H
 
-#include "workorder.h"
-#include "message.h"
+#include <module.h>
+#include <workorder.h>
+#include <message.h>
 
 class Backbone : Module
 {

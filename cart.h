@@ -23,9 +23,9 @@ private:
     Customer customer;
 
 public:
-    void addToCart(Item, int);
-    void removeFromCart(Item, int);
-    bool contains(Item);
+    void addToCart(Item, int); /* add X of a certain item to the cart */
+    void removeFromCart(Item, int); /* remove X of a certain to the cart */
+    int contains(Item); /* return how many of a certain item exist in the cart */
 };
 
 #endif // CART_H

@@ -1,5 +1,4 @@
-
 class Module{
 	public :
-	virtual GetID();
+    virtual int GetID();
 }

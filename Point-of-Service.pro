@@ -31,7 +31,8 @@ HEADERS += \
     cart.h \
     customer.h \
     pos_register.h \
-    workorder.h
+    workorder.h \
+    module.h
 
 FORMS += \
     mainwindow.ui
