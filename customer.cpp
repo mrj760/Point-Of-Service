@@ -15,7 +15,6 @@ void Customer::setID(int newID)
     if (ID == newID)
         return;
     ID = newID;
-    emit IDChanged();
 }
 
 const qstring &Customer::getName() const
@@ -28,7 +27,6 @@ void Customer::setName(const qstring &newName)
     if (name == newName)
         return;
     name = newName;
-    emit nameChanged();
 }
 
 const qstring &Customer::getAddress() const
@@ -41,5 +39,4 @@ void Customer::setAddress(const qstring &newAddress)
     if (address == newAddress)
         return;
     address = newAddress;
-    emit addressChanged();
 }
