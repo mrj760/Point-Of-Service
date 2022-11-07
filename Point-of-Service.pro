@@ -9,28 +9,18 @@ CONFIG += c++23
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    cart.cpp \
-    customer.cpp \
-    main_pos.cpp \
     backbone.cpp \
-    item.cpp \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
-    pos_register.cpp \
+    pos.cpp \
     workorder.cpp
 
 HEADERS += \
-    cart.h \
-    customer.h \
     mainwindow.h \
     backbone.h \
     message.h \
-    item.h \
-    main_pos.h \
-    cart.h \
-    customer.h \
-    pos_register.h \
+    pos.h \
     workorder.h \
     module.h
 

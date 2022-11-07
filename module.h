@@ -3,8 +3,10 @@
 
 
 class Module {
+protected:
+    int _ID;
 public :
-    virtual int getID() = 0;
+    virtual int getID()=0;
 };
 
 #endif //MODULE_H

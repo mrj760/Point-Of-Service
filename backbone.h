@@ -1,10 +1,18 @@
 #ifndef BACKBONE_H
 #define BACKBONE_H
 
+/* CUSTOM INCLUDES */
 #include <module.h>
 #include <workorder.h>
 #include <message.h>
 
+/* PATH INCLUDES */
+
+/* USING */
+
+/* FORWARD CLASS DECL'S */
+
+/****************************** BACKBONE ******************************/
 class Backbone : Module
 {
 public:
@@ -22,7 +30,7 @@ public:
 
 private:
 
-
 };
+/****************************** END BACKBONE ******************************/
 
 #endif // BACKBONE_H
