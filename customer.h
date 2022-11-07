@@ -25,9 +25,6 @@ private:
     int ID;
     qstring name;
     qstring address;
-    Q_PROPERTY(int ID READ getID WRITE setID NOTIFY IDChanged)
-    Q_PROPERTY(qstring name READ getName WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(qstring address READ getAddress WRITE setAddress NOTIFY addressChanged)
 };
 
 #endif // CUSTOMER_H

@@ -3,8 +3,8 @@
 
 
 class Module {
-	public :
-    virtual int GetID();
+public :
+    virtual int getID() = 0;
 };
 
 #endif //MODULE_H
