@@ -26,17 +26,20 @@ public:
 
     void postJob(WorkOrder wo);
     WorkOrder takeJob(Module& mod);
-    WordOrder checkJobs(Module& mod);
+    bool checkJobs(Module& mod);
     int getID();
 
 //Variables
 
 private:
 //Methods
+    map<string, int> loadModuleList();
+    string loadModule(string ModName, int ModID);
+    map<int, string> loadUnloaded();
 
 //Variables
-	map<string, int> ModuleList;
-	map<int, WorkOrder> JobList;	
+	map<string, int> moduleList;
+	map<int, WorkOrder> jobList;
 	
 
 };
