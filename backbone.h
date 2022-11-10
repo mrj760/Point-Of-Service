@@ -5,6 +5,7 @@
 #include <module.h>
 #include <workorder.h>
 #include <message.h>
+#include <map>
 
 /* PATH INCLUDES */
 
@@ -16,6 +17,7 @@
 class Backbone : Module
 {
 public:
+//Methods
     Backbone();
     virtual ~Backbone();
 
@@ -24,11 +26,18 @@ public:
 
     void postJob(WorkOrder wo);
     WorkOrder takeJob(Module& mod);
-
+    WordOrder checkJobs(Module& mod);
     int getID();
 
+//Variables
 
 private:
+//Methods
+
+//Variables
+	map<string, int> ModuleList;
+	map<int, WorkOrder> JobList;	
+	
 
 };
 /****************************** END BACKBONE ******************************/
