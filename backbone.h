@@ -5,6 +5,9 @@
 #include <module.h>
 #include <workorder.h>
 #include <message.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <map>
 
 /* PATH INCLUDES */
@@ -27,19 +30,20 @@ public:
     void postJob(WorkOrder wo);
     WorkOrder takeJob(Module& mod);
     bool checkJobs(Module& mod);
-    int getID();
-
+    int getID(std::string module);
+    static int modCount;
 //Variables
 
 private:
 //Methods
-    map<string, int> loadModuleList();
-    string loadModule(string ModName, int ModID);
-    map<int, string> loadUnloaded();
+    std::map<std::string, int> loadModuleList(std::string filename);
+    std::string loadModule(std::string ModName, int ID);
+    std::map<int, std::string> loadUnloaded(std::map<std::string, int> allModules);
+    void endModule(int ID);
 
 //Variables
-	map<string, int> moduleList;
-	map<int, WorkOrder> jobList;
+	std::map<std::string, int> moduleList;
+	std::map<int, WorkOrder> jobList;
 	
 
 };

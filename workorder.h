@@ -1,14 +1,14 @@
 #ifndef WORKORDER_H
 #define WORKORDER_H
-#include message.h
+#include <message.h>
 
 class WorkOrder
 {
 public:
-	vitual	Message getCommand();
+	virtual	Message getCommand();
 	virtual Message getData();
 	virtual Message getSecurity();
-
+	int ID;
 };
 
 #endif // WORKORDER_H
