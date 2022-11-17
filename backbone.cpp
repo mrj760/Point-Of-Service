@@ -102,12 +102,25 @@ void Backbone::postJob(WorkOrder& wo)
 
 bool Backbone::checkJobs(Module& mod)
 {
-
+    std::map<int , WorkOrder>::iterator it = jobList.begin();
+    while(it != jobList.end()){
+        if( it->first == mod.getID())   return true;
+    }
+    return false;
 }
 
 WorkOrder Backbone::takeJob(Module& mod)
 {
-
+    
+    std::map<int , WorkOrder>::iterator it = jobList.begin();
+    while(it != jobList.end()){
+        if( it->first == mod.getID()){
+            WorkOrder temp = it->second;
+            jobList.erase(it);
+            return temp;
+        }
+    }
+    throw "Failed to take job for this module." ;
 }
 
 int Backbone::getID(std::string modname)
