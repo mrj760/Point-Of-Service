@@ -27,7 +27,7 @@ public:
     void receiveMsg(Message msg);
     void sendMsg(Message msg);
 
-    void postJob(WorkOrder wo);
+    void postJob(WorkOrder& wo);
     WorkOrder takeJob(Module& mod);
     bool checkJobs(Module& mod);
     int getID(std::string module);

@@ -67,7 +67,7 @@ std::map<std::string, int> loadUnloaded(std::map<std::string,int> allModules)
 
     std::map<std::string, int>::iterator it = allModules.begin();
     while(it != allModules.end()){
-        if(it->second = 0){
+        if(it->second == 0){
             loadModule(it->first, Backbone::modCount);
             Backbone::modCount++;
         }
@@ -91,14 +91,18 @@ void Backbone::sendMsg(Message msg)
 
 }
 
-void Backbone::postJob(WorkOrder wo)
+void Backbone::postJob(WorkOrder& wo)
 {
+    std::map<int , WorkOrder>::iterator it = jobList.begin();
+    while(it != jobList.end()){
+        if( it->first == wo.ID && it->second == wo)    return;
+    }
     jobList.insert({wo.ID,wo});
 }
 
 bool Backbone::checkJobs(Module& mod)
 {
-    
+
 }
 
 WorkOrder Backbone::takeJob(Module& mod)
