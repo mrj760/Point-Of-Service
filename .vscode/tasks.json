@@ -1,6 +1,14 @@
 {
     "tasks": [
         {
+            "type": "shell",
+            "label": "Build Target 1",
+            "command": "Invoke-BatchFile 'C:/Users/Owner/AppData/Local/Programs/Tools/Microsoft VS Code/tools' ; nmake /f ${workspaceFolder:folder1}/Makefile target1",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
             "type": "cppbuild",
             "label": "C/C++: cl.exe build active file",
             "command": "cl.exe",
