@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <map>
+#include <tuple>
 
 /* PATH INCLUDES */
 
@@ -28,7 +29,7 @@ public:
     void sendMsg(Message msg);
 
     void postJob(WorkOrder& wo);
-    WorkOrder takeJob(Module& mod);
+    WorkOrder& takeJob(Module& mod);
     bool checkJobs(Module& mod);
     int getID(std::string module);
     static int modCount;
@@ -43,7 +44,7 @@ private:
 
 //Variables
 	std::map<std::string, int> moduleList;
-	std::map<int, WorkOrder> jobList;
+    std::map<int, WorkOrder&> jobList;
 	
 
 };

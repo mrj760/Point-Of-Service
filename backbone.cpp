@@ -5,6 +5,7 @@
 #define DB_MODULE_NAME "DB"
 #define PMT_MODULE_NAME "PMT"
 
+int Backbone::modCount = 0;
 
 Backbone::Backbone()
 {
@@ -60,6 +61,8 @@ std::string loadModule(std::string ModName, int ID)
         return "PMT";
     }
 
+    return "NaN"; // - needed a return value - micah
+
 }
 
 std::map<std::string, int> loadUnloaded(std::map<std::string,int> allModules)
@@ -72,6 +75,8 @@ std::map<std::string, int> loadUnloaded(std::map<std::string,int> allModules)
             Backbone::modCount++;
         }
     }
+
+    return std::map<std::string, int>(); // - needed a return value - micah
 }
 
 void Backbone::endModule(int ID)
@@ -93,29 +98,29 @@ void Backbone::sendMsg(Message msg)
 
 void Backbone::postJob(WorkOrder& wo)
 {
-    std::map<int , WorkOrder>::iterator it = jobList.begin();
+    std::map<int , WorkOrder&>::iterator it = jobList.begin();
     while(it != jobList.end()){
-        if( it->first == wo.ID && it->second == wo)    return;
+        if( it->first == wo.ID && it->second == &wo)    return;
     }
-    jobList.insert({wo.ID,wo});
+    jobList.insert({wo.ID, wo});
 }
 
 bool Backbone::checkJobs(Module& mod)
 {
-    std::map<int , WorkOrder>::iterator it = jobList.begin();
+    std::map<int , WorkOrder&>::iterator it = jobList.begin();
     while(it != jobList.end()){
         if( it->first == mod.getID())   return true;
     }
     return false;
 }
 
-WorkOrder Backbone::takeJob(Module& mod)
+WorkOrder& Backbone::takeJob(Module& mod)
 {
     
-    std::map<int , WorkOrder>::iterator it = jobList.begin();
+    std::map<int , WorkOrder&>::iterator it = jobList.begin();
     while(it != jobList.end()){
         if( it->first == mod.getID()){
-            WorkOrder temp = it->second;
+            WorkOrder& temp = it->second;
             jobList.erase(it);
             return temp;
         }
@@ -126,4 +131,15 @@ WorkOrder Backbone::takeJob(Module& mod)
 int Backbone::getID(std::string modname)
 {
     return moduleList[modname];
+}
+
+std::map<std::string, int> Backbone::loadModuleList(std::string filename)
+{
+    return std::map<std::string, int>(); // - needed an implementation and return value - micah
+}
+
+std::map<int, std::string> Backbone::loadUnloaded(std::map<std::string, int> allModules)
+{
+    return std::map<int, std::string>(); // - needed an implementation and return value - micah
+    // also note: i think the int and string are backwards from what was intended in this type declaration
 }

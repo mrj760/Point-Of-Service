@@ -5,10 +5,8 @@
 
     bool Message::operator ==(Message* msg)
     {
-        if(this->type() == msg->type())
-            if(this->getText()==msg->getText())
-            return true;
-        return false;
+        return (type() == msg->type()
+                && getText() == msg->getText());
     }
     void Message::operator = (std::string st)
     {

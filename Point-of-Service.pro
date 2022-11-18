@@ -13,8 +13,8 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
-    pos.cpp \
-    workorder.cpp
+    pos.cpp
+#    workorder.cpp
 
 HEADERS += \
     mainwindow.h \

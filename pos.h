@@ -40,6 +40,7 @@ public:
     /* Constructors */
     Customer() : _ID(0), _name("NaN"), _address("NaN") {};
     Customer(int ID, qstring name, qstring address) : _ID(ID), _name(name), _address(address) {};
+    Customer(const Customer& c) : ID(c.ID), name(c.name), address(c.address) {};
 
 private:
 
@@ -57,7 +58,6 @@ public:
 
     /* Public Functions */
     bool operator==(const Customer&); /* Return whether one Customer is equal to another based on ID */
-
     Customer operator=(const Customer&); /* Copy assigns the given customer */
 };
 
@@ -82,6 +82,7 @@ public:
     /* Constructors */
     Item() : _ID("NaN"), _name("NaN"), _price(0) {};
     Item(qstring ID, qstring name, int price) : _ID(ID), _name(name), _price(price){};
+    Item(const Item& i) : _ID(i.ID), _name(i.name), _price(i.price) {};
 
 private:
     /* Member Vars */
@@ -98,8 +99,7 @@ public:
 
     /* Public Functions */
     bool operator==(const Item&); /* Return whether one Item is equal to another based on ID */
-
-    Item operator=(const Item&); /* Assign based on the given Item */
+    Item operator=(const Item&); /* Copy assigns the given item */
 };
 
 /****************************** END ITEM ******************************/
@@ -122,6 +122,7 @@ class Register
 public:
     /* Constructors */
     Register(int cash=20000) : _cashInDrawer(cash) {}
+    Register(const Register& r) : _ID(r.ID), _cashInDrawer(r.cashInDrawer) {};
 
 private:
     /* Member Vars */
@@ -162,6 +163,8 @@ public:
     /* Constructors */
     Cart() : _ID(0), _items(), _totalPrice(0), _customer(Customer()) {};
     Cart(int ID, Customer customer) : _ID(ID), _items(), _totalPrice(0), _customer(customer) {};
+    Cart(const Cart& c) : _ID(c.ID), _items(c.items), _totalPrice(c.totalPrice), _customer(c.customer), _isOpen(c.isOpen) {}
+
 private:
 
     /* Member Vars */

@@ -4,18 +4,19 @@
 
 class WorkOrder
 {
+    virtual ~WorkOrder() = 0;
 public:
 	virtual	Message* getCommand();
 	virtual Message* getData();
 	virtual Message* getSecurity();
-	int ID;
-	bool operator ==(WorkOrder wo){
-		if (this->getCommand() == wo.getCommand())
-			if (this->getData() == wo.getData())
-				if (this->ID == wo.ID)
-					return true;
-		return false;
-	}
+    int ID;
+    Message command;
+    Message data;
+    Message security;
+    bool operator ==(WorkOrder* wo){
+//        return (getCommand() == wo.getCommand() && getData() == wo.getData() && ID == wo.ID);
+        return (getCommand() == wo->getCommand() && getData() == wo->getData() && ID == wo->ID);
+    }
 };
 
 #endif // WORKORDER_H

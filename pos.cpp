@@ -150,9 +150,9 @@ bool Item::operator==(const Item&)
 }
 
 // TODO
-Item Item::operator=(const Item&)
+Item Item::operator=(const Item& i)
 {
-    return Item();
+    return Item(i);
 }
 
 /****************************** END ITEM ******************************/
@@ -177,9 +177,9 @@ bool Customer::operator==(const Customer&)
 }
 
 // TODO
-Customer Customer::operator=(const Customer&)
+Customer Customer::operator=(const Customer& c)
 {
-    return Customer();
+    return Customer(c);
 }
 
 /****************************** END CUSTOMER ******************************/
@@ -246,9 +246,9 @@ bool Cart::operator==(const Cart& other)
 }
 
 // TODO
-Cart Cart::operator=(const Cart& other)
+Cart Cart::operator=(const Cart& c)
 {
-    return Cart();
+    return Cart(c);
 }
 
 /****************************** END CART ******************************/
@@ -285,9 +285,9 @@ bool Register::operator==(const Register&)
 }
 
 // TODO
-Register Register::operator=(const Register&)
+Register Register::operator=(const Register& r)
 {
-    return Register();
+    return Register(r);
 }
 
 /****************************** END REGISTER ******************************/

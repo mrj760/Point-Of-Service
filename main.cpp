@@ -10,7 +10,6 @@
 
 int main(int argc, char *argv[])
 {
-    int Backbone::modCount = 0;
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
