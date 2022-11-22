@@ -30,8 +30,8 @@ std::map<std::string, int> loadModuleList(std::string filename)
     while ( inFile.good() ){
         std::getline(inFile, line);
         std::istringstream ss(line);
-        ss >> key >> value; // set the variables  
-        params[key] = value; // input them into the map 
+        ss >> key >> value; // set the variables
+        params[key] = value; // input them into the map
     }
     inFile.close();
     return params;

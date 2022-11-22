@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,17 +10,21 @@ CONFIG += c++23
 
 SOURCES += \
     backbone.cpp \
+    dbmanager.cpp \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
-    pos.cpp
+    pos.cpp \
+    simplecrypt.cpp
 #    workorder.cpp
 
 HEADERS += \
+    dbmanager.h \
     mainwindow.h \
     backbone.h \
     message.h \
     pos.h \
+    simplecrypt.h \
     workorder.h \
     module.h
 
@@ -31,3 +35,5 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter

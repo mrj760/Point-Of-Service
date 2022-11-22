@@ -21,7 +21,7 @@
 class Backbone : Module
 {
 public:
-//Methods
+    //Methods
     Backbone();
     virtual ~Backbone();
 
@@ -33,19 +33,19 @@ public:
     bool checkJobs(Module& mod);
     int getID(std::string module);
     static int modCount;
-//Variables
+    //Variables
 
 private:
-//Methods
+    //Methods
     std::map<std::string, int> loadModuleList(std::string filename);
     std::string loadModule(std::string ModName, int ID);
     std::map<int, std::string> loadUnloaded(std::map<std::string, int> allModules);
     void endModule(int ID);
 
-//Variables
-	std::map<std::string, int> moduleList;
+    //Variables
+    std::map<std::string, int> moduleList;
     std::map<int, WorkOrder&> jobList;
-	
+
 
 };
 /****************************** END BACKBONE ******************************/

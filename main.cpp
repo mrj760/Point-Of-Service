@@ -5,13 +5,21 @@
 // Nathan Ware
 // Sydney 
 #include "mainwindow.h"
-
 #include <QApplication>
+#include <dbmanager.h>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+//    a.setStyle("fusion");
+
     MainWindow w;
     w.show();
+
+    dbmanager* dbm = new dbmanager("QPSQL","posdb");
+
+    w.setDB(&dbm->db);
+
     return a.exec();
 }

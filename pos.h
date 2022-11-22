@@ -34,7 +34,7 @@ class Key {friend T; Key() {} Key(Key const&) {} };
 
 class Customer
 {
-friend class Main_POS; /* Allow Main_POS to access all customer details */
+    friend class Main_POS; /* Allow Main_POS to access all customer details */
 
 public:
     /* Constructors */
