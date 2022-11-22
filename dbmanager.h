@@ -4,35 +4,35 @@
 
 #include <QWidget>
 #include <QSqlDatabase>
-typedef QSqlDatabase database;
+typedef QSqlDatabase Database;
 #include <QSqlQuery>
-typedef QSqlQuery qry;
+typedef QSqlQuery Query;
 #include <QSqlError>
 #include <QMessageBox>
-typedef QMessageBox qmsg;
 #include <vector>
 #include <simplecrypt.h>
 
-typedef QString qstr;
+typedef QString QString;
 
 
 class dbmanager
 {
 
     SimpleCrypt crypt;
+    Database _db;
 
 public:
 
-    dbmanager(const qstr& driver, const qstr& path);
-    database db;
+    dbmanager(const QString& driver, const QString& path);
+    const Database& db = _db; /* db getter */
 
     bool addItem(const int& qty, const int& cents, QWidget* from);
-    bool addTransaction(const int& cust_phone, const int& total_cents, const qstr& items,
-                        const qstr& payment_type, const int& tender, const int& change,
+    bool addTransaction(const int& cust_phone, const int& total_cents, const QString& items,
+                        const QString& payment_type, const int& tender, const int& change,
                         const int& card_number, const int& card_exp, const int& card_cvv, QWidget* from);
-    bool addCustomer(const int& phone, const qstr& name, const qstr& address, const int& zip, QWidget* from);
+    bool addCustomer(const int& phone, const QString& name, const QString& address, const int& zip, QWidget* from);
     bool addRegister(const int& id, const int& cash, QWidget* from);
-     void displayError(const qstr& errorType, QWidget* from, const qry& q);
+     void displayError(const QString& errorType, QWidget* from, const Query& q);
 };
 
 #endif // DBMANAGER_H

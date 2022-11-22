@@ -31,6 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QVector>
 #include <QFlags>
 #include <QIODevice>
+#include <QByteArray>
+#include <QtDebug>
+#include <QtGlobal>
+#include <QDateTime>
+#include <QCryptographicHash>
+#include <QDataStream>
 
 /**
   @short Simple encryption and decryption of strings and byte arrays

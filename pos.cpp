@@ -16,7 +16,7 @@ POS::POS()
 
 }
 
-Item POS::readSKU(const qstring& sku)
+Item POS::readSKU(const QString& sku)
 {
     // return database.getItem(sku);
     return Item();

@@ -1,18 +1,18 @@
 #include "dbmanager.h"
-#include "qsqlrecord.h"
 
 /* Constructor */
-dbmanager::dbmanager(const qstr& driver, const qstr& path)
+dbmanager::dbmanager(const QString& driver, const QString& path)
 {    
-    db = database::addDatabase(driver);
-    db.setDatabaseName(path);
-    db.setUserName("postgres");
-    db.setPassword("grant00--");
+    _db = Database::addDatabase(driver);
+    _db.setDatabaseName(path);
+    _db.setUserName("postgres");
+    _db.setPassword("grant00--");
 
-    if (!db.open())
+    if (!_db.open())
         qDebug() << "Database: Connection failed.";
+    return;
 
-    for (auto table : db.tables())
+    for (auto table : _db.tables())
         qDebug() << table;
 
     crypt = SimpleCrypt(Q_UINT64_C(0x2fb30a1c9fddf749));
@@ -27,7 +27,7 @@ dbmanager::dbmanager(const qstr& driver, const qstr& path)
 /* Insert Item */
 bool dbmanager::addItem(const int& qty, const int& cents, QWidget* from=nullptr)
 {
-    qry q;
+    Query q;
     q.prepare("insert into pos_schema.item values( (select ifnull(max(sku), 0) + 1 from pos_schema.item), "
               ":qty, :cents)");
     q.bindValue(":qty", qty);
@@ -42,12 +42,14 @@ bool dbmanager::addItem(const int& qty, const int& cents, QWidget* from=nullptr)
 }
 
 /* Insert Transaction */
-bool dbmanager::addTransaction(const int& custPhone=0, const int& totalCents=0, const qstr& items="",
-                               const qstr& paymentType="", const int& tender=0, const int& change=0,
+bool dbmanager::addTransaction(const int& custPhone=0, const int& totalCents=0, const QString& items="",
+                               const QString& paymentType="", const int& tender=0, const int& change=0,
                                const int& cardNum=0, const int& cardExp=0, const int& cardCVV=0, QWidget* from=nullptr)
 {
-    qry q;
-    q.prepare("insert into pos_schema.transaction values( (select ifnull(max(id), 0) + 1 from pos_schema.transaction), datetime('now'), "
+    Query q;
+    q.prepare("insert into pos_schema.transaction values( "
+              "(SELECT ifnull(max(id), 0) + 1 FROM pos_schema.transaction WHERE pos_schema.transactiondate.date = CURRENT_DATE), "
+              "NOW()::date, NOW()::time, "
               ":phone, :total_cents, :items, :payment_type, :tender, :change, :card_number, :card_exp, :card_cvv);");
     q.bindValue(":phone",custPhone);
     q.bindValue(":total_cents", totalCents);
@@ -57,9 +59,9 @@ bool dbmanager::addTransaction(const int& custPhone=0, const int& totalCents=0, 
     q.bindValue(":change", change);
 
 
-    qstr cryptCardNum = crypt.encryptToString(qstr::number(cardNum));
-    qstr cryptCardExp = crypt.encryptToString(qstr::number(cardExp));
-    qstr cryptCardCVV = crypt.encryptToString(qstr::number(cardCVV));
+    QString cryptCardNum = crypt.encryptToString(QString::number(cardNum));
+    QString cryptCardExp = crypt.encryptToString(QString::number(cardExp));
+    QString cryptCardCVV = crypt.encryptToString(QString::number(cardCVV));
 
     q.bindValue(":card_number", cryptCardNum);
     q.bindValue(":card_exp", cryptCardExp);
@@ -74,9 +76,9 @@ bool dbmanager::addTransaction(const int& custPhone=0, const int& totalCents=0, 
 }
 
 /* Insert Customer */
-bool dbmanager::addCustomer(const int &phone, const qstr &name, const qstr &address, const int &zip, QWidget* from=nullptr)
+bool dbmanager::addCustomer(const int &phone, const QString &name, const QString &address, const int &zip, QWidget* from=nullptr)
 {
-    qry q;
+    Query q;
     q.prepare("insert into pos_schema.customer values(:phone, :name, :address, :zip)");
     q.bindValue(":phone",phone);
     q.bindValue(":name",name);
@@ -94,7 +96,7 @@ bool dbmanager::addCustomer(const int &phone, const qstr &name, const qstr &addr
 /* Insert Register */
 bool dbmanager::addRegister(const int &id, const int &cash, QWidget* from=nullptr)
 {
-    qry q;
+    Query q;
     q.prepare("insert into pos_schema.register values(:id, :cash)");
     q.bindValue(":id",id);
     q.bindValue(":cash",cash);
@@ -114,9 +116,9 @@ bool dbmanager::addRegister(const int &id, const int &cash, QWidget* from=nullpt
 /*  */
 
 /* Display Error */
-void dbmanager::displayError(const qstr& errortype, QWidget* from, const qry& q)
+void dbmanager::displayError(const QString& errortype, QWidget* from, const Query& q)
 {
     if (from == nullptr)
         return;
-    qmsg::warning(from, errortype+" Error", q.lastError().text());
+    QMessageBox::warning(from, errortype+" Error", q.lastError().text());
 }

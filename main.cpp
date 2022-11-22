@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    dbmanager* dbm = new dbmanager("QPSQL","posdb");
+    dbmanager* dbmgr = new dbmanager("QPSQL","posdb");
 
-    w.setDB(&dbm->db);
+    w.setDB(dbmgr);
 
     return a.exec();
 }

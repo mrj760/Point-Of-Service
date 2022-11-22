@@ -12,16 +12,16 @@ MainWindow::~MainWindow()
 }
 
 /* Set the database which the window will work with */
-void MainWindow::setDB(QSqlDatabase *db)
+void MainWindow::setDB(dbmanager *dbmgr)
 {
-    this->db = db;
-    if (!db->isOpen())
-        qmsg::critical(this, "Error!", db->lastError().text());
-    tmodel = new tablemodel(this, *db);
+    if (!dbmgr->db.isOpen())
+        QMessageBox::critical(this, "Error!", dbmgr->db.lastError().text());
+    this->dbmgr = dbmgr;
+    tmodel = new TableModel(this, dbmgr->db);
 }
 
 /* Change the name of the table which the model refers to */
-void MainWindow::setTableModel(const qstr& tablename)
+void MainWindow::setTableModel(const QString& tablename)
 {
     /* Setup to work with table in db and populate the model */
     tmodel->setTable(tablename);
@@ -64,7 +64,7 @@ void MainWindow::on_save_clicked()
 {
     if(!tmodel->submitAll())
     {
-        qmsg::warning(this, "Unable to Save Changes", tmodel->lastError().text());
+        QMessageBox::warning(this, "Unable to Save Changes", tmodel->lastError().text());
     }
 }
 

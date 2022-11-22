@@ -15,9 +15,6 @@
 using std::vector;
 using std::tuple;
 
-/* ALT TYPE NAMES */
-typedef QString qstring;
-
 /* FORWARD CLASS DECL'S */
 class Customer;
 class Item;
@@ -39,22 +36,22 @@ class Customer
 public:
     /* Constructors */
     Customer() : _ID(0), _name("NaN"), _address("NaN") {};
-    Customer(int ID, qstring name, qstring address) : _ID(ID), _name(name), _address(address) {};
+    Customer(int ID, QString name, QString address) : _ID(ID), _name(name), _address(address) {};
     Customer(const Customer& c) : ID(c.ID), name(c.name), address(c.address) {};
 
 private:
 
     /* Member Vars */
     int _ID; /* Numeric customer ID (Phone Number) */
-    qstring _name; /* Customer name */
-    qstring _address; /* Customer street address */
+    QString _name; /* Customer name */
+    QString _address; /* Customer street address */
 
 public:
 
     /* Getters */
     const int& ID = _ID;
-    const qstring& name = _name;
-    const qstring& address = _address;
+    const QString& name = _name;
+    const QString& address = _address;
 
     /* Public Functions */
     bool operator==(const Customer&); /* Return whether one Customer is equal to another based on ID */
@@ -81,20 +78,20 @@ class Item
 public:
     /* Constructors */
     Item() : _ID("NaN"), _name("NaN"), _price(0) {};
-    Item(qstring ID, qstring name, int price) : _ID(ID), _name(name), _price(price){};
+    Item(QString ID, QString name, int price) : _ID(ID), _name(name), _price(price){};
     Item(const Item& i) : _ID(i.ID), _name(i.name), _price(i.price) {};
 
 private:
     /* Member Vars */
-    qstring _ID;     /* SKU ( ID ) */
-    qstring _name;   /* Name of item */
+    QString _ID;     /* SKU ( ID ) */
+    QString _name;   /* Name of item */
     int _price;      /* Price in cents */
 
 public:
 
     /* Getters */
-    const qstring& ID = _ID;
-    const qstring& name = _name;
+    const QString& ID = _ID;
+    const QString& name = _name;
     const int& price = _price;
 
     /* Public Functions */
@@ -246,7 +243,7 @@ public:
     const vector<Register> finalizedRegisters = _finalizedRegisters;
 
     /* Public Functions */
-    Item readSKU(const qstring&); /* Reach out to backbone to obtain Item information from a SKU */
+    Item readSKU(const QString&); /* Reach out to backbone to obtain Item information from a SKU */
 
     /* ************************* */
 

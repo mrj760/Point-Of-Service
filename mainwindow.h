@@ -3,22 +3,16 @@
 
 
 #include <QMainWindow>
-
 #include <QSqlTableModel>
-typedef QSqlTableModel tablemodel;
-
 #include <QSqlRecord>
-
 #include "qsqlquery.h"
-typedef QSqlQuery qry;
-
 #include <QMessageBox>
-typedef QMessageBox qmsg;
-
 #include <QSqlError>
+#include <dbmanager.h>
 
-typedef QString qstr;
-
+typedef QSqlQuery Query;
+typedef QSqlTableModel TableModel;
+typedef QSqlDatabase Database;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -35,8 +29,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void setDB(QSqlDatabase*);
-    void setTableModel(const qstr&);
+    void setDB(dbmanager*);
+    void setTableModel(const QString&);
 
 
 private slots:
@@ -52,8 +46,8 @@ private slots:
     void on_registers_clicked();
 
 private:
-    QSqlDatabase *db;
-    tablemodel *tmodel;
+    dbmanager *dbmgr;
+    TableModel *tmodel;
     Ui::MainWindow *ui;
 };
 
