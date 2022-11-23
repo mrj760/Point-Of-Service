@@ -3,10 +3,11 @@
 // Laijy Loiseau
 // Nam Cuong Tran
 // Nathan Ware
-// Sydney 
+// Sydney
 #include "mainwindow.h"
 #include <QApplication>
 #include <dbmanager.h>
+#include <pos.h>
 
 int main(int argc, char *argv[])
 {
@@ -21,15 +22,15 @@ int main(int argc, char *argv[])
 
     w.setDB(dbmgr);
 
-    dbmgr->addItem(15, 2000, &w);
+    dbmgr->addItem(Item());
 
-    dbmgr->addTransaction();
+    dbmgr->addTransaction(Transaction());
 
-    dbmgr->addTransaction();
+    dbmgr->addTransaction(Transaction());
 
-    dbmgr->addCustomer("7609122224", "Bill Hicks", "123 Faksa St", "24242", &w);
+    dbmgr->addCustomer(Customer("7609122224", "Bill Hicks", "123 Faksa St", "24242"));
 
-    dbmgr->addRegister(2, 200, &w);
+    dbmgr->addRegister(Register(2, 200));
 
     return a.exec();
 }

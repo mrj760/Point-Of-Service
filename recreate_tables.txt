@@ -26,6 +26,7 @@ CREATE TABLE pos_schema.item
     sku integer NOT NULL DEFAULT 10000000,
     qty integer NOT NULL,
     price integer,
+    name character varying COLLATE pg_catalog."default",
     CONSTRAINT item_pkey PRIMARY KEY (sku),
     CONSTRAINT limitsku CHECK (sku >= 10000000 AND sku <= 99999999),
     CONSTRAINT posqty CHECK (qty >= 0)
@@ -49,18 +50,17 @@ CREATE TABLE pos_schema.transaction
     id integer NOT NULL DEFAULT 1,
     date date NOT NULL,
     "time" time with time zone NOT NULL,
-    customer_phone numeric(10,0),
+    customer_phone character(10) COLLATE pg_catalog."default",
     total_price integer DEFAULT 0,
     items character varying COLLATE pg_catalog."default" DEFAULT ''::character varying,
     payment_type character(4) COLLATE pg_catalog."default" DEFAULT 'cash'::bpchar,
-    tender smallint DEFAULT 0,
-    change smallint DEFAULT 0,
+    tender integer DEFAULT 0,
+    change integer DEFAULT 0,
     card_number character varying COLLATE pg_catalog."default",
     card_exp character varying COLLATE pg_catalog."default",
     card_cvv character varying COLLATE pg_catalog."default",
     CONSTRAINT transaction_pkey PRIMARY KEY (id, date),
-    CONSTRAINT limit_phone CHECK (customer_phone >= 1000000000::numeric AND customer_phone <= '9999999999'::bigint::numeric),
     CONSTRAINT limit_change CHECK (change >= 0)
-)
+);
 
 \q

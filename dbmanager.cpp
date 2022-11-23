@@ -2,7 +2,7 @@
 
 /* Constructor */
 dbmanager::dbmanager(const QString& driver, const QString& path)
-{    
+{
     _db = Database::addDatabase(driver);
     _db.setDatabaseName(path);
     _db.setUserName("postgres");
@@ -31,47 +31,45 @@ dbmanager::dbmanager(const QString& driver, const QString& path)
 /*  */
 
 /* Insert Item */
-bool dbmanager::addItem(const int& qty, const int& cents, QWidget* from)
+bool dbmanager::addItem(Item item)
 {
-    if (qty < 0)
+    if (item.qty < 0)
     {
         qDebug() << "Item Insertion Error: Invalid Quantity (Must be Greater than or Equal to Zero)";
-        displayError("Item Insertion", "Invalid Quantity (Must be Greater than or Equal to Zero)", from);
+        displayError("Item Insertion", "Invalid Quantity (Must be Greater than or Equal to Zero)");
         return false;
     }
 
     Query q;
     q.prepare("insert into pos_schema.item values((select coalesce(MAX(sku::int)+1, 10000000) from pos_schema.item), :qty, :cents);");
-    q.bindValue(":qty", qty);
-    q.bindValue(":cents", cents);
+    q.bindValue(":qty", item.qty);
+    q.bindValue(":cents", item.cents);
 
     if (q.exec())
         return true;
 
     qDebug() << "Item Insertion Error: " << q.lastError().text();
-    displayQueryError("Item Insertion", from, q);
+    displayQueryError("Item Insertion", q);
     return false;
 }
 
 /* Insert Transaction */
-bool dbmanager::addTransaction(const int& custPhone, const int& totalCents, const QString& items,
-                               const QString& paymentType, const int& tender, const int& change,
-                               const int& cardNum, const int& cardExp, const int& cardCVV, QWidget* from)
+bool dbmanager::addTransaction(Transaction transaction)
 {
     Query q;
     q.prepare("insert into pos_schema.transaction values((SELECT coalesce(MAX(id::int)+1, 1) from pos_schema.transaction WHERE pos_schema.transaction.date = CURRENT_DATE), "
               "NOW()::date, NOW()::time, :phone, :total_cents, :items, :payment_type, :tender, :change, :card_number, :card_exp, :card_cvv);");
-    q.bindValue(":phone",custPhone);
-    q.bindValue(":total_cents", totalCents);
-    q.bindValue(":items", items);
-    q.bindValue(":payment_type", paymentType);
-    q.bindValue(":tender", tender);
-    q.bindValue(":change", change);
+    q.bindValue(":phone", transaction.customerPhone);
+    q.bindValue(":total_cents", transaction.totalCents);
+    q.bindValue(":items", transaction.itemsAsString());
+    q.bindValue(":payment_type", transaction.paymentType);
+    q.bindValue(":tender", transaction.tender);
+    q.bindValue(":change", transaction.change);
 
 
-    QString cryptCardNum = crypt.encryptToString(QString::number(cardNum));
-    QString cryptCardExp = crypt.encryptToString(QString::number(cardExp));
-    QString cryptCardCVV = crypt.encryptToString(QString::number(cardCVV));
+    QString cryptCardNum = crypt.encryptToString(QString::number(transaction.cardNumber));
+    QString cryptCardExp = crypt.encryptToString(QString::number(transaction.cardExpiration));
+    QString cryptCardCVV = crypt.encryptToString(QString::number(transaction.cardCVV));
 
     q.bindValue(":card_number", cryptCardNum);
     q.bindValue(":card_exp", cryptCardExp);
@@ -81,54 +79,54 @@ bool dbmanager::addTransaction(const int& custPhone, const int& totalCents, cons
         return true;
 
     qDebug() << "Transaction Insertion Error:" << q.lastError().text();
-    displayQueryError("Transaction Insertion", from, q);
+    displayQueryError("Transaction Insertion", q);
     return false;
 }
 
 /* Insert Customer */
-bool dbmanager::addCustomer(const QString& phone, const QString &name, const QString &address, const QString&zip, QWidget* from)
+bool dbmanager::addCustomer(Customer customer)
 {
-    if (phone.length() != 10)
+    if (customer.phone.length() != 10)
     {
         qDebug() << "Customer Insertion Error: Invalid Phone Number (Must be 10 characters)";
-        displayError("Customer Insertion", "Invalid Phone Number (Must be 10 characters)", from);
+        displayError("Customer Insertion", "Invalid Phone Number (Must be 10 characters)");
         return false;
     }
-    if (zip.length() != 5)
+    if (customer.zip.length() != 5)
     {
         qDebug() << "Customer Insertion Error: Invalid ZIP (Must be 5 characters)";
-        displayError("Customer Insertion", "Invalid ZIP (Must be 5 characters)", from);
+        displayError("Customer Insertion", "Invalid ZIP (Must be 5 characters)");
         return false;
     }
 
     Query q;
     q.prepare("insert into pos_schema.customer values(:phone, :name, :address, :zip);");
-    q.bindValue(":phone",phone);
-    q.bindValue(":name",name);
-    q.bindValue(":address",address);
-    q.bindValue(":zip",zip);
+    q.bindValue(":phone",customer.phone);
+    q.bindValue(":name",customer.name);
+    q.bindValue(":address",customer.address);
+    q.bindValue(":zip",customer.zip);
 
     if (q.exec())
         return true;
 
     qDebug() << "Customer Insertion Error:" << q.lastError().text();
-    displayQueryError("Insertion", from, q);
+    displayQueryError("Insertion", q);
     return false;
 }
 
 /* Insert Register */
-bool dbmanager::addRegister(const int &id, const int &cash, QWidget* from)
+bool dbmanager::addRegister(Register reg)
 {
     Query q;
     q.prepare("insert into pos_schema.register values(:id, :cash);");
-    q.bindValue(":id",id);
-    q.bindValue(":cash",cash);
+    q.bindValue(":id",reg.ID);
+    q.bindValue(":cash",reg.centsInDrawer);
 
     if (q.exec())
         return true;
 
     qDebug() << "Register Insertion Error:" << q.lastError().text();
-    displayQueryError("Register Insertion", from, q);
+    displayQueryError("Register Insertion", q);
     return false;
 }
 
@@ -151,18 +149,14 @@ bool dbmanager::addRegister(const int &id, const int &cash, QWidget* from)
 /*  */
 /*  */
 
-void dbmanager::displayError(const QString& errorType, const QString& errorText, QWidget* from)
+void dbmanager::displayError(const QString& errorType, const QString& errorText)
 {
-    if (from == nullptr)
-        return;
-    QMessageBox::warning(from, errorType+" Error", errorText);
+    QMessageBox::warning(0, errorType+" Error", errorText);
 }
 
 
 /* Display Error */
-void dbmanager::displayQueryError(const QString& errorType, QWidget* from, const Query& q)
+void dbmanager::displayQueryError(const QString& errorType, const Query& q)
 {
-    if (from == nullptr)
-        return;
-    QMessageBox::warning(from, errorType+" Error", q.lastError().text());
+    QMessageBox::warning(0, errorType+" Error", q.lastError().text());
 }

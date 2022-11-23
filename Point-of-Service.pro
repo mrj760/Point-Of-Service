@@ -10,21 +10,30 @@ CONFIG += c++23
 
 SOURCES += \
     backbone.cpp \
+    customer.cpp \
     dbmanager.cpp \
+    item.cpp \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
     pos.cpp \
-    simplecrypt.cpp
+    register.cpp \
+    simplecrypt.cpp \
+    transaction.cpp
 #    workorder.cpp
 
 HEADERS += \
+    customer.h \
     dbmanager.h \
+    item.h \
     mainwindow.h \
     backbone.h \
     message.h \
+    passkey.h \
     pos.h \
+    register.h \
     simplecrypt.h \
+    transaction.h \
     workorder.h \
     module.h
 
