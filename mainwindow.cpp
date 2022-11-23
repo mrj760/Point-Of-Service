@@ -37,6 +37,8 @@ void MainWindow::setTableModel(const QString& tablename)
     }
 }
 
+
+
 void MainWindow::on_items_clicked()
 {
     setTableModel("pos_schema.item");
@@ -50,13 +52,13 @@ void MainWindow::on_customers_clicked()
 
 void MainWindow::on_transactions_clicked()
 {
-    setTableModel("pos_schema.Transaction");
+    setTableModel("pos_schema.transaction");
 }
 
 
 void MainWindow::on_registers_clicked()
 {
-    setTableModel("pos_schema.Registers");
+    setTableModel("pos_schema.register");
 }
 
 
@@ -66,9 +68,4 @@ void MainWindow::on_save_clicked()
     {
         QMessageBox::warning(this, "Unable to Save Changes", tmodel->lastError().text());
     }
-}
-
-void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
-{
-
 }

@@ -39,8 +39,6 @@ private slots:
 
     void on_save_clicked();
 
-    void on_tableView_doubleClicked(const QModelIndex &index);
-
     void on_transactions_clicked();
 
     void on_registers_clicked();

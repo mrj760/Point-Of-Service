@@ -21,5 +21,15 @@ int main(int argc, char *argv[])
 
     w.setDB(dbmgr);
 
+    dbmgr->addItem(15, 2000, &w);
+
+    dbmgr->addTransaction();
+
+    dbmgr->addTransaction();
+
+    dbmgr->addCustomer("7609122224", "Bill Hicks", "123 Faksa St", "24242", &w);
+
+    dbmgr->addRegister(2, 200, &w);
+
     return a.exec();
 }
