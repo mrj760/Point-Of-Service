@@ -14,10 +14,19 @@ MainWindow::~MainWindow()
 /* Set the database which the window will work with */
 void MainWindow::setDB(dbmanager *dbmgr)
 {
+    QFile file(":/style/Dark.qss");
+    if(file.open(QFile::ReadOnly)) {
+        QString StyleSheet = QLatin1String(file.readAll());
+        qApp->setStyleSheet(StyleSheet);
+    }
+
     if (!dbmgr->db.isOpen())
         QMessageBox::critical(this, "Error!", dbmgr->db.lastError().text());
     this->dbmgr = dbmgr;
     tmodel = new TableModel(this, dbmgr->db);
+
+    itemaddview = new ItemAddView();
+    itemaddview->show();
 }
 
 /* Change the name of the table which the model refers to */

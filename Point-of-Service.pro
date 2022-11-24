@@ -2,7 +2,7 @@ QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++23
+CONFIG += c++11
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -13,6 +13,7 @@ SOURCES += \
     customer.cpp \
     dbmanager.cpp \
     item.cpp \
+    itemaddview.cpp \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
@@ -26,6 +27,7 @@ HEADERS += \
     customer.h \
     dbmanager.h \
     item.h \
+    itemaddview.h \
     mainwindow.h \
     backbone.h \
     message.h \
@@ -48,3 +50,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
+
+RESOURCES += \
+    resources.qrc

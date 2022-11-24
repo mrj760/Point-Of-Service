@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QSqlError>
 #include <dbmanager.h>
+#include <itemaddview.h>
 
 typedef QSqlQuery Query;
 typedef QSqlTableModel TableModel;
@@ -17,8 +18,6 @@ typedef QSqlDatabase Database;
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
-
-
 
 
 class MainWindow : public QMainWindow
@@ -31,6 +30,8 @@ public:
 
     void setDB(dbmanager*);
     void setTableModel(const QString&);
+
+    ItemAddView* itemaddview;
 
 
 private slots:
