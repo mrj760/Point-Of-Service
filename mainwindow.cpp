@@ -24,9 +24,6 @@ void MainWindow::setDB(dbmanager *dbmgr)
         QMessageBox::critical(this, "Error!", dbmgr->db.lastError().text());
     this->dbmgr = dbmgr;
     tmodel = new TableModel(this, dbmgr->db);
-
-    itemaddview = new ItemAddView();
-    itemaddview->show();
 }
 
 /* Change the name of the table which the model refers to */
@@ -50,12 +47,16 @@ void MainWindow::setTableModel(const QString& tablename)
 
 void MainWindow::on_items_clicked()
 {
-    setTableModel("pos_schema.item");
+//    setTableModel("pos_schema.item");
+    itemaddview = new ItemAddView();
+    itemaddview->show();
 }
 
 void MainWindow::on_customers_clicked()
 {
-    setTableModel("pos_schema.customer");
+//    setTableModel("pos_schema.customer");
+    customerManagerView = new CustomerManagerView(this);
+    customerManagerView->show();
 }
 
 

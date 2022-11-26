@@ -10,6 +10,7 @@
 #include <QSqlError>
 #include <dbmanager.h>
 #include <itemaddview.h>
+#include <customermanagerview.h>
 
 typedef QSqlQuery Query;
 typedef QSqlTableModel TableModel;
@@ -32,6 +33,7 @@ public:
     void setTableModel(const QString&);
 
     ItemAddView* itemaddview;
+    CustomerManagerView* customerManagerView;
 
 
 private slots:

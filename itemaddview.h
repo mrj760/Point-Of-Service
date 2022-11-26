@@ -21,7 +21,6 @@ private:
     QTableView* viewExistingItems;
     QSqlTableModel* itemModel;
 
-    void handleViewItems();
     void handleSubmit();
 signals:
 
