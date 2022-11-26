@@ -133,9 +133,26 @@ int Backbone::getID(std::string modname)
     return moduleList[modname];
 }
 
+/*
+ * Function for loading config file of mods
+ *
+*/
 std::map<std::string, int> Backbone::loadModuleList(std::string filename)
 {
-    return std::map<std::string, int>(); // - needed an implementation and return value - micah
+    std::map<std::string, int> tempMap;
+    std::ifstream inFile;
+    inFile.open(filename);
+    std::string line;
+    std::string name;
+    int id;
+
+    while(inFile.good()){
+        getline(inFile, line);
+        std::istringstream ss(line);
+        ss >> id >>name;
+        tempMap.insert({name, id});
+    }
+    return tempMap; // - needed an implementation and return value - micah
 }
 
 std::map<int, std::string> Backbone::loadUnloaded(std::map<std::string, int> allModules)
