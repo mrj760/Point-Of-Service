@@ -4,6 +4,7 @@
 #define GUI_MODULE_NAME "GUI"
 #define DB_MODULE_NAME "DB"
 #define PMT_MODULE_NAME "PMT"
+#define TST_MODULE_NAME "TEST"
 
 int Backbone::modCount = 0;
 
@@ -59,6 +60,11 @@ std::string loadModule(std::string ModName, int ID)
         //new PMT(ID);
         std::cout << "PMT Loaded. ID= "<<ID<<std::endl;
         return "PMT";
+    }
+    if(ModName == TST_MODULE_NAME){
+        //new PMT(ID);
+        std::cout << "PMT Loaded. ID= "<<ID<<std::endl;
+        return "TST";
     }
 
     return "NaN"; // - needed a return value - micah
@@ -133,13 +139,10 @@ int Backbone::getID(std::string modname)
     return moduleList[modname];
 }
 
-std::map<std::string, int> Backbone::loadModuleList(std::string filename)
+
+
+std::map<std::string, int> Backbone::loadUnloaded(std::map<std::string, int> allModules)
 {
     return std::map<std::string, int>(); // - needed an implementation and return value - micah
-}
-
-std::map<int, std::string> Backbone::loadUnloaded(std::map<std::string, int> allModules)
-{
-    return std::map<int, std::string>(); // - needed an implementation and return value - micah
     // also note: i think the int and string are backwards from what was intended in this type declaration
 }
