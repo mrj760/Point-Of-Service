@@ -4,7 +4,6 @@
 #include <QtWidgets>
 #include <QtSql>
 #include <vector>
-#include <customer.h>
 using std::vector;
 
 class CustomerManagerView : public QWidget

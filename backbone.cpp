@@ -19,7 +19,7 @@ Backbone::~Backbone()
 
 }
 
-std::map<std::string, int> loadModuleList(std::string filename)
+std::map<std::string, int> Backbone::loadModuleList(std::string filename)
 {
     std::string filepath = "./" + filename;
     std::ifstream inFile;
