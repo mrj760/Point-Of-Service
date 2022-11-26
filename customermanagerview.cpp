@@ -13,11 +13,17 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     // TableView set to customers table
     tableView = new QTableView(this);
     tableView->setEditTriggers(QTableView::NoEditTriggers);
+    tableView->setSelectionMode(QTableView::SingleSelection);
+    tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    tableView->verticalHeader()->hide();
     mainLayout->addWidget(tableView);
     tableModel = new QSqlTableModel;
     tableModel->setTable("pos_schema.customer");
+    tableModel->setSort(0, Qt::SortOrder::AscendingOrder);
     tableModel->select();
     tableView->setModel(tableModel);
+
+    connect(tableView, &QTableView::clicked, this, &CustomerManagerView::highlightCustomer);
 
     // below the tableview is the rest
     QWidget* bottom = new QWidget(this);
@@ -73,7 +79,7 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     // Button to clear LineEdits
     QPushButton* clearButton = new QPushButton("Clear", this);
     clearButton->setObjectName("cancel_button");
-    connect(clearButton, &QPushButton::clicked, this, &CustomerManagerView::cancelChanges);
+    connect(clearButton, &QPushButton::clicked, this, &CustomerManagerView::clearScreen);
     searcheditright->layout()->addWidget(clearButton);
 
     // Add labels, LineEdits, and buttons to container underneath table view
@@ -103,7 +109,8 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
 
     for (int i=0; i<4; ++i)
     {
-        customerselectleft->layout()->addWidget(custInfoLabels[i] = new QLabel("temp", this));
+        custInfoLabels[i] = new QLabel("", this);
+        customerselectleft->layout()->addWidget(custInfoLabels[i]);
     }
 
     // button to attribute the current customer to the transaction
@@ -128,30 +135,43 @@ void CustomerManagerView::submitNew()
             name=lineEdits[1]->text(),
             address=lineEdits[2]->text(),
             zip=lineEdits[3]->text();
-//    if (phone == "") phone = "NULL";
-//    if (name == "") name = "NULL";
-//    if (address== "") address= "NULL";
-//    if (zip== "") zip= "NULL";
 
     // phone number (if input at all) should be 10 digits
     if (phone.length() != 0 && phone.length() != 10)
     {
-        QMessageBox::warning(this, "Customer Update Error", "Phone number must include 10 digits");
+        QMessageBox::warning(this, "Customer Submission Error", "Phone number must include 10 digits");
         return;
     }
     // zip number (if input at all) should be 5 digits
     if (zip.length() != 0 && zip.length() != 5)
     {
-        QMessageBox::warning(this, "Customer Update Error", "ZIP number must include 5 digits");
+        QMessageBox::warning(this, "Customer Submission Error", "ZIP number must include 5 digits");
         return;
+    }
+
+    if (phone.length() == 0)
+    {
+        if (name.length() == 0)
+        {
+            QMessageBox::information(this, "Customer Submission Error","Must include a phone number or name");
+            return;
+        }
+        QSqlQuery check;
+        check.prepare("select from pos_schema.customer where phone is null and name = :name");
+        check.bindValue(":name", name);
+        if (check.size() > 0)
+        {
+            QMessageBox::information(this, "Customer Submission Error","Customer name already exists");
+            return;
+        }
     }
 
     QSqlQuery q;
     q.prepare("insert into pos_schema.customer values(:phone, :name, :address, :zip);");
-    q.bindValue(":phone", phone);
-    q.bindValue(":name", name);
-    q.bindValue(":address", address);
-    q.bindValue(":zip", zip);
+    q.bindValue(":phone", phone=="" ? NULL : phone);
+    q.bindValue(":name", name==""? NULL : name);
+    q.bindValue(":address", address==""? NULL : address);
+    q.bindValue(":zip", zip==""? NULL : zip);
 
     if (!q.exec())
     {
@@ -170,17 +190,14 @@ void CustomerManagerView::editExisting()
             name=lineEdits[1]->text(),
             address=lineEdits[2]->text(),
             zip=lineEdits[3]->text();
-//    if (phone == "") phone = "NULL";
-//    if (name == "") name = "NULL";
-//    if (address== "") address= "NULL";
-//    if (zip== "") zip= "NULL";
 
-    // phone number (if input at all) should be 10 digits
-    if (phone.length() != 0 && phone.length() != 10)
+    // phone number should be 10 digits
+    if (phone.length() != 10)
     {
-        QMessageBox::warning(this, "Customer Update Error", "Phone number must include 10 digits");
+        QMessageBox::information(this, "Customer Update Failure", "Phone number must include 10 digits to update customer");
         return;
     }
+
     // zip number (if input at all) should be 5 digits
     if (zip.length() != 0 && zip.length() != 5)
     {
@@ -209,13 +226,13 @@ void CustomerManagerView::editExisting()
 
     // actually make the update
     QSqlQuery upd;
-    upd.prepare("UPDATE pos_schema.customer "
-                "SET phone = :phone, name = :name, address = :address, zip = :zip "
-                "WHERE phone = :phone;");
-    upd.bindValue(":phone", phone);
-    upd.bindValue(":name", name);
-    upd.bindValue(":address", address);
-    upd.bindValue(":zip", zip);
+        upd.prepare("UPDATE pos_schema.customer "
+                    "SET phone = :phone, name = :name, address = :address, zip = :zip "
+                    "WHERE phone = :phone;");
+        upd.bindValue(":phone", phone=="" ? NULL : phone);
+        upd.bindValue(":name", name==""? NULL : name);
+        upd.bindValue(":address", address==""? NULL : address);
+        upd.bindValue(":zip", zip==""? NULL : zip);
 
     if (!upd.exec())
     {
@@ -228,11 +245,12 @@ void CustomerManagerView::editExisting()
     tableModel->select();
 }
 
-void CustomerManagerView::cancelChanges()
+void CustomerManagerView::clearScreen()
 {
-    for (auto le : lineEdits)
+    for (int i = 0; i < 4; ++i)
     {
-        le->setText("");
+        lineEdits[i]->setText("");
+        custInfoLabels[i]->setText("");
     }
 }
 
@@ -244,4 +262,17 @@ void CustomerManagerView::selectCustomer()
 void CustomerManagerView::cancel()
 {
     this->close();
+}
+
+void CustomerManagerView::highlightCustomer()
+{
+    auto row = tableView->selectionModel()->selectedRows().begin()->row();
+    for (int i = 0; i < 4; ++i)
+    {
+        auto idx = tableView->model()->index(row, i);
+        auto data = tableView->model()->data(idx);
+        auto value = data.value<QString>();
+        custInfoLabels[i]->setText(value);
+        lineEdits[i]->setText(value);
+    }
 }

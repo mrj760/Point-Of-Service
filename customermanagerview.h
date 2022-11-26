@@ -25,10 +25,12 @@ private:
 
     void submitNew();
     void editExisting();
-    void cancelChanges();
+    void clearScreen();
 
     void selectCustomer();
     void cancel();
+
+    void highlightCustomer();
 };
 
 #endif // CUSTOMERMANAGERVIEW_H
