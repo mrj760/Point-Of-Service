@@ -39,7 +39,7 @@ private:
     //Methods
     std::map<std::string, int> loadModuleList(std::string filename);
     std::string loadModule(std::string ModName, int ID);
-    std::map<int, std::string> loadUnloaded(std::map<std::string, int> allModules);
+    std::map<std::string, int> loadUnloaded(std::map<std::string, int> allModules);
     void endModule(int ID);
 
     //Variables
