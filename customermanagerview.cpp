@@ -10,20 +10,29 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     QLabel* tableTitle = new QLabel("Customers");
     mainLayout->addWidget(tableTitle);
 
-    // TableView set to customers table
+    /* TableView */
+
+    // Create and add to main layout
     tableView = new QTableView(this);
+    mainLayout->addWidget(tableView);
+
+    // Hide indexes
+    tableView->verticalHeader()->hide();
+
+    // Can't directly edit and can only select whole rows at a time
     tableView->setEditTriggers(QTableView::NoEditTriggers);
     tableView->setSelectionMode(QTableView::SingleSelection);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tableView->verticalHeader()->hide();
-    mainLayout->addWidget(tableView);
+
+    // Set to a table model
     tableModel = new QSqlTableModel;
     tableModel->setTable("pos_schema.customer");
     tableModel->setSort(0, Qt::SortOrder::AscendingOrder);
     tableModel->select();
-    tableView->setModel(tableModel);
 
     connect(tableView, &QTableView::clicked, this, &CustomerManagerView::highlightCustomer);
+
+    /* END TableView */
 
     // below the tableview is the rest
     QWidget* bottom = new QWidget(this);
@@ -34,7 +43,7 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
 
     /* Customer Search/Edit Section (Below TableView and on the left) */
 
-    // contains LineEdits and buttons for table management
+    // contains Labels, LineEdits, and Buttons for table management
     QWidget* searchedit = new QWidget(this);
     searchedit->setLayout(new QHBoxLayout());
 
@@ -48,39 +57,53 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     searcheditlineedits->setLayout(new QVBoxLayout(this));
     searchedit->layout()->addWidget(searcheditlineedits);
 
-    // Add lables and LineEdits to containers
     for (int i = 0; i < 4; ++i)
     {
+        // Add Labels
         searcheditlabels->layout()->addWidget(new QLabel(this->custFieldNames[i], this));
+
+        // Add LineEdits
         searcheditlineedits->layout()->addWidget(lineEdits[i] = new QLineEdit(this));
+        connect(lineEdits[i], &QLineEdit::textEdited, this, &CustomerManagerView::filterResults);
+
+        // Add/Layer Filters for searching
+        filterModels[i] = new QSortFilterProxyModel();
+        filterModels[i]->setFilterCaseSensitivity(Qt::CaseInsensitive);
+        filterModels[i]->setFilterKeyColumn(i);
+        if (i == 0)
+            filterModels[i]->setSourceModel(tableModel);
+        else
+            filterModels[i]->setSourceModel(filterModels[i-1]);
     }
+    // Set the TableView model to the last filterModel
+    tableView->setModel(filterModels[3]);
 
     // Phone and ZIP LineEdit can only have digits
     lineEdits[0]->setValidator(new QIntValidator());
     lineEdits[3]->setValidator(new QIntValidator());
 
     // Container for buttons for search/edit
-    QWidget* searcheditright = new QWidget(this);
-    searcheditright->setLayout(new QVBoxLayout(this));
-    searchedit->layout()->addWidget(searcheditright);
+    QWidget* searcheditbuttons = new QWidget(this);
+    searcheditbuttons->setLayout(new QVBoxLayout(this));
+    searchedit->layout()->addWidget(searcheditbuttons);
 
     // Button to add new customer to db
     QPushButton *submitNewButton = new QPushButton("Submit New", this);
     submitNewButton->setObjectName("submit_button");
     connect(submitNewButton, &QPushButton::clicked, this, &CustomerManagerView::submitNew);
-    searcheditright->layout()->addWidget(submitNewButton);
+    searcheditbuttons->layout()->addWidget(submitNewButton);
 
     // Button to edit customer which already exits in db
     QPushButton *editExistingButton = new QPushButton("Edit Existing", this);
     editExistingButton->setObjectName("edit_button");
     connect(editExistingButton, &QPushButton::clicked, this, &CustomerManagerView::editExisting);
-    searcheditright->layout()->addWidget(editExistingButton);
+    searcheditbuttons->layout()->addWidget(editExistingButton);
 
     // Button to clear LineEdits
     QPushButton* clearButton = new QPushButton("Clear", this);
     clearButton->setObjectName("cancel_button");
     connect(clearButton, &QPushButton::clicked, this, &CustomerManagerView::clearScreen);
-    searcheditright->layout()->addWidget(clearButton);
+    searcheditbuttons->layout()->addWidget(clearButton);
 
     // Add labels, LineEdits, and buttons to container underneath table view
     bottom->layout()->addWidget(searchedit);
@@ -91,33 +114,33 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
 
     /* Customer Selection Section (Below TableView and on the right) */
 
-    // Containers for holding labels,
-    QWidget *customerselect = new QWidget(),
-            *customerselectleft = new QWidget(),
-            *customerselectright = new QWidget();
-
+    // Container for holding Labels and Buttons
+    QWidget *customerselect = new QWidget(this);
     customerselect->setLayout(new QHBoxLayout(this));
 
-    // holds non-editable text fields which display selected customer info
-    customerselectleft->setLayout(new QVBoxLayout(this));
+    // Container holding read-only text fields
+    QWidget *customerselectinfo = new QWidget(this);
+    customerselectinfo->setLayout(new QVBoxLayout(this));
+    customerselect->layout()->addWidget(customerselectinfo);
 
-    // holds buttons for customer selection
-    customerselectright->setLayout(new QVBoxLayout(this));
+    // Container holding buttons
+    QWidget *customerselectbuttons = new QWidget(this);
+    customerselectbuttons->setLayout(new QVBoxLayout(this));
+    customerselect->layout()->addWidget(customerselectbuttons);
 
-    customerselect->layout()->addWidget(customerselectleft);
-    customerselect->layout()->addWidget(customerselectright);
-
+    // Labels which display selected customer information
     for (int i=0; i<4; ++i)
     {
         custInfoLabels[i] = new QLabel("", this);
-        customerselectleft->layout()->addWidget(custInfoLabels[i]);
+        customerselectinfo->layout()->addWidget(custInfoLabels[i]);
     }
 
-    // button to attribute the current customer to the transaction
+    // Button to attribute the current customer to the transaction
     QPushButton *selectButton = new QPushButton("Select", this);
     connect(selectButton, &QPushButton::clicked, this, &CustomerManagerView::selectCustomer);
-    customerselectright->layout()->addWidget(selectButton);
+    customerselectbuttons->layout()->addWidget(selectButton);
 
+    // Add customer select widget to bottom
     bottom->layout()->addWidget(customerselect);
 
     /* END Customer Selection Section */
@@ -127,6 +150,10 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     QPushButton *closeButton = new QPushButton("Close", this);
     connect(closeButton, &QPushButton::clicked, this, &CustomerManagerView::cancel);
     mainLayout->addWidget(closeButton);
+
+    this->setStyleSheet(
+                "QLineEdit{min-width: 100px;}"
+                );
 }
 
 void CustomerManagerView::submitNew()
@@ -220,19 +247,19 @@ void CustomerManagerView::editExisting()
     // if customer doesn't exist we have nothing to update
     if (sel.size() == 0)
     {
-        QMessageBox::information(this, "Update Failure", "Customer does not exist");
+        QMessageBox::information(this, "Update Failure", "Customer phone number does not exist. Submit as new.");
         return;
     }
 
     // actually make the update
     QSqlQuery upd;
-        upd.prepare("UPDATE pos_schema.customer "
-                    "SET phone = :phone, name = :name, address = :address, zip = :zip "
-                    "WHERE phone = :phone;");
-        upd.bindValue(":phone", phone=="" ? NULL : phone);
-        upd.bindValue(":name", name==""? NULL : name);
-        upd.bindValue(":address", address==""? NULL : address);
-        upd.bindValue(":zip", zip==""? NULL : zip);
+    upd.prepare("UPDATE pos_schema.customer "
+                "SET phone = :phone, name = :name, address = :address, zip = :zip "
+                "WHERE phone = :phone;");
+    upd.bindValue(":phone", phone=="" ? NULL : phone);
+    upd.bindValue(":name", name==""? NULL : name);
+    upd.bindValue(":address", address==""? NULL : address);
+    upd.bindValue(":zip", zip==""? NULL : zip);
 
     if (!upd.exec())
     {
@@ -252,6 +279,9 @@ void CustomerManagerView::clearScreen()
         lineEdits[i]->setText("");
         custInfoLabels[i]->setText("");
     }
+    lineEdits[0]->setReadOnly(false);
+    tableModel->select();
+    filterResults();
 }
 
 void CustomerManagerView::selectCustomer()
@@ -274,5 +304,14 @@ void CustomerManagerView::highlightCustomer()
         auto value = data.value<QString>();
         custInfoLabels[i]->setText(value);
         lineEdits[i]->setText(value);
+    }
+    lineEdits[0]->setReadOnly(true);
+}
+
+void CustomerManagerView::filterResults()
+{
+    for (int i=0; i < 4; ++i)
+    {
+        filterModels[i]->setFilterFixedString(lineEdits[i]->text());
     }
 }

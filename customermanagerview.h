@@ -15,13 +15,14 @@ public:
 private:
     QVBoxLayout* mainLayout;
 
+    QTableView *tableView;
+    QSqlTableModel *tableModel;
+
     QString custFieldNames[4] = {"Phone", "Name", "Address", "ZIP"};
+    QLineEdit *lineEdits [4];
+    QLabel *custInfoLabels[4];
+    QSortFilterProxyModel *filterModels[4];
 
-    QLineEdit* lineEdits [4];
-    QLabel* custInfoLabels[4];
-
-    QTableView* tableView;
-    QSqlTableModel* tableModel;
 
     void submitNew();
     void editExisting();
@@ -31,6 +32,8 @@ private:
     void cancel();
 
     void highlightCustomer();
+
+    void filterResults();
 };
 
 #endif // CUSTOMERMANAGERVIEW_H
