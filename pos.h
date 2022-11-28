@@ -4,7 +4,6 @@
 #define POS_H
 
 /* PROJECT INCLUDES */
-#include <backbone.h>
 #include <passkey.h>
 #include <transaction.h>
 #include <register.h>

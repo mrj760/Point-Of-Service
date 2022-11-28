@@ -20,6 +20,7 @@ SOURCES += \
     pos.cpp \
     register.cpp \
     simplecrypt.cpp \
+    testmodule.cpp \
     transaction.cpp
 #    workorder.cpp
 
@@ -35,6 +36,7 @@ HEADERS += \
     pos.h \
     register.h \
     simplecrypt.h \
+    testmodule.h \
     transaction.h \
     workorder.h \
     module.h
