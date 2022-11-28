@@ -11,6 +11,8 @@ CONFIG += c++11
 SOURCES += \
     backbone.cpp \
     customer.cpp \
+    customermanagerview.cpp \
+    customvalidator.cpp \
     dbmanager.cpp \
     item.cpp \
     itemaddview.cpp \
@@ -26,6 +28,8 @@ SOURCES += \
 
 HEADERS += \
     customer.h \
+    customermanagerview.h \
+    customvalidator.h \
     dbmanager.h \
     item.h \
     itemaddview.h \

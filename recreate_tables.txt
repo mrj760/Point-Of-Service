@@ -10,11 +10,11 @@ drop table pos_schema.customer;
 
 CREATE TABLE pos_schema.customer
 (
-    phone character(10) COLLATE pg_catalog."default" NOT NULL,
+    phone character(10) COLLATE pg_catalog."default",
     name character varying COLLATE pg_catalog."default",
     address character varying COLLATE pg_catalog."default",
     zip character(5) COLLATE pg_catalog."default",
-    CONSTRAINT customer_pkey PRIMARY KEY (phone),
+    CONSTRAINT unique_phone UNIQUE (phone),
     CONSTRAINT phone_only_nums CHECK (phone ~ '[0-9]{10}'::text),
     CONSTRAINT zip_only_nums CHECK (zip ~ '[0-9]{5}'::text)
 )

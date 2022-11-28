@@ -97,7 +97,7 @@ void ItemAddView::handleSubmit()
     int qty = itemQtyInput->text().toInt();
     int price = itemPriceInput->text().toDouble() * 100;
 
-    if(name =="" || qty == NULL || price == NULL){
+    if(name ==""){
         QMessageBox ::warning(0, "Item Table Error", "No Empty Values");
         return;
     }
