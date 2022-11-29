@@ -10,7 +10,7 @@ public:
 
     /* Constructors */
     Item(int sku=0, int qty=0, int cents=0, QString name="") :
-        sku(sku), cents(cents), name(name) {};
+        sku(sku), qty(qty), cents(cents), name(name) {};
 
     Item(const Item& i) :
         sku(i.sku), qty(i.qty), cents(i.cents), name(i.name) {};

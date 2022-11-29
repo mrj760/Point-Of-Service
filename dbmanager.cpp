@@ -1,27 +1,29 @@
 #include "dbmanager.h"
 
 /* Constructor */
-dbmanager::dbmanager(const QString& driver, const QString& path)
-{
-    _db = Database::addDatabase(driver);
-    _db.setDatabaseName(path);
-    _db.setUserName("postgres");
-    _db.setPassword("grant00--");
 
-    if (!_db.open())
+dbmanager::dbmanager(const QString &driver, const QString &path, const QString &username, const QString &password)
+{
+    Database db;
+    db = Database::addDatabase(driver);
+    db.setDatabaseName(path);
+    db.setUserName(username);
+    db.setPassword(password);
+
+    if (!db.open())
     {
         qDebug() << "Database: Connection failed.";
         return;
     }
 
-    for (auto& table: _db.tables())
+    for (auto& table: db.tables())
     {
         qDebug() << table;
     }
 
     qDebug() << "Database: Connection success.";
 
-    crypt = SimpleCrypt(Q_UINT64_C(0x2fb30a1c9fddf749));
+    //    crypt = SimpleCrypt(Q_UINT64_C(0x2fb30a1c9fddf749));
 }
 
 /*  */
@@ -31,6 +33,7 @@ dbmanager::dbmanager(const QString& driver, const QString& path)
 /*  */
 
 /* Insert Item */
+
 bool dbmanager::addItem(Item item)
 {
     if (item.qty < 0)
@@ -41,16 +44,27 @@ bool dbmanager::addItem(Item item)
     }
 
     Query q;
-    q.prepare("insert into pos_schema.item values((select coalesce(MAX(sku::int)+1, 10000000) from pos_schema.item), :qty, :cents);");
+    q.prepare("insert into pos_schema.item values((select coalesce(MAX(sku::int)+1, 10000000) from pos_schema.item), :qty, :cents, :name);");
     q.bindValue(":qty", item.qty);
+    qDebug() << item.qty;
     q.bindValue(":cents", item.cents);
+    q.bindValue(":name", item.name);
 
-    if (q.exec())
-        return true;
+    if (!q.exec())
+    {
+        qDebug() << "Item Insertion Error: " << q.lastError().text();
+        displayQueryError("Item Insertion", q);
+        return false;
+    }
 
-    qDebug() << "Item Insertion Error: " << q.lastError().text();
-    displayQueryError("Item Insertion", q);
-    return false;
+    QMessageBox scs;
+    scs.setText("Item Submission Success");
+    scs.setInformativeText("Item " + item.name + " submitted successfully");
+    scs.setIcon(QMessageBox::Information);
+    scs.setStandardButtons(QMessageBox::Ok);
+    scs.setBaseSize(600,120);
+    scs.exec();
+    return true;
 }
 
 /* Insert Transaction */
@@ -66,21 +80,35 @@ bool dbmanager::addTransaction(Transaction transaction)
     q.bindValue(":tender", transaction.tender);
     q.bindValue(":change", transaction.change);
 
+    //    QString cryptCardNum = crypt.encryptToString(QString::number(transaction.cardNumber));
+    //    QString cryptCardExp = crypt.encryptToString(QString::number(transaction.cardExpiration));
+    //    QString cryptCardCVV = crypt.encryptToString(QString::number(transaction.cardCVV));
 
-    QString cryptCardNum = crypt.encryptToString(QString::number(transaction.cardNumber));
-    QString cryptCardExp = crypt.encryptToString(QString::number(transaction.cardExpiration));
-    QString cryptCardCVV = crypt.encryptToString(QString::number(transaction.cardCVV));
+    //    q.bindValue(":card_number", cryptCardNum);
+    //    q.bindValue(":card_exp", cryptCardExp);
+    //    q.bindValue(":card_cvv", cryptCardCVV);
 
-    q.bindValue(":card_number", cryptCardNum);
-    q.bindValue(":card_exp", cryptCardExp);
-    q.bindValue(":card_cvv", cryptCardCVV);
+    q.bindValue(":card_number", transaction.cardNumber);
+    q.bindValue(":card_exp", transaction.cardExpiration);
+    q.bindValue(":card_cvv", transaction.cardCVV);
 
     if (q.exec())
-        return true;
+    {
+        qDebug() << "Transaction Insertion Error:" << q.lastError().text();
+        displayQueryError("Transaction Insertion", q);
+        return false;
+    }
 
-    qDebug() << "Transaction Insertion Error:" << q.lastError().text();
-    displayQueryError("Transaction Insertion", q);
-    return false;
+    QString id = q.lastInsertId().toString();
+
+    QMessageBox scs;
+    scs.setText("Item Submission Success");
+    scs.setInformativeText("Item " + id + " submitted successfully");
+    scs.setIcon(QMessageBox::Information);
+    scs.setStandardButtons(QMessageBox::Ok);
+    scs.setBaseSize(600,120);
+    scs.exec();
+    return true;
 }
 
 /* Insert Customer */
@@ -151,7 +179,14 @@ bool dbmanager::addRegister(Register reg)
 
 void dbmanager::displayError(const QString& errorType, const QString& errorText)
 {
-    QMessageBox::warning(0, errorType+" Error", errorText);
+    //    QMessageBox::warning(0, errorType+" Error", errorText);
+    QMessageBox error;
+    error.setText(errorType);
+    error.setInformativeText(errorText);
+    error.setIcon(QMessageBox::Warning);
+    error.setStandardButtons(QMessageBox::Ok);
+    error.setBaseSize(600,120);
+    error.exec();
 }
 
 

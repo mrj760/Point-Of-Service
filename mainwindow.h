@@ -9,7 +9,7 @@
 #include <QMessageBox>
 #include <QSqlError>
 #include <dbmanager.h>
-#include <itemaddview.h>
+#include <itemmanagerview.h>
 #include <customermanagerview.h>
 
 typedef QSqlQuery Query;
@@ -32,8 +32,8 @@ public:
     void setDB(dbmanager*);
     void setTableModel(const QString&);
 
-    ItemAddView* itemaddview;
-    CustomerManagerView* customerManagerView;
+    ItemManagerView* itemmgr = nullptr;
+    CustomerManagerView* custmgr = nullptr;
 
 
 private slots:
@@ -47,7 +47,7 @@ private slots:
     void on_registers_clicked();
 
 private:
-    dbmanager *dbmgr;
+//    dbmanager *dbmgr;
     TableModel *tmodel;
     Ui::MainWindow *ui;
 };

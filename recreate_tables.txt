@@ -4,6 +4,8 @@ mypassword
 
 \c posdb
 
+CREATE EXTENSION citext;
+
 CREATE SCHEMA IF NOT EXISTS pos_schema;
 
 drop table pos_schema.customer;
@@ -17,7 +19,7 @@ CREATE TABLE pos_schema.customer
     CONSTRAINT unique_phone UNIQUE (phone),
     CONSTRAINT phone_only_nums CHECK (phone ~ '[0-9]{10}'::text),
     CONSTRAINT zip_only_nums CHECK (zip ~ '[0-9]{5}'::text)
-)
+);
 
 drop table pos_schema.item;
 
@@ -25,12 +27,13 @@ CREATE TABLE pos_schema.item
 (
     sku integer NOT NULL DEFAULT 10000000,
     qty integer NOT NULL,
-    price integer,
-    name character varying COLLATE pg_catalog."default",
+    cents integer,
+    name citext COLLATE pg_catalog."default",
     CONSTRAINT item_pkey PRIMARY KEY (sku),
+    CONSTRAINT unique_name UNIQUE (name),
     CONSTRAINT limitsku CHECK (sku >= 10000000 AND sku <= 99999999),
     CONSTRAINT posqty CHECK (qty >= 0)
-)
+);
 
 drop table pos_schema.register;
 
@@ -41,7 +44,7 @@ CREATE TABLE pos_schema.register
     CONSTRAINT register_pkey PRIMARY KEY (id),
     CONSTRAINT limit_id CHECK (id >= 0::numeric),
     CONSTRAINT limit_cash CHECK (cash >= 0)
-)
+);
 
 drop table pos_schema.transaction;
 

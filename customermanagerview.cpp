@@ -14,6 +14,7 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
 
     // Create and add to main layout
     tableView = new QTableView(this);
+    tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     mainLayout->addWidget(tableView);
 
     // Hide indexes
@@ -57,6 +58,7 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     searcheditlineedits->setLayout(new QVBoxLayout(this));
     searchedit->layout()->addWidget(searcheditlineedits);
 
+    // Add Labels and LineEdits and FilterModels
     for (int i = 0; i < 4; ++i)
     {
         // Add Labels
@@ -66,7 +68,7 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
         searcheditlineedits->layout()->addWidget(lineEdits[i] = new QLineEdit(this));
         connect(lineEdits[i], &QLineEdit::textEdited, this, &CustomerManagerView::filterResults);
 
-        // Add/Layer Filters for searching
+        // Add and Layer Filters for searching
         filterModels[i] = new QSortFilterProxyModel();
         filterModels[i]->setFilterCaseSensitivity(Qt::CaseInsensitive);
         filterModels[i]->setFilterKeyColumn(i);
@@ -75,7 +77,8 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
         else
             filterModels[i]->setSourceModel(filterModels[i-1]);
     }
-    // Set the TableView model to the last filterModel
+
+    // Set the TableView model to the last layer of filterModels
     tableView->setModel(filterModels[3]);
 
     // Phone and ZIP LineEdit can only have digits
@@ -152,12 +155,14 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     mainLayout->addWidget(closeButton);
 
     this->setStyleSheet(
-                "QLineEdit{min-width: 100px;}"
+                "QLineEdit{min-width: 120px;}"
+                "QLabel{min-width:120px;}"
                 );
 }
 
 void CustomerManagerView::submitNew()
 {
+    // get text from lineEdits
     QString phone=lineEdits[0]->text(),
             name=lineEdits[1]->text(),
             address=lineEdits[2]->text(),
@@ -166,33 +171,63 @@ void CustomerManagerView::submitNew()
     // phone number (if input at all) should be 10 digits
     if (phone.length() != 0 && phone.length() != 10)
     {
-        QMessageBox::warning(this, "Customer Submission Error", "Phone number must include 10 digits");
-        return;
-    }
-    // zip number (if input at all) should be 5 digits
-    if (zip.length() != 0 && zip.length() != 5)
-    {
-        QMessageBox::warning(this, "Customer Submission Error", "ZIP number must include 5 digits");
+        QMessageBox error;
+        error.setText("Customer Submission Failure");
+        error.setInformativeText("Phone number must include 10 digits");
+        error.setIcon(QMessageBox::Warning);
+        error.setStandardButtons(QMessageBox::Ok);
+        error.setBaseSize(600,120);
+        error.exec();
         return;
     }
 
+    // zip number (if input at all) should be 5 digits
+    if (zip.length() != 0 && zip.length() != 5)
+    {
+        QMessageBox error;
+        error.setText("Customer Submission Failure");
+        error.setInformativeText("ZIP number must include 5 digits");
+        error.setIcon(QMessageBox::Warning);
+        error.setStandardButtons(QMessageBox::Ok);
+        error.setBaseSize(600,120);
+        error.exec();
+        return;
+    }
+
+    // if given no phone number we can still submit a customer with a name
     if (phone.length() == 0)
     {
+        // must have a name in this case
         if (name.length() == 0)
         {
-            QMessageBox::information(this, "Customer Submission Error","Must include a phone number or name");
+            QMessageBox error;
+            error.setText("Customer Submission Failure");
+            error.setInformativeText("Must include a phone number or name");
+            error.setIcon(QMessageBox::Warning);
+            error.setStandardButtons(QMessageBox::Ok);
+            error.setBaseSize(600,120);
+            error.exec();
             return;
         }
+
+        // see if the name exists
         QSqlQuery check;
         check.prepare("select from pos_schema.customer where phone is null and name = :name");
         check.bindValue(":name", name);
         if (check.size() > 0)
         {
-            QMessageBox::information(this, "Customer Submission Error","Customer name already exists");
+            QMessageBox error;
+            error.setText("Customer Submission Failure");
+            error.setInformativeText("Customer name already exists");
+            error.setIcon(QMessageBox::Warning);
+            error.setStandardButtons(QMessageBox::Ok);
+            error.setBaseSize(600,120);
+            error.exec();
             return;
         }
     }
 
+    // time to insert the customer
     QSqlQuery q;
     q.prepare("insert into pos_schema.customer values(:phone, :name, :address, :zip);");
     q.bindValue(":phone", phone=="" ? NULL : phone);
@@ -202,16 +237,30 @@ void CustomerManagerView::submitNew()
 
     if (!q.exec())
     {
-        QMessageBox::warning(this, "Customer Insert Error", q.lastError().text());
+        QMessageBox error;
+        error.setText("Customer Submission Error");
+        error.setInformativeText(q.lastError().text());
+        error.setIcon(QMessageBox::Warning);
+        error.setStandardButtons(QMessageBox::Ok);
+        error.setBaseSize(600,120);
+        error.exec();
         qDebug() << "Customer Insert Error in func \"submitNew\"" << q.lastError().text();
         return;
     }
-    QMessageBox::information(this, "Success", "Customer " + name + " added successfully");
+
+    QMessageBox scs;
+    scs.setText("Customer Submission Success");
+    scs.setInformativeText("Customer " + name + " submitted successfully");
+    scs.setIcon(QMessageBox::Information);
+    scs.setStandardButtons(QMessageBox::Ok);
+    scs.setBaseSize(600,120);
+    scs.exec();
     tableModel->select();
 }
 
 void CustomerManagerView::editExisting()
 {
+
     // get the input text from the line edits
     QString phone=lineEdits[0]->text(),
             name=lineEdits[1]->text(),
@@ -221,14 +270,26 @@ void CustomerManagerView::editExisting()
     // phone number should be 10 digits
     if (phone.length() != 10)
     {
-        QMessageBox::information(this, "Customer Update Failure", "Phone number must include 10 digits to update customer");
+        QMessageBox error;
+        error.setText("Customer Update Failure");
+        error.setInformativeText("Phone number must include 10 digits to update customer");
+        error.setIcon(QMessageBox::Warning);
+        error.setStandardButtons(QMessageBox::Ok);
+        error.setBaseSize(600,120);
+        error.exec();
         return;
     }
 
     // zip number (if input at all) should be 5 digits
     if (zip.length() != 0 && zip.length() != 5)
     {
-        QMessageBox::warning(this, "Customer Update Error", "ZIP number must include 5 digits");
+        QMessageBox error;
+        error.setText("Customer Update Failure");
+        error.setInformativeText("ZIP number must include 5 digits");
+        error.setIcon(QMessageBox::Warning);
+        error.setStandardButtons(QMessageBox::Ok);
+        error.setBaseSize(600,120);
+        error.exec();
         return;
     }
 
@@ -239,7 +300,13 @@ void CustomerManagerView::editExisting()
 
     if (!sel.exec())
     {
-        QMessageBox::warning(this, "Customer Selection Error", sel.lastError().text());
+        QMessageBox error;
+        error.setText("Customer Update Error");
+        error.setInformativeText(sel.lastError().text());
+        error.setIcon(QMessageBox::Warning);
+        error.setStandardButtons(QMessageBox::Ok);
+        error.setBaseSize(600,120);
+        error.exec();
         qDebug() << "Customer Selection Error in func \"editExisting\"" << sel.lastError().text();
         return;
     }
@@ -247,11 +314,17 @@ void CustomerManagerView::editExisting()
     // if customer doesn't exist we have nothing to update
     if (sel.size() == 0)
     {
-        QMessageBox::information(this, "Update Failure", "Customer phone number does not exist. Submit as new.");
+        QMessageBox error;
+        error.setText("Customer Update Failure");
+        error.setInformativeText("Customer phone number does not exist. Submit as new instead");
+        error.setIcon(QMessageBox::Warning);
+        error.setStandardButtons(QMessageBox::Ok);
+        error.setBaseSize(600,120);
+        error.exec();
         return;
     }
 
-    // actually make the update
+    // time to update the customer
     QSqlQuery upd;
     upd.prepare("UPDATE pos_schema.customer "
                 "SET phone = :phone, name = :name, address = :address, zip = :zip "
@@ -263,40 +336,60 @@ void CustomerManagerView::editExisting()
 
     if (!upd.exec())
     {
-        QMessageBox::warning(this,"Customer Update Error", upd.lastError().text());
+        QMessageBox error;
+        error.setText("Customer Update Error");
+        error.setInformativeText(sel.lastError().text());
+        error.setIcon(QMessageBox::Warning);
+        error.setStandardButtons(QMessageBox::Ok);
+        error.setBaseSize(600,120);
+        error.exec();
         qDebug() << "Customer update Error in func \"editExisitng\"" << upd.lastError().text();
         return;
     }
 
-    QMessageBox::information(this, "Success", "Customer " + name + " updated successfully");
+    QMessageBox scs;
+    scs.setText("Customer Update Success");
+    scs.setInformativeText("Customer " + name + " updated successfully");
+    scs.setIcon(QMessageBox::Information);
+    scs.setStandardButtons(QMessageBox::Ok);
+    scs.setBaseSize(600,120);
+    scs.exec();
     tableModel->select();
 }
 
 void CustomerManagerView::clearScreen()
 {
+    // set all text fields to empty strings
     for (int i = 0; i < 4; ++i)
     {
         lineEdits[i]->setText("");
         custInfoLabels[i]->setText("");
     }
+
+    // no customer selected anymore, can type in a phone number again
     lineEdits[0]->setReadOnly(false);
+
+    // reset table and search filter
     tableModel->select();
     filterResults();
 }
 
 void CustomerManagerView::selectCustomer()
 {
-    //TODO : send customer
+    //TODO : send customer to open order so their phone number can be associated with it
 }
 
 void CustomerManagerView::cancel()
 {
-    this->close();
+    this->hide();
 }
 
 void CustomerManagerView::highlightCustomer()
 {
+    // get the first selected row (user can only select one at a time anyway)
     auto row = tableView->selectionModel()->selectedRows().begin()->row();
+
+    // set the text fields to the selected record's information
     for (int i = 0; i < 4; ++i)
     {
         auto idx = tableView->model()->index(row, i);
@@ -305,11 +398,14 @@ void CustomerManagerView::highlightCustomer()
         custInfoLabels[i]->setText(value);
         lineEdits[i]->setText(value);
     }
+
+    // dont let user update phone number of record. If they want to change the phone number they can submit them as a new customer.
     lineEdits[0]->setReadOnly(true);
 }
 
 void CustomerManagerView::filterResults()
 {
+    // apply all filter models for all the text in the LineEdits
     for (int i=0; i < 4; ++i)
     {
         filterModels[i]->setFilterFixedString(lineEdits[i]->text());

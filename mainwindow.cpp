@@ -20,10 +20,10 @@ void MainWindow::setDB(dbmanager *dbmgr)
         qApp->setStyleSheet(StyleSheet);
     }
 
-    if (!dbmgr->db.isOpen())
-        QMessageBox::critical(this, "Error!", dbmgr->db.lastError().text());
-    this->dbmgr = dbmgr;
-    tmodel = new TableModel(this, dbmgr->db);
+//    if (!dbmgr->db.isOpen())
+//        QMessageBox::critical(this, "Error!", dbmgr->db.lastError().text());
+//    this->dbmgr = dbmgr;
+//    tmodel = new TableModel(this, dbmgr->db);
 }
 
 /* Change the name of the table which the model refers to */
@@ -44,21 +44,23 @@ void MainWindow::setTableModel(const QString& tablename)
 }
 
 
-
 void MainWindow::on_items_clicked()
 {
-//    setTableModel("pos_schema.item");
-    itemaddview = new ItemAddView();
-    itemaddview->show();
+    if (itemmgr == nullptr)
+    {
+        itemmgr = new ItemManagerView(this);
+    }
+    itemmgr->show();
 }
 
 void MainWindow::on_customers_clicked()
 {
-//    setTableModel("pos_schema.customer");
-    customerManagerView = new CustomerManagerView(this);
-    customerManagerView->show();
+    if (custmgr == nullptr)
+    {
+        custmgr = new CustomerManagerView(this);
+    }
+    custmgr->show();
 }
-
 
 void MainWindow::on_transactions_clicked()
 {

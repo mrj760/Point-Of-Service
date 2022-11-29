@@ -15,7 +15,7 @@ SOURCES += \
     customvalidator.cpp \
     dbmanager.cpp \
     item.cpp \
-    itemaddview.cpp \
+    itemmanagerview.cpp \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
@@ -31,7 +31,7 @@ HEADERS += \
     customvalidator.h \
     dbmanager.h \
     item.h \
-    itemaddview.h \
+    itemmanagerview.h \
     mainwindow.h \
     backbone.h \
     message.h \
@@ -59,4 +59,5 @@ RESOURCES += \
     resources.qrc
 
 DISTFILES += \
+    ideas.txt \
     modules.config
