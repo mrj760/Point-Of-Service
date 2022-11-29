@@ -4,7 +4,7 @@
 //CUSTOM INCLUDES
 #include <module.h>
 
-class TestMod : Module
+class TestMod : public Module
 {
 public:
     //Inherited methods
@@ -13,6 +13,6 @@ public:
     std::string getName() override;
     //Methods
     TestMod();
-    virtual ~TestMod();
+    ~TestMod();
 };
 #endif // TESTMODULE_H

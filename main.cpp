@@ -9,9 +9,17 @@
 #include <dbmanager.h>
 #include <pos.h>
 #include <backbone.h>
+#include <testmodule.h>
+#include <module.h>
 
 int main(int argc, char *argv[])
 {
+    Backbone bone = Backbone();
+//Testing the backbone
+    TestMod test = TestMod();
+    bone.addModule(test);
+    std::cout << "Test module's ID: " + std::to_string(bone.getIDFromList("TST"));
+
     QApplication a(argc, argv);
 
     a.setStyle("fusion");

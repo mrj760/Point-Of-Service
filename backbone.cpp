@@ -12,15 +12,13 @@ Backbone::Backbone()
 {
     this->_ID=modCount;
     modCount++;
-
-
 }
 Backbone::Backbone(std::string filename)
 {
     this->_ID=modCount;
     modCount++;
-    std::map<std::string,int> moduleList = loadModuleList(filename);
-    loadUnloaded(moduleList);
+    std::map<std::string,int> moduleInfo = loadModuleList(filename);
+    loadUnloaded(moduleInfo);
 }
 Backbone::~Backbone()
 {
@@ -178,3 +176,4 @@ int Backbone::getIDFromList(std::string modname)
     }
     return 0;
 }
+

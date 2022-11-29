@@ -5,9 +5,6 @@
 #include <module.h>
 #include <workorder.h>
 #include <message.h>
-#include <pos.h>
-#include <dbmanager.h>
-#include <testmodule.h>
 
 /* PATH INCLUDES */
 #include <iostream>
@@ -21,7 +18,7 @@
 /* FORWARD CLASS DECL'S */
 
 /****************************** BACKBONE ******************************/
-class Backbone : Module
+class Backbone : public Module
 {
 public:
     //Inherited methods
