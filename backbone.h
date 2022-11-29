@@ -7,6 +7,7 @@
 #include <message.h>
 #include <pos.h>
 #include <dbmanager.h>
+#include <testmodule.h>
 
 /* PATH INCLUDES */
 #include <iostream>
@@ -29,6 +30,7 @@ public:
     std::string getName() override;
     //Methods
     Backbone();
+    Backbone(std::string filename);
     virtual ~Backbone();
 
     void receiveMsg(Message msg);
@@ -37,7 +39,7 @@ public:
     WorkOrder& takeJob(Module& mod);
     bool checkJobs(Module& mod);
     int getIDFromList(std::string module);
-    void loadModule(Module& mod);
+    void addModule(Module& mod);
     static int modCount;
     //Variables
 

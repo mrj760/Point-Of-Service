@@ -8,6 +8,7 @@
 #include <QApplication>
 #include <dbmanager.h>
 #include <pos.h>
+#include <backbone.h>
 
 int main(int argc, char *argv[])
 {

@@ -10,12 +10,18 @@ int Backbone::modCount = 0;
 
 Backbone::Backbone()
 {
-    std::map<std::string,int> moduleList = loadModuleList("modules.txt");
-    loadUnloaded(moduleList);
-    this->setID(modCount);
+    this->_ID=modCount;
     modCount++;
-}
 
+
+}
+Backbone::Backbone(std::string filename)
+{
+    this->_ID=modCount;
+    modCount++;
+    std::map<std::string,int> moduleList = loadModuleList(filename);
+    loadUnloaded(moduleList);
+}
 Backbone::~Backbone()
 {
 
@@ -51,7 +57,7 @@ std::map<std::string, int> Backbone::loadModuleList(std::string filename)
 
 }
 
-void Backbone::loadModule(Module& mod)
+void Backbone::addModule(Module& mod)
 {
     try{
     if(mod.getID()==0){
@@ -61,12 +67,13 @@ void Backbone::loadModule(Module& mod)
     }
     }
     catch(std::exception e){
-        std::cout << "Unable to load module\n";
+        std::cout << "Unable to add module\n";
         throw e;}
 }
 
-// Ignore this implementation of load-module. We'll use the
-// main loop to populate the mods.
+//Still not sure how to use this to load modules from file data
+//For this to work, the modules will probably have to be their
+//own executables which take backbone info as CL args.
 void Backbone::loadModule(std::string ModName, int ID)
 {
     if(ModName == POS_MODULE_NAME){
@@ -163,5 +170,11 @@ WorkOrder& Backbone::takeJob(Module& mod)
 
 int Backbone::getIDFromList(std::string modname)
 {
-    return moduleList[modname];
+    std::map<int, Module&>::iterator it = moduleList.begin();
+    while(it != moduleList.end()){
+        if(it->second.getName() == modname){
+            return it->first;
+        }
+    }
+    return 0;
 }
