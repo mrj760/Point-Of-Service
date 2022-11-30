@@ -4,7 +4,8 @@
 
 class WorkOrder
 {
-    virtual ~WorkOrder() = 0;
+    WorkOrder();
+    ~WorkOrder();
 public:
     int ID;
     Message command;
