@@ -37,6 +37,7 @@ public:
     bool checkJobs(Module& mod);
     int getIDFromList(std::string module);
     void addModule(Module& mod);
+    bool deliver(Module& mod, WorkOrder wo);
     static int modCount;
     //Variables
 

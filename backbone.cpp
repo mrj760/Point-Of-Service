@@ -166,6 +166,11 @@ WorkOrder& Backbone::takeJob(Module& mod)
     throw "Failed to take job for this module." ;
 }
 
+
+bool deliver(Module& mod, WorkOrder& wo){
+    return mod.receive(wo);
+}
+
 int Backbone::getIDFromList(std::string modname)
 {
     std::map<int, Module&>::iterator it = moduleList.begin();
