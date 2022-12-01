@@ -3,7 +3,7 @@
 // Laijy Loiseau
 // Nam Cuong Tran
 // Nathan Ware
-// Sydney
+// Sydney Corrigan
 #include "mainwindow.h"
 #include <QApplication>
 #include <dbmanager.h>
@@ -14,12 +14,6 @@
 
 int main(int argc, char *argv[])
 {
-    Backbone bone = Backbone();
-//Testing the backbone
-    TestMod test = TestMod();
-    bone.addModule(test);
-    std::cout << "Test module's ID: " + std::to_string(bone.getIDFromList("TST"));
-
     QApplication a(argc, argv);
 
     a.setStyle("fusion");
