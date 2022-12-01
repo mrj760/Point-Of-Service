@@ -94,11 +94,11 @@ bool POS::receive(WorkOrder& wo)
 
     //Implementing actually acting on the job
     //Checking job type
-    if(wo.getCommand()->type() == Message::contains_cmd)
+    if(wo.command.type() == Message::contains_cmd)
     {
         //do the command
     }
-    else if(wo.getCommand()->type() == Message::contains_db_entry)
+    else if(wo.command.type() == Message::contains_db_entry)
     {
         //process db entry
     }
