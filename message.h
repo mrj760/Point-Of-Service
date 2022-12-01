@@ -9,7 +9,12 @@ public:
 
     enum MessageType
     {
-
+        //This is temporary to just test message passing capabilities
+        //Nathan (or whoever else) plz fix later
+        unknown=0,
+        contains_cmd=1,
+        contains_db_entry=2,
+        contains_item=3
     };
 
     Message();
