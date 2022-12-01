@@ -29,7 +29,7 @@ private:
     void clearScreen();
 
     void selectCustomer();
-    void cancel();
+    void closeWindow();
 
     void highlightCustomer();
 

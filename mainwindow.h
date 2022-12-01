@@ -1,57 +1,44 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
-#include <QMainWindow>
-#include <QSqlTableModel>
-#include <QSqlRecord>
-#include "qsqlquery.h"
-#include <QMessageBox>
-#include <QSqlError>
+#include <QtWidgets>
+#include <QtSql>
 #include <dbmanager.h>
 #include <itemmanagerview.h>
 #include <customermanagerview.h>
 #include <transactioneditview.h>
+#include <transactionsviewer.h>
 
-typedef QSqlQuery Query;
-typedef QSqlTableModel TableModel;
-typedef QSqlDatabase Database;
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
-
-
-class MainWindow : public QMainWindow
+class MainWindow : public QWidget
 {
     Q_OBJECT
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    //~MainWindow();
 
-    void setDB(dbmanager*);
-    void setTableModel(const QString&);
+    QVBoxLayout *mainLayout;
 
+    QPushButton *neworderbutton, *allordersbutton;
+    TransactionEditView* transactioneditor = nullptr;
+    TransactionsViewer* transactionsviewer = nullptr;
+
+    void openOrderEditor();
+    void openOrdersViewer();
+
+    QPushButton *itemmgrbutton, *custmgrbutton;
     ItemManagerView* itemmgr = nullptr;
     CustomerManagerView* custmgr = nullptr;
-    TransactionEditView* transactionedit = nullptr;
 
-
-private slots:
-    void on_items_clicked();
-    void on_customers_clicked();
-
-    void on_save_clicked();
-
-    void on_transactions_clicked();
-
-    void on_registers_clicked();
+    void openItemMgr();
+    void openCustMgr();
+    void openRegisterMgr();
 
 private:
-//    dbmanager *dbmgr;
-    TableModel *tmodel;
-    Ui::MainWindow *ui;
+    void setupTitle();
+    void setupOrderButtons();
+    void setupMgrButtons();
+    void setupCloseButton();
 };
 
 

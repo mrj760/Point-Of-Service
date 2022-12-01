@@ -14,7 +14,12 @@ SOURCES += \
     itemmanagerview.cpp \
     main.cpp \
     mainwindow.cpp \
-    transactioneditview.cpp
+    transactioneditview.cpp \
+    qlineeditselect.cpp \
+    qlineeditfocus.cpp \
+    neworderview.cpp \
+    numpadwidget.cpp \
+    transactionsviewer.cpp
 #    workorder.cpp \
 #    message.cpp \
 #    pos.cpp \
@@ -37,7 +42,12 @@ HEADERS += \
     template_item.h \
     template_register.h \
     template_transaction.h \
-    transactioneditview.h
+    transactioneditview.h \
+    qlineeditselect.h \
+    qlineeditfocus.h \
+    neworderview.h\
+    numpadwidget.h \
+    transactionsviewer.h
 #    workorder.h \
 #    module.h \
 #    backbone.h \
@@ -62,6 +72,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resources.qrc
+
 
 DISTFILES += \
     ideas.txt \

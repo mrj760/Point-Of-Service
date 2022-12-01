@@ -13,7 +13,8 @@ dbmanager::dbmanager(const QString &driver, const QString &path, const QString &
     if (!db.open())
     {
         qDebug() << "Database: Connection failed.";
-        return;
+        displayError("DATABASE ERROR", "Failed to connect to database. Exiting.\n" + db.lastError().text());
+        exit(1);
     }
 
     for (auto& table: db.tables())

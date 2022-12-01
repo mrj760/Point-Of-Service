@@ -2,13 +2,15 @@
 
 ItemManagerView::ItemManagerView(QWidget* parent)
 {
+
     mainLayout = new QVBoxLayout();
     this->setLayout(mainLayout);
     this->setObjectName("main_widget");
 
     // Title over table
-    QLabel* tableTitle = new QLabel("Items");
-    mainLayout->addWidget(tableTitle);
+    QLabel* title = new QLabel("Items");
+    title->setObjectName("title");
+    mainLayout->addWidget(title);
 
     /* TableView */
 
@@ -49,23 +51,23 @@ ItemManagerView::ItemManagerView(QWidget* parent)
     searchedit->setLayout(new QHBoxLayout());
 
     // Container for Labels tell which LineEdits are which
-    QWidget* searcheditlabels = new QWidget();
-    searcheditlabels->setLayout(new QVBoxLayout());
-    searchedit->layout()->addWidget(searcheditlabels);
+    QWidget* labelsholder = new QWidget();
+    labelsholder->setLayout(new QVBoxLayout());
+    searchedit->layout()->addWidget(labelsholder);
 
     // Container for LineEdits used for input
-    QWidget* searcheditlineedits = new QWidget();
-    searcheditlineedits->setLayout(new QVBoxLayout());
-    searchedit->layout()->addWidget(searcheditlineedits);
+    QWidget* lineeditsholder = new QWidget();
+    lineeditsholder->setLayout(new QVBoxLayout());
+    searchedit->layout()->addWidget(lineeditsholder);
 
     // Add Lables and LineEdits and FilterModels
     for (int i = 0; i < 4; ++i)
     {
         // Add Labels
-        searcheditlabels->layout()->addWidget(new QLabel(this->itemFieldNames[i]));
+        labelsholder->layout()->addWidget(new QLabel(this->itemFieldNames[i]));
 
         // Add LineEdits
-        searcheditlineedits->layout()->addWidget(lineEdits[i] = new QLineEdit());
+        lineeditsholder->layout()->addWidget(lineEdits[i] = new QLineEdit());
         connect(lineEdits[i], &QLineEdit::textEdited, this, &ItemManagerView::filterResults);
 
         // Add/Layer Filters for searching
@@ -110,7 +112,12 @@ ItemManagerView::ItemManagerView(QWidget* parent)
     searcheditbuttons->layout()->addWidget(clearButton);
 
     // Add labels, LineEdits, and buttons to container underneath table view
+    searchedit->layout()->setAlignment(labelsholder, Qt::AlignRight);
+    searchedit->layout()->setAlignment(lineeditsholder, Qt::AlignLeft);
+    searchedit->layout()->setAlignment(searcheditbuttons, Qt::AlignLeft);
     bottom->layout()->addWidget(searchedit);
+
+    labelsholder->setStyleSheet("max-width: 200px;");
 
     /* END Item Lookup/Edit Section */
 
@@ -145,19 +152,31 @@ ItemManagerView::ItemManagerView(QWidget* parent)
     itemselectbuttons->layout()->addWidget(dropButton);
 
     // Add item select widget to bottom
+    itemselect->layout()->setAlignment(iteminfo, Qt::AlignRight);
+    itemselect->layout()->setAlignment(itemselectbuttons, Qt::AlignLeft);
     bottom->layout()->addWidget(itemselect);
 
     /* END Item Selection Section */
 
 
     // button to close item screen
+    QWidget* closeButtonHolder = new QWidget;
+    closeButtonHolder->setLayout(new QHBoxLayout);
     QPushButton *closeButton = new QPushButton("Close");
     connect(closeButton, &QPushButton::clicked, this, &ItemManagerView::closeWindow);
-    mainLayout->addWidget(closeButton);
+    closeButton->setObjectName("close_button");
+    closeButtonHolder->layout()->addWidget(closeButton);
+    mainLayout->addWidget(closeButtonHolder);
+
+    clearScreen();
 
     this->setStyleSheet(
-                "QLineEdit{min-width: 120px;}"
-                "QLabel{min-width:120px;}"
+                "QTableView{font: 16px;}"
+                "QPushButton{alignment: left; font: bold 14px; min-width:100px; max-width: 500px; min-height:40px; color: white; background-color: rgb(50,83,135);}"
+                "QLineEdit{font: 16px; alignment: left; min-height: 40px; min-width: 250px; max-width: 600px;}"
+                "QLabel{font: 16px; min-width:250px; max-width: 600px; min-height: 40px;}"
+                "#title{font: bold 18px;}"
+                "#close_button{alignment: center; min-width:250px;}"
                 );
 }
 
@@ -297,8 +316,9 @@ void ItemManagerView::clearScreen()
     for (int i = 0; i < 4; ++i)
     {
         lineEdits[i]->setText("");
-        itemInfoLabels[i]->setText("");
+        itemInfoLabels[i]->setText(itemFieldNames[i]);
     }
+    itemInfoLabels[0]->setText("SKU");
     lineEdits[0]->setReadOnly(false);
     tableModel->select();
     filterResults();

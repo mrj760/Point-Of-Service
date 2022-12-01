@@ -2,4 +2,13 @@
     <qresource prefix="/style">
         <file>Dark.qss</file>
     </qresource>
+    <qresource prefix="/creditcardlogos">
+        <file>amexlogo.png</file>
+        <file>dinersclublogo.png</file>
+        <file>discoverlogo.png</file>
+        <file>jcblogo.png</file>
+        <file>maestrologo.png</file>
+        <file>mastercardlogo.png</file>
+        <file>visalogo.png</file>
+    </qresource>
 </RCC>

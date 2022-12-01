@@ -23,8 +23,12 @@ public:
     QStringList colNames;
 
     QLineEdit
-    *skuLineEdit /* enter sku here for item entry */,
+    *skuLineEdit /* enter sku here for item lookup/entry */,
     *qtyLineEdit /* enter quantity here for # of items to add */;
+
+    QPushButton
+    *incQtyButton,
+    *decQtyButton;
 
     QPushButton
     *addItemButton /* adds the given # of the given item to the transaction */,
@@ -41,7 +45,16 @@ public:
     void appendRow(Item *item);
     void appendRow(int sku, QString name, int qty, int cents);
 
-signals:
+    void incQty();
+    void decQty();
+
+    void checkQty();
+
+private:
+
+    void setupTitle();
+    void setupTable();
+    void setupInput();
 
 };
 

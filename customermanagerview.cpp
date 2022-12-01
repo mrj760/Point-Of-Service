@@ -2,13 +2,15 @@
 
 CustomerManagerView::CustomerManagerView(QWidget* parent)
 {
+
     mainLayout = new QVBoxLayout(this);
     this->setLayout(mainLayout);
     this->setObjectName("main_widget");
 
     // Title over table
-    QLabel* tableTitle = new QLabel("Customers");
-    mainLayout->addWidget(tableTitle);
+    QLabel* title = new QLabel("Customers");
+    title->setObjectName("title");
+    mainLayout->addWidget(title);
 
     /* TableView */
 
@@ -49,23 +51,23 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     searchedit->setLayout(new QHBoxLayout());
 
     // Container for Labels tell which LineEdits are which
-    QWidget* searcheditlabels = new QWidget();
-    searcheditlabels->setLayout(new QVBoxLayout());
-    searchedit->layout()->addWidget(searcheditlabels);
+    QWidget* labelsholder = new QWidget();
+    labelsholder->setLayout(new QVBoxLayout());
+    searchedit->layout()->addWidget(labelsholder);
 
     // Container for LineEdits used for input
-    QWidget* searcheditlineedits = new QWidget();
-    searcheditlineedits->setLayout(new QVBoxLayout());
-    searchedit->layout()->addWidget(searcheditlineedits);
+    QWidget* lineeditsholder = new QWidget();
+    lineeditsholder->setLayout(new QVBoxLayout());
+    searchedit->layout()->addWidget(lineeditsholder);
 
     // Add Labels and LineEdits and FilterModels
     for (int i = 0; i < 4; ++i)
     {
         // Add Labels
-        searcheditlabels->layout()->addWidget(new QLabel(this->custFieldNames[i]));
+        labelsholder->layout()->addWidget(new QLabel(this->custFieldNames[i]));
 
         // Add LineEdits
-        searcheditlineedits->layout()->addWidget(lineEdits[i] = new QLineEdit());
+        lineeditsholder->layout()->addWidget(lineEdits[i] = new QLineEdit());
         connect(lineEdits[i], &QLineEdit::textEdited, this, &CustomerManagerView::filterResults);
 
         // Add and Layer Filters for searching
@@ -109,6 +111,9 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     searcheditbuttons->layout()->addWidget(clearButton);
 
     // Add labels, LineEdits, and buttons to container underneath table view
+    searchedit->layout()->setAlignment(labelsholder, Qt::AlignRight);
+    searchedit->layout()->setAlignment(lineeditsholder, Qt::AlignLeft);
+    searchedit->layout()->setAlignment(searcheditbuttons, Qt::AlignLeft);
     bottom->layout()->addWidget(searchedit);
 
     /* END Customer Lookup/Edit Section */
@@ -144,19 +149,29 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     customerselectbuttons->layout()->addWidget(selectButton);
 
     // Add customer select widget to bottom
+    customerselect->layout()->setAlignment(customerselectinfo, Qt::AlignRight);
+    customerselect->layout()->setAlignment(customerselectbuttons, Qt::AlignLeft);
     bottom->layout()->addWidget(customerselect);
 
     /* END Customer Selection Section */
 
 
     // button to close customer screen
+    QWidget* closeButtonHolder = new QWidget;
+    closeButtonHolder->setLayout(new QHBoxLayout);
     QPushButton *closeButton = new QPushButton("Close");
-    connect(closeButton, &QPushButton::clicked, this, &CustomerManagerView::cancel);
-    mainLayout->addWidget(closeButton);
+    connect(closeButton, &QPushButton::clicked, this, &CustomerManagerView::closeWindow);
+    closeButton->setObjectName("close_button");
+    closeButtonHolder->layout()->addWidget(closeButton);
+    mainLayout->addWidget(closeButtonHolder);
 
     this->setStyleSheet(
-                "QLineEdit{min-width: 120px;}"
-                "QLabel{min-width:120px;}"
+                "QTableView{font: 16px;}"
+                "QPushButton{alignment: left; font: bold 14px; min-width:100px; max-width: 500px; min-height:40px; color: white; background-color: rgb(50,83,135);}"
+                "QLineEdit{font: 16px; alignment: left; min-height: 40px; min-width: 250px; max-width: 600px;}"
+                "QLabel{font: 16px; min-width:250px; max-width: 600px; min-height: 40px;}"
+                "#title{font: bold 18px;}"
+                "#close_button{alignment: center; min-width:250px;}"
                 );
 }
 
@@ -363,7 +378,7 @@ void CustomerManagerView::clearScreen()
     for (int i = 0; i < 4; ++i)
     {
         lineEdits[i]->setText("");
-        custInfoLabels[i]->setText("");
+        custInfoLabels[i]->setText(custFieldNames[i]);
     }
 
     // no customer selected anymore, can type in a phone number again
@@ -379,7 +394,7 @@ void CustomerManagerView::selectCustomer()
     //TODO : send customer to open order so their phone number can be associated with it
 }
 
-void CustomerManagerView::cancel()
+void CustomerManagerView::closeWindow()
 {
     this->hide();
 }

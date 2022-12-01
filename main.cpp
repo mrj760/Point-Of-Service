@@ -14,12 +14,10 @@ int main(int argc, char *argv[])
 
     a.setStyle("fusion");
 
+    dbmanager("QPSQL","posdb", "postgres", "grant00--");
+
     MainWindow w;
     w.show();
-
-    dbmanager* dbmgr = new dbmanager("QPSQL","posdb", "postgres", "grant00--");
-
-    w.setDB(dbmgr);
 
     return a.exec();
 }
