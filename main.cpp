@@ -1,6 +1,6 @@
 // Micah Johnson
-// Jorge Munoz
 // Laijy Loiseau
+// Jorge Munoz
 // Nam Cuong Tran
 // Nathan Ware
 // Sydney Corrigan
