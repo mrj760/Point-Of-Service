@@ -2,7 +2,7 @@
 
 ItemManagerView::ItemManagerView(QWidget* parent)
 {
-    mainLayout = new QVBoxLayout(this);
+    mainLayout = new QVBoxLayout();
     this->setLayout(mainLayout);
     this->setObjectName("main_widget");
 
@@ -13,7 +13,7 @@ ItemManagerView::ItemManagerView(QWidget* parent)
     /* TableView */
 
     // Create and add to main layout
-    tableView = new QTableView(this);
+    tableView = new QTableView();
     tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     mainLayout->addWidget(tableView);
 
@@ -36,8 +36,8 @@ ItemManagerView::ItemManagerView(QWidget* parent)
     /* END TableView */
 
     // below the tableview is the rest
-    QWidget* bottom = new QWidget(this);
-    bottom->setLayout(new QHBoxLayout(this));
+    QWidget* bottom = new QWidget();
+    bottom->setLayout(new QHBoxLayout());
     mainLayout->addWidget(bottom);
 
     /* ================================================== */
@@ -45,27 +45,27 @@ ItemManagerView::ItemManagerView(QWidget* parent)
     /* Item Search/Edit Section (Below TableView and on the left) */
 
     // contains Labels, LineEdits, and Buttons for table management
-    QWidget* searchedit = new QWidget(this);
+    QWidget* searchedit = new QWidget();
     searchedit->setLayout(new QHBoxLayout());
 
     // Container for Labels tell which LineEdits are which
-    QWidget* searcheditlabels = new QWidget(this);
-    searcheditlabels->setLayout(new QVBoxLayout(this));
+    QWidget* searcheditlabels = new QWidget();
+    searcheditlabels->setLayout(new QVBoxLayout());
     searchedit->layout()->addWidget(searcheditlabels);
 
     // Container for LineEdits used for input
-    QWidget* searcheditlineedits = new QWidget(this);
-    searcheditlineedits->setLayout(new QVBoxLayout(this));
+    QWidget* searcheditlineedits = new QWidget();
+    searcheditlineedits->setLayout(new QVBoxLayout());
     searchedit->layout()->addWidget(searcheditlineedits);
 
     // Add Lables and LineEdits and FilterModels
     for (int i = 0; i < 4; ++i)
     {
         // Add Labels
-        searcheditlabels->layout()->addWidget(new QLabel(this->itemFieldNames[i], this));
+        searcheditlabels->layout()->addWidget(new QLabel(this->itemFieldNames[i]));
 
         // Add LineEdits
-        searcheditlineedits->layout()->addWidget(lineEdits[i] = new QLineEdit(this));
+        searcheditlineedits->layout()->addWidget(lineEdits[i] = new QLineEdit());
         connect(lineEdits[i], &QLineEdit::textEdited, this, &ItemManagerView::filterResults);
 
         // Add/Layer Filters for searching
@@ -87,24 +87,24 @@ ItemManagerView::ItemManagerView(QWidget* parent)
     lineEdits[2]->setValidator(new QIntValidator());
 
     // Container for buttons for search/edit
-    QWidget* searcheditbuttons = new QWidget(this);
-    searcheditbuttons->setLayout(new QVBoxLayout(this));
+    QWidget* searcheditbuttons = new QWidget();
+    searcheditbuttons->setLayout(new QVBoxLayout());
     searchedit->layout()->addWidget(searcheditbuttons);
 
     // Button to add new item to db
-    QPushButton *submitNewButton = new QPushButton("Submit New", this);
+    QPushButton *submitNewButton = new QPushButton("Submit New");
     submitNewButton->setObjectName("submit_button");
     connect(submitNewButton, &QPushButton::clicked, this, &ItemManagerView::submitNew);
     searcheditbuttons->layout()->addWidget(submitNewButton);
 
     // Button to edit item which already exits in db
-    QPushButton *editExistingButton = new QPushButton("Edit Existing", this);
+    QPushButton *editExistingButton = new QPushButton("Edit Existing");
     editExistingButton->setObjectName("edit_button");
     connect(editExistingButton, &QPushButton::clicked, this, &ItemManagerView::editExisting);
     searcheditbuttons->layout()->addWidget(editExistingButton);
 
     // Button to clear LineEdits
-    QPushButton* clearButton = new QPushButton("Clear", this);
+    QPushButton* clearButton = new QPushButton("Clear");
     clearButton->setObjectName("cancel_button");
     connect(clearButton, &QPushButton::clicked, this, &ItemManagerView::clearScreen);
     searcheditbuttons->layout()->addWidget(clearButton);
@@ -119,28 +119,28 @@ ItemManagerView::ItemManagerView(QWidget* parent)
     /* Item Selection Section (Below TableView and on the right) */
 
     // Container for holding Labels
-    QWidget *itemselect = new QWidget(this);
-    itemselect->setLayout(new QHBoxLayout(this));
+    QWidget *itemselect = new QWidget();
+    itemselect->setLayout(new QHBoxLayout());
 
     // Container holding read-only text fields
-    QWidget *iteminfo = new QWidget(this);
-    iteminfo->setLayout(new QVBoxLayout(this));
+    QWidget *iteminfo = new QWidget();
+    iteminfo->setLayout(new QVBoxLayout());
     itemselect->layout()->addWidget(iteminfo);
 
     // Add Labels which display selected item information
     for (int i=0; i<4; ++i)
     {
-        itemInfoLabels[i] = new QLabel("", this);
+        itemInfoLabels[i] = new QLabel("");
         iteminfo->layout()->addWidget(itemInfoLabels[i]);
     }
 
     // Container holding buttons
-    QWidget *itemselectbuttons = new QWidget(this);
-    itemselectbuttons->setLayout(new QVBoxLayout(this));
+    QWidget *itemselectbuttons = new QWidget();
+    itemselectbuttons->setLayout(new QVBoxLayout());
     itemselect->layout()->addWidget(itemselectbuttons);
 
     // Button to attribute the current item to the transaction
-    QPushButton *dropButton = new QPushButton("Delete", this);
+    QPushButton *dropButton = new QPushButton("Delete");
     connect(dropButton, &QPushButton::clicked, this, &ItemManagerView::dropItem);
     itemselectbuttons->layout()->addWidget(dropButton);
 
@@ -151,8 +151,8 @@ ItemManagerView::ItemManagerView(QWidget* parent)
 
 
     // button to close item screen
-    QPushButton *closeButton = new QPushButton("Close", this);
-    connect(closeButton, &QPushButton::clicked, this, &ItemManagerView::cancel);
+    QPushButton *closeButton = new QPushButton("Close");
+    connect(closeButton, &QPushButton::clicked, this, &ItemManagerView::closeWindow);
     mainLayout->addWidget(closeButton);
 
     this->setStyleSheet(
@@ -188,7 +188,15 @@ void ItemManagerView::submitNew()
         // dbmanager takes care of displaying errors
         return;
     }
+
+    lineEdits[0]->setText("");
     tableModel->select();
+    filterResults();
+    QModelIndex index = tableView->model()->index(0, 0);
+    tableView->selectionModel()->select(index,
+                                        QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    highlightItem();
+    filterResults();
 }
 
 void ItemManagerView::editExisting()
@@ -274,7 +282,14 @@ void ItemManagerView::editExisting()
     scs.setStandardButtons(QMessageBox::Ok);
     scs.setBaseSize(600,120);
     scs.exec();
+
     tableModel->select();
+    filterResults();
+    QModelIndex index = tableView->model()->index(0, 0);
+    tableView->selectionModel()->select(index,
+                                        QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    highlightItem();
+    filterResults();
 }
 
 void ItemManagerView::clearScreen()
@@ -332,9 +347,10 @@ void ItemManagerView::dropItem()
     scs.setBaseSize(600,120);
     scs.exec();
     tableModel->select();
+    lineEdits[0]->setText("");
 }
 
-void ItemManagerView::cancel()
+void ItemManagerView::closeWindow()
 {
     this->hide();
 }

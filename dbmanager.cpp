@@ -4,8 +4,8 @@
 
 dbmanager::dbmanager(const QString &driver, const QString &path, const QString &username, const QString &password)
 {
-    Database db;
-    db = Database::addDatabase(driver);
+    QSqlDatabase db;
+    db = QSqlDatabase::addDatabase(driver);
     db.setDatabaseName(path);
     db.setUserName(username);
     db.setPassword(password);
@@ -43,7 +43,7 @@ bool dbmanager::addItem(Item item)
         return false;
     }
 
-    Query q;
+    QSqlQuery q;
     q.prepare("insert into pos_schema.item values((select coalesce(MAX(sku::int)+1, 10000000) from pos_schema.item), :qty, :cents, :name);");
     q.bindValue(":qty", item.qty);
     qDebug() << item.qty;
@@ -70,7 +70,7 @@ bool dbmanager::addItem(Item item)
 /* Insert Transaction */
 bool dbmanager::addTransaction(Transaction transaction)
 {
-    Query q;
+    QSqlQuery q;
     q.prepare("insert into pos_schema.transaction values((SELECT coalesce(MAX(id::int)+1, 1) from pos_schema.transaction WHERE pos_schema.transaction.date = CURRENT_DATE), "
               "NOW()::date, NOW()::time, :phone, :total_cents, :items, :payment_type, :tender, :change, :card_number, :card_exp, :card_cvv);");
     q.bindValue(":phone", transaction.customerPhone);
@@ -127,7 +127,7 @@ bool dbmanager::addCustomer(Customer customer)
         return false;
     }
 
-    Query q;
+    QSqlQuery q;
     q.prepare("insert into pos_schema.customer values(:phone, :name, :address, :zip);");
     q.bindValue(":phone",customer.phone);
     q.bindValue(":name",customer.name);
@@ -145,7 +145,7 @@ bool dbmanager::addCustomer(Customer customer)
 /* Insert Register */
 bool dbmanager::addRegister(Register reg)
 {
-    Query q;
+    QSqlQuery q;
     q.prepare("insert into pos_schema.register values(:id, :cash);");
     q.bindValue(":id",reg.ID);
     q.bindValue(":cash",reg.centsInDrawer);
@@ -159,8 +159,6 @@ bool dbmanager::addRegister(Register reg)
 }
 
 
-
-
 /*  */
 /*  */
 /*------------------------------------- Updating Functions -------------------------------------*/
@@ -168,7 +166,35 @@ bool dbmanager::addRegister(Register reg)
 /*  */
 
 
+Item* dbmanager::getItem(int sku)
+{
+    // see if item with given sku number exists in database
+    QSqlQuery sel;
+    sel.prepare("SELECT qty, cents, name FROM pos_schema.item WHERE sku = :sku");
+    long long longsku = sku;
+    sel.bindValue(":sku", longsku);
 
+    if (!sel.exec())
+    {
+        displayQueryError("Item Update Error", sel);
+        qDebug() << "Item Selection Error in func \"editExisting\"" << sel.lastError().text();
+        return nullptr;
+    }
+
+    // if item doesn't exist we have nothing to update
+    if (sel.size() == 0)
+    {
+        displayError("Item Update Failure", "Item SKU number does not exist.");
+        return nullptr;
+    }
+
+    sel.next();
+    auto qty = sel.value(0).toInt();
+    auto cents = sel.value(1).toInt();
+    auto name =  sel.value(2).toString();
+
+    return new Item(sku, qty, cents, name);
+}
 
 
 /*  */
@@ -179,7 +205,6 @@ bool dbmanager::addRegister(Register reg)
 
 void dbmanager::displayError(const QString& errorType, const QString& errorText)
 {
-    //    QMessageBox::warning(0, errorType+" Error", errorText);
     QMessageBox error;
     error.setText(errorType);
     error.setInformativeText(errorText);
@@ -191,7 +216,7 @@ void dbmanager::displayError(const QString& errorType, const QString& errorText)
 
 
 /* Display Error */
-void dbmanager::displayQueryError(const QString& errorType, const Query& q)
+void dbmanager::displayQueryError(const QString& errorType, const QSqlQuery& q)
 {
     QMessageBox::warning(0, errorType+" Error", q.lastError().text());
 }

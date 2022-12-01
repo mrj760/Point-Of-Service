@@ -7,7 +7,6 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <dbmanager.h>
-#include <pos.h>
 #include <backbone.h>
 #include <testmodule.h>
 #include <module.h>

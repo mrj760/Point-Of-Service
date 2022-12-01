@@ -1,5 +1,5 @@
-#ifndef ITEM_H
-#define ITEM_H
+#ifndef TEMPLATE_ITEM_H
+#define TEMPLATE_ITEM_H
 
 #include <QString>
 
@@ -9,7 +9,7 @@ class Item
 public:
 
     /* Constructors */
-    Item(int sku=0, int qty=0, int cents=0, QString name="") :
+    Item(int sku, int qty=0, int cents=0, QString name="") :
         sku(sku), qty(qty), cents(cents), name(name) {};
 
     Item(const Item& i) :
@@ -24,4 +24,4 @@ public:
     Item operator=(const Item&); /* Copy assigns the given item */
 };
 
-#endif // ITEM_H
+#endif // TEMPLATE_ITEM_H

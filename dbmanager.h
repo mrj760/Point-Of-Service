@@ -2,24 +2,19 @@
 #define DBMANAGER_H
 
 
-#include <QWidget>
-#include <QSqlDatabase>
-typedef QSqlDatabase Database;
-#include <QSqlQuery>
-typedef QSqlQuery Query;
-#include <QSqlError>
+#include <QtSql>
 #include <QMessageBox>
 #include <vector>
 #include <simplecrypt.h>
-#include <transaction.h>
-#include <item.h>
-#include <customer.h>
-#include <register.h>
+#include <template_transaction.h>
+#include <template_item.h>
+#include <template_customer.h>
+#include <template_register.h>
 
 typedef QString QString;
 
 
-class dbmanager :QWidget
+class dbmanager
 {
 
 //    static SimpleCrypt crypt;
@@ -40,8 +35,11 @@ public:
     static bool updateCustomer(Customer customer);
     static bool updateRegister(Register reg);
 
+    static Item* getItem(int sku);
+    static Item* getItem(Item item);
+
      static void displayError(const QString& errorType, const QString& errorText);
-     static void displayQueryError(const QString& errorType, const Query& q);
+     static void displayQueryError(const QString& errorType, const QSqlQuery& q);
 };
 
 #endif // DBMANAGER_H

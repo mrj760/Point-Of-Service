@@ -13,7 +13,7 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     /* TableView */
 
     // Create and add to main layout
-    tableView = new QTableView(this);
+    tableView = new QTableView();
     tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     mainLayout->addWidget(tableView);
 
@@ -36,8 +36,8 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     /* END TableView */
 
     // below the tableview is the rest
-    QWidget* bottom = new QWidget(this);
-    bottom->setLayout(new QHBoxLayout(this));
+    QWidget* bottom = new QWidget();
+    bottom->setLayout(new QHBoxLayout());
     mainLayout->addWidget(bottom);
 
     /* ================================================== */
@@ -45,27 +45,27 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     /* Customer Search/Edit Section (Below TableView and on the left) */
 
     // contains Labels, LineEdits, and Buttons for table management
-    QWidget* searchedit = new QWidget(this);
+    QWidget* searchedit = new QWidget();
     searchedit->setLayout(new QHBoxLayout());
 
     // Container for Labels tell which LineEdits are which
-    QWidget* searcheditlabels = new QWidget(this);
-    searcheditlabels->setLayout(new QVBoxLayout(this));
+    QWidget* searcheditlabels = new QWidget();
+    searcheditlabels->setLayout(new QVBoxLayout());
     searchedit->layout()->addWidget(searcheditlabels);
 
     // Container for LineEdits used for input
-    QWidget* searcheditlineedits = new QWidget(this);
-    searcheditlineedits->setLayout(new QVBoxLayout(this));
+    QWidget* searcheditlineedits = new QWidget();
+    searcheditlineedits->setLayout(new QVBoxLayout());
     searchedit->layout()->addWidget(searcheditlineedits);
 
     // Add Labels and LineEdits and FilterModels
     for (int i = 0; i < 4; ++i)
     {
         // Add Labels
-        searcheditlabels->layout()->addWidget(new QLabel(this->custFieldNames[i], this));
+        searcheditlabels->layout()->addWidget(new QLabel(this->custFieldNames[i]));
 
         // Add LineEdits
-        searcheditlineedits->layout()->addWidget(lineEdits[i] = new QLineEdit(this));
+        searcheditlineedits->layout()->addWidget(lineEdits[i] = new QLineEdit());
         connect(lineEdits[i], &QLineEdit::textEdited, this, &CustomerManagerView::filterResults);
 
         // Add and Layer Filters for searching
@@ -86,24 +86,24 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     lineEdits[3]->setValidator(new QIntValidator());
 
     // Container for buttons for search/edit
-    QWidget* searcheditbuttons = new QWidget(this);
-    searcheditbuttons->setLayout(new QVBoxLayout(this));
+    QWidget* searcheditbuttons = new QWidget();
+    searcheditbuttons->setLayout(new QVBoxLayout());
     searchedit->layout()->addWidget(searcheditbuttons);
 
     // Button to add new customer to db
-    QPushButton *submitNewButton = new QPushButton("Submit New", this);
+    QPushButton *submitNewButton = new QPushButton("Submit New");
     submitNewButton->setObjectName("submit_button");
     connect(submitNewButton, &QPushButton::clicked, this, &CustomerManagerView::submitNew);
     searcheditbuttons->layout()->addWidget(submitNewButton);
 
     // Button to edit customer which already exits in db
-    QPushButton *editExistingButton = new QPushButton("Edit Existing", this);
+    QPushButton *editExistingButton = new QPushButton("Edit Existing");
     editExistingButton->setObjectName("edit_button");
     connect(editExistingButton, &QPushButton::clicked, this, &CustomerManagerView::editExisting);
     searcheditbuttons->layout()->addWidget(editExistingButton);
 
     // Button to clear LineEdits
-    QPushButton* clearButton = new QPushButton("Clear", this);
+    QPushButton* clearButton = new QPushButton("Clear");
     clearButton->setObjectName("cancel_button");
     connect(clearButton, &QPushButton::clicked, this, &CustomerManagerView::clearScreen);
     searcheditbuttons->layout()->addWidget(clearButton);
@@ -118,28 +118,28 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
     /* Customer Selection Section (Below TableView and on the right) */
 
     // Container for holding Labels and Buttons
-    QWidget *customerselect = new QWidget(this);
-    customerselect->setLayout(new QHBoxLayout(this));
+    QWidget *customerselect = new QWidget();
+    customerselect->setLayout(new QHBoxLayout());
 
     // Container holding read-only text fields
-    QWidget *customerselectinfo = new QWidget(this);
-    customerselectinfo->setLayout(new QVBoxLayout(this));
+    QWidget *customerselectinfo = new QWidget();
+    customerselectinfo->setLayout(new QVBoxLayout());
     customerselect->layout()->addWidget(customerselectinfo);
 
     // Container holding buttons
-    QWidget *customerselectbuttons = new QWidget(this);
-    customerselectbuttons->setLayout(new QVBoxLayout(this));
+    QWidget *customerselectbuttons = new QWidget();
+    customerselectbuttons->setLayout(new QVBoxLayout());
     customerselect->layout()->addWidget(customerselectbuttons);
 
     // Labels which display selected customer information
     for (int i=0; i<4; ++i)
     {
-        custInfoLabels[i] = new QLabel("", this);
+        custInfoLabels[i] = new QLabel("");
         customerselectinfo->layout()->addWidget(custInfoLabels[i]);
     }
 
     // Button to attribute the current customer to the transaction
-    QPushButton *selectButton = new QPushButton("Select", this);
+    QPushButton *selectButton = new QPushButton("Select");
     connect(selectButton, &QPushButton::clicked, this, &CustomerManagerView::selectCustomer);
     customerselectbuttons->layout()->addWidget(selectButton);
 
@@ -150,7 +150,7 @@ CustomerManagerView::CustomerManagerView(QWidget* parent)
 
 
     // button to close customer screen
-    QPushButton *closeButton = new QPushButton("Close", this);
+    QPushButton *closeButton = new QPushButton("Close");
     connect(closeButton, &QPushButton::clicked, this, &CustomerManagerView::cancel);
     mainLayout->addWidget(closeButton);
 

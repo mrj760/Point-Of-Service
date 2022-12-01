@@ -64,7 +64,16 @@ void MainWindow::on_customers_clicked()
 
 void MainWindow::on_transactions_clicked()
 {
-    setTableModel("pos_schema.transaction");
+    if (transactionedit == nullptr)
+    {
+        transactionedit = new TransactionEditView();
+    }
+    transactionedit->show();
+//    if (neworder == nullptr)
+//    {
+//        neworder = new NewOrderView();
+//    }
+//    neworder->show();
 }
 
 

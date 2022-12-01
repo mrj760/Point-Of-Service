@@ -28,7 +28,7 @@ private:
     void clearScreen();
 
     void dropItem();
-    void cancel();
+    void closeWindow();
 
     void highlightItem();
 
