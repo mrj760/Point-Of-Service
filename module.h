@@ -14,7 +14,7 @@ public :
     //Use this to update waiting flag.
     virtual bool setWaiting()=0;
     //Backbone will use this to deliver jobs
-    virtual bool receive(WorkOrder& wo);
+    virtual bool receive(WorkOrder& wo)=0;
 };
 
 #endif //MODULE_H

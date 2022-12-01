@@ -11,6 +11,7 @@ public:
     void setID(int in) override;
     int getID() override;
     std::string getName() override;
+    bool receive(WorkOrder& wo) override;
     //Methods
     TestMod();
     ~TestMod();

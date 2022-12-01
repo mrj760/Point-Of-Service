@@ -25,10 +25,12 @@ public:
     void setID(int in) override;
     int getID() override;
     std::string getName() override;
+
+    bool receive(WorkOrder& wo) override;
     //Methods
     Backbone();
     Backbone(std::string filename);
-    virtual ~Backbone();
+    ~Backbone();
 
     void receiveMsg(Message msg);
     void sendMsg(Message msg);

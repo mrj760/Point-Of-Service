@@ -35,6 +35,15 @@ std::string Backbone::getName(){
     return this->name;
 }
 
+bool Backbone::receive(WorkOrder& wo){
+    try {postJob(wo);}
+    catch (std::exception e)
+    {
+        return false;
+    }
+    return true;
+}
+
 std::map<std::string, int> Backbone::loadModuleList(std::string filename)
 {
     std::string filepath = "./" + filename;

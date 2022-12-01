@@ -1,6 +1,16 @@
 #include <testmodule.h>
 #include <backbone.h>
 
+TestMod::TestMod()
+{
+    this->_ID = Backbone::modCount;
+    this->name = "TST";
+}
+TestMod::~TestMod()
+{
+    Backbone::modCount--;
+}
+
 void TestMod::setID(int in)
 {
     this->_ID = in;
@@ -14,13 +24,13 @@ std::string TestMod::getName()
 {
     return this->name;
 }
-//Methods
-TestMod::TestMod()
+
+bool TestMod::receive(WorkOrder& wo)
 {
-    this->_ID = Backbone::modCount;
-    this->name = "TST";
-}
-TestMod::~TestMod()
-{
-    Backbone::modCount--;
+    try {
+        std::cout << wo.data.getText().data();
+    } catch (std::exception e) {
+        return false;
+    }
+    return true;
 }

@@ -23,7 +23,8 @@ SOURCES += \
     register.cpp \
     simplecrypt.cpp \
     testmodule.cpp \
-    transaction.cpp
+    transaction.cpp \
+    workorder.cpp
 #    workorder.cpp
 
 HEADERS += \
@@ -55,7 +56,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
+#QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
 
 RESOURCES += \
     resources.qrc
