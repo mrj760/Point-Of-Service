@@ -15,22 +15,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     transactioneditview.cpp \
-    qlineeditselect.cpp \
-    qlineeditfocus.cpp \
-    neworderview.cpp \
-    numpadwidget.cpp \
     transactionsviewer.cpp
-#    workorder.cpp \
-#    message.cpp \
-#    pos.cpp \
-#    register.cpp \
-#    simplecrypt.cpp \
-#    testmodule.cpp \
-#    transaction.cpp \
-#    item.cpp \
-#    customvalidator.cpp \
-#    backbone.cpp \
-#    customer.cpp \
 
 HEADERS += \
     customermanagerview.h \
@@ -43,20 +28,7 @@ HEADERS += \
     template_register.h \
     template_transaction.h \
     transactioneditview.h \
-    qlineeditselect.h \
-    qlineeditfocus.h \
-    neworderview.h\
-    numpadwidget.h \
     transactionsviewer.h
-#    workorder.h \
-#    module.h \
-#    backbone.h \
-#    message.h \
-#    passkey.h \
-#    pos.h \
-#    simplecrypt.h \
-#    testmodule.h
-#    customvalidator.h \
 
 FORMS += \
     mainwindow.ui

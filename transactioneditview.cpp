@@ -24,6 +24,20 @@ TransactionEditView::TransactionEditView(QWidget *parent) : QWidget{parent}
                 );
 }
 
+void TransactionEditView::AddItem(int sku)
+{
+    Item* item = dbmanager::getItem(sku);
+    if (item == nullptr)
+    {
+
+    }
+}
+
+void TransactionEditView::RemoveItem(int sku)
+{
+
+}
+
 void TransactionEditView::setupTitle()
 {
     QLabel* title = new QLabel("Edit Transaction");
@@ -65,6 +79,9 @@ void TransactionEditView::setupInput()
     skuLineEdit = new QLineEdit;
     skuLineEdit->setPlaceholderText("SKU");
     skuLineEdit->setValidator(new QIntValidator());
+
+    addItemButton = new QPushButton("Add Item");
+    removeItemButton = new QPushButton("Remove Item");
 
     skuInputHolder->layout()->addWidget(skuLineEdit);
     inputHolder->layout()->addWidget(skuInputHolder);
@@ -136,6 +153,9 @@ void TransactionEditView::appendRow(int sku, QString name, int qty, int cents)
 
 void TransactionEditView::incQty()
 {
+    if (skuLineEdit->text() == "")
+        return;
+
     auto qtytext = qtyLineEdit->text();
     if (qtytext == "")
     {
@@ -151,6 +171,9 @@ void TransactionEditView::incQty()
 
 void TransactionEditView::decQty()
 {
+    if (skuLineEdit->text() == "")
+        return;
+
     auto qtytext = qtyLineEdit->text();
     if (qtytext == "")
     {

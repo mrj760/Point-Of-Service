@@ -32,6 +32,7 @@ public:
 
     QPushButton
     *addItemButton /* adds the given # of the given item to the transaction */,
+    *removeItemButton,
     *searchByNameButton /* pop-up to search for item by name. places result sku in skuLineEdt */;
 
     QLabel* tax, subtotal, total;
