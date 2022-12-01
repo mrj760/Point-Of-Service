@@ -7,9 +7,6 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <dbmanager.h>
-#include <backbone.h>
-#include <testmodule.h>
-#include <module.h>
 
 int main(int argc, char *argv[])
 {

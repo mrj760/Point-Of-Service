@@ -1,11 +1,9 @@
 #ifndef DBMANAGER_H
 #define DBMANAGER_H
 
-
 #include <QtSql>
 #include <QMessageBox>
 #include <vector>
-#include <simplecrypt.h>
 #include <template_transaction.h>
 #include <template_item.h>
 #include <template_customer.h>
@@ -13,17 +11,12 @@
 
 typedef QString QString;
 
-
 class dbmanager
 {
-
-//    static SimpleCrypt crypt;
-//    Database _db;
 
 public:
 
     dbmanager(const QString& driver, const QString& path, const QString& username, const QString& password);
-//    const Database& db = _db; /* db getter */
 
     static bool addItem(Item item);
     static bool addTransaction(Transaction transaction);

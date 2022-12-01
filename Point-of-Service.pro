@@ -9,37 +9,30 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-#    backbone.cpp \
-#    customer.cpp \
     customermanagerview.cpp \
-#    customvalidator.cpp \
     dbmanager.cpp \
-#    item.cpp \
     itemmanagerview.cpp \
     main.cpp \
     mainwindow.cpp \
+    transactioneditview.cpp
+#    workorder.cpp \
 #    message.cpp \
 #    pos.cpp \
 #    register.cpp \
 #    simplecrypt.cpp \
 #    testmodule.cpp \
 #    transaction.cpp \
-    transactioneditview.cpp
-#    workorder.cpp \
+#    item.cpp \
+#    customvalidator.cpp \
+#    backbone.cpp \
+#    customer.cpp \
 
 HEADERS += \
     customermanagerview.h \
-#    customvalidator.h \
     dbmanager.h \
     displaymessage.h \
     itemmanagerview.h \
     mainwindow.h \
-#    backbone.h \
-#    message.h \
-#    passkey.h \
-#    pos.h \
-#    simplecrypt.h \
-#    testmodule.h \
     template_customer.h \
     template_item.h \
     template_register.h \
@@ -47,6 +40,13 @@ HEADERS += \
     transactioneditview.h
 #    workorder.h \
 #    module.h \
+#    backbone.h \
+#    message.h \
+#    passkey.h \
+#    pos.h \
+#    simplecrypt.h \
+#    testmodule.h
+#    customvalidator.h \
 
 FORMS += \
     mainwindow.ui

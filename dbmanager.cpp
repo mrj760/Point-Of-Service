@@ -22,8 +22,6 @@ dbmanager::dbmanager(const QString &driver, const QString &path, const QString &
     }
 
     qDebug() << "Database: Connection success.";
-
-    //    crypt = SimpleCrypt(Q_UINT64_C(0x2fb30a1c9fddf749));
 }
 
 /*  */
@@ -79,14 +77,6 @@ bool dbmanager::addTransaction(Transaction transaction)
     q.bindValue(":payment_type", transaction.paymentType);
     q.bindValue(":tender", transaction.tender);
     q.bindValue(":change", transaction.change);
-
-    //    QString cryptCardNum = crypt.encryptToString(QString::number(transaction.cardNumber));
-    //    QString cryptCardExp = crypt.encryptToString(QString::number(transaction.cardExpiration));
-    //    QString cryptCardCVV = crypt.encryptToString(QString::number(transaction.cardCVV));
-
-    //    q.bindValue(":card_number", cryptCardNum);
-    //    q.bindValue(":card_exp", cryptCardExp);
-    //    q.bindValue(":card_cvv", cryptCardCVV);
 
     q.bindValue(":card_number", transaction.cardNumber);
     q.bindValue(":card_exp", transaction.cardExpiration);

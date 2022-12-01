@@ -12,7 +12,6 @@
 #include <itemmanagerview.h>
 #include <customermanagerview.h>
 #include <transactioneditview.h>
-#include <neworderview.h>
 
 typedef QSqlQuery Query;
 typedef QSqlTableModel TableModel;
@@ -37,7 +36,6 @@ public:
     ItemManagerView* itemmgr = nullptr;
     CustomerManagerView* custmgr = nullptr;
     TransactionEditView* transactionedit = nullptr;
-    NewOrderView* neworder = nullptr;
 
 
 private slots:

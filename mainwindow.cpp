@@ -69,11 +69,6 @@ void MainWindow::on_transactions_clicked()
         transactionedit = new TransactionEditView();
     }
     transactionedit->show();
-//    if (neworder == nullptr)
-//    {
-//        neworder = new NewOrderView();
-//    }
-//    neworder->show();
 }
 
 
