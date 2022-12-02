@@ -3,7 +3,7 @@
 
 #include <QtWidgets>
 
-struct displayMessage
+struct DisplayMessage
 {
 
 public:

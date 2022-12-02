@@ -26,6 +26,8 @@ public:
     *skuLineEdit /* enter sku here for item lookup/entry */,
     *qtyLineEdit /* enter quantity here for # of items to add */;
 
+    QLabel *skuCheckmark;
+
     QPushButton
     *incQtyButton,
     *decQtyButton;
@@ -37,8 +39,8 @@ public:
 
     QLabel* tax, subtotal, total;
 
-    void AddItem(int sku);
-    void RemoveItem(int sku);
+    void addItem();
+    void removeItem();
 
     void searchByName();
     void calculatePrices();
@@ -46,9 +48,12 @@ public:
     void appendRow(Item *item);
     void appendRow(int sku, QString name, int qty, int cents);
 
+private slots:
+
     void incQty();
     void decQty();
 
+    void checkSKU();
     void checkQty();
 
 private:

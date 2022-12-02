@@ -11,4 +11,5 @@
         <file>mastercardlogo.png</file>
         <file>visalogo.png</file>
     </qresource>
+    <qresource prefix="/icons"/>
 </RCC>

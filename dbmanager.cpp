@@ -171,13 +171,8 @@ Item* dbmanager::getItem(int sku)
         qDebug() << "Item Selection Error in func \"editExisting\"" << sel.lastError().text();
         return nullptr;
     }
-
-    // if item doesn't exist we have nothing to update
     if (sel.size() == 0)
-    {
-        displayError("Item Update Failure", "Item SKU number does not exist.");
         return nullptr;
-    }
 
     sel.next();
     auto qty = sel.value(0).toInt();

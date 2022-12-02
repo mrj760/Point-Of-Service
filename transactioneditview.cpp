@@ -14,7 +14,7 @@ TransactionEditView::TransactionEditView(QWidget *parent) : QWidget{parent}
     this->setStyleSheet(
                 "QTableView{font: 16px;}"
                 "QPushButton{alignment: left; font: bold 14px; min-width:100px; max-width: 500px; min-height:40px; color: white; background-color: rgb(50,83,135);}"
-                "QLineEdit{font: bold 20px; alignment: left; min-height: 40px; min-width: 250px; max-width: 600px;}"
+                "QLineEdit{font: bold 20px; alignment: center; text-align: center; min-height: 40px; min-width: 250px; max-width: 400px;}"
                 "QLabel{font: 16px; min-width:250px; max-width: 600px; min-height: 40px;}"
                 "#title{font: bold 18px;}"
                 "#close_button{alignment: center; min-width:250px;}"
@@ -22,20 +22,6 @@ TransactionEditView::TransactionEditView(QWidget *parent) : QWidget{parent}
                 "#increment{alignment: left; max-width: 50px; min-height:60px; font: bold 20px;}"
                 "#decrement{alignment: right; max-width: 50px; min-height:60px; font: bold 20px;}"
                 );
-}
-
-void TransactionEditView::AddItem(int sku)
-{
-    Item* item = dbmanager::getItem(sku);
-    if (item == nullptr)
-    {
-
-    }
-}
-
-void TransactionEditView::RemoveItem(int sku)
-{
-
 }
 
 void TransactionEditView::setupTitle()
@@ -74,35 +60,48 @@ void TransactionEditView::setupInput()
     QWidget *inputHolder = new QWidget;
     inputHolder->setLayout(new QVBoxLayout);
 
+
     QWidget* skuInputHolder = new QWidget;
     skuInputHolder->setLayout(new QHBoxLayout);
     skuLineEdit = new QLineEdit;
     skuLineEdit->setPlaceholderText("SKU");
     skuLineEdit->setValidator(new QIntValidator());
+    skuCheckmark = new QLabel("⛌");
+    skuCheckmark->setStyleSheet("color: rgb(200, 0,0);");
+    connect(skuLineEdit, &QLineEdit::textEdited, this, &TransactionEditView::checkSKU);
+    skuInputHolder->layout()->addWidget(skuLineEdit);
+    skuInputHolder->layout()->addWidget(skuCheckmark);
+    skuInputHolder->layout()->setAlignment(skuLineEdit, Qt::AlignCenter);
+    skuInputHolder->layout()->setAlignment(skuCheckmark, Qt::AlignLeft);
+    inputHolder->layout()->addWidget(skuInputHolder);
 
+
+    QWidget* skuButtonsHolder = new QWidget;
+    skuButtonsHolder->setLayout(new QHBoxLayout);
     addItemButton = new QPushButton("Add Item");
     removeItemButton = new QPushButton("Remove Item");
+    addItemButton->setObjectName("add");
+    removeItemButton->setObjectName("remove");
+    connect(addItemButton, &QPushButton::clicked, this, &TransactionEditView::addItem);
+    connect(removeItemButton, &QPushButton::clicked, this, &TransactionEditView::removeItem);
+    skuButtonsHolder->layout()->addWidget(addItemButton);
+    skuButtonsHolder->layout()->addWidget(removeItemButton);
+    inputHolder->layout()->addWidget(skuButtonsHolder);
 
-    skuInputHolder->layout()->addWidget(skuLineEdit);
-    inputHolder->layout()->addWidget(skuInputHolder);
 
     QWidget* qtyInputHolder = new QWidget;
     qtyInputHolder->setLayout(new QHBoxLayout);
-
     qtyLineEdit = new QLineEdit;
     qtyLineEdit->setPlaceholderText("Quantity");
     qtyLineEdit->setObjectName("qtyLE");
     qtyLineEdit->setValidator(new QIntValidator());
     connect(qtyLineEdit, &QLineEdit::textEdited, this, &TransactionEditView::checkQty);
-
-    decQtyButton = new QPushButton("-");
-    incQtyButton = new QPushButton("+");
+    decQtyButton = new QPushButton("－");
+    incQtyButton = new QPushButton("＋");
     decQtyButton->setObjectName("decrement");
     incQtyButton->setObjectName("increment");
-
     connect(decQtyButton, &QPushButton::clicked, this, &TransactionEditView::decQty);
     connect(incQtyButton, &QPushButton::clicked, this, &TransactionEditView::incQty);
-
     qtyInputHolder->layout()->addWidget(decQtyButton);
     qtyInputHolder->layout()->addWidget(qtyLineEdit);
     qtyInputHolder->layout()->addWidget(incQtyButton);
@@ -124,7 +123,7 @@ void TransactionEditView::appendRow(Item *item)
     if (item->qty <= 0)
     {
         qDebug() << "Cannot add Item " << item->sku << " because there is not sufficient quantity";
-        displayMessage::info("Cannot add Item " + QString::number(item->sku), "Insufficient quantity");
+        DisplayMessage::info("Cannot add Item " + QString::number(item->sku), "Insufficient quantity");
         return;
     }
 
@@ -149,6 +148,30 @@ void TransactionEditView::appendRow(int sku, QString name, int qty, int cents)
     skuval->setFlags(skuval->flags() & ~Qt::ItemIsEditable);
 
     itemsModel->appendRow(QList<QStandardItem*>() << skuval << nameval << qtyval << centsval);
+}
+
+void TransactionEditView::addItem()
+{
+    if (skuLineEdit->text() == "" || qtyLineEdit->text() == "")
+    {
+        return;
+    }
+
+    Item* item = dbmanager::getItem(skuLineEdit->text().toInt());
+    if (item == nullptr)
+    {
+        DisplayMessage::info("Add Failure", "SKU does not exist in database");
+        qtyLineEdit->setText("");
+        return;
+    }
+
+    item->qty = qtyLineEdit->text().toInt();
+    appendRow(item);
+}
+
+void TransactionEditView::removeItem()
+{
+
 }
 
 void TransactionEditView::incQty()
@@ -191,6 +214,19 @@ void TransactionEditView::decQty()
     checkQty();
 }
 
+void TransactionEditView::checkSKU()
+{
+    QString skustr = skuLineEdit->text();
+    if (skustr.size() == 8 && dbmanager::getItem(skustr.toInt()) != nullptr)
+    {
+        skuCheckmark->setText("✓");
+        skuCheckmark->setStyleSheet("color: rgb(0,200,0);");
+        return;
+    }
+    skuCheckmark->setText("⛌");
+    skuCheckmark->setStyleSheet("color: rgb(200,0,0);");
+}
+
 // Check that the quantity doesn't go over the max available for an item
 void TransactionEditView::checkQty()
 {
@@ -218,4 +254,3 @@ void TransactionEditView::checkQty()
         qtyLineEdit->setText("0");
     }
 }
-
