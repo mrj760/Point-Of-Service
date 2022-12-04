@@ -43,7 +43,13 @@ void MainWindow::setTableModel(const QString& tablename)
     }
 }
 
-
+void MainWindow::on_order_clicked()
+{
+    if(ordermgr == nullptr)
+    {
+        ordermgr = new NewOrderView(this);
+    }
+}
 void MainWindow::on_items_clicked()
 {
     if (itemmgr == nullptr)

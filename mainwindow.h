@@ -11,7 +11,7 @@
 #include <dbmanager.h>
 #include <itemmanagerview.h>
 #include <customermanagerview.h>
-
+#include <new_order_view.h>
 typedef QSqlQuery Query;
 typedef QSqlTableModel TableModel;
 typedef QSqlDatabase Database;
@@ -34,10 +34,12 @@ public:
 
     ItemManagerView* itemmgr = nullptr;
     CustomerManagerView* custmgr = nullptr;
+    NewOrderView* ordermgr = nullptr;
 
 
 private slots:
     void on_items_clicked();
+    void on_order_clicked();
     void on_customers_clicked();
 
     void on_save_clicked();

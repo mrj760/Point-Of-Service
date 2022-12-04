@@ -19,6 +19,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
+    new_order_view.cpp \
     pos.cpp \
     register.cpp \
     simplecrypt.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     mainwindow.h \
     backbone.h \
     message.h \
+    new_order_view.h \
     passkey.h \
     pos.h \
     register.h \
@@ -57,6 +59,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 #QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
+
 
 RESOURCES += \
     resources.qrc

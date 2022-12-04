@@ -1,4 +1,4 @@
-psql -a -U postgres -p 5432 -h localhost
+psql -a -U namcuong757 mydb -p 5432 -h localhost
 
 mypassword
 

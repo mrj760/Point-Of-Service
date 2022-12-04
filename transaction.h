@@ -6,7 +6,7 @@
 #include <customer.h>
 #include <tuple>
 #include <passkey.h>
-
+#include <vector>
 using std::tuple, std::vector;
 
 class POS;
