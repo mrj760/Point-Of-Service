@@ -32,7 +32,6 @@ dbmanager::dbmanager(const QString &driver, const QString &path, const QString &
 /*  */
 
 /* Insert Item */
-
 bool dbmanager::addItem(Item item)
 {
     if (item.qty < 0)
@@ -156,6 +155,13 @@ bool dbmanager::addRegister(Register reg)
 /*  */
 /*  */
 
+
+
+/*  */
+/*  */
+/*------------------------------------- Selecting Functions -------------------------------------*/
+/*  */
+/*  */
 
 Item* dbmanager::getItem(int sku)
 {

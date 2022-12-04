@@ -23,7 +23,6 @@ private:
     QLabel *custInfoLabels[4];
     QSortFilterProxyModel *filterModels[4];
 
-
     void submitNew();
     void editExisting();
     void clearScreen();

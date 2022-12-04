@@ -78,9 +78,16 @@ void MainWindow::setupCloseButton()
 
 void MainWindow::openOrderEditor()
 {
-    if (transactioneditor == nullptr)
-        transactioneditor = new TransactionEditView;
-    transactioneditor->show();
+//    if (transactioneditor == nullptr)
+//        transactioneditor = new TransactionEditView;
+//    transactioneditor->show();
+    if (internalWindowHolder == nullptr)
+    {
+        internalWindowHolder = new TransactionContainer(500,500,"idk");
+        transactioneditor = new Home(*internalWindowHolder);
+//        internalWindowHolder->linkVirtualKeyPad(transactioneditor->getVirtualKeyPad());
+    }
+    internalWindowHolder->showFullScreen();
 }
 
 void MainWindow::openOrdersViewer()
@@ -105,7 +112,8 @@ void MainWindow::openCustMgr()
     {
         custmgr = new CustomerManagerView(this);
     }
-    custmgr->showFullScreen();
+//    custmgr->showFullScreen();
+        custmgr->show();
 }
 
 

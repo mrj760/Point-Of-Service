@@ -8,6 +8,8 @@
 #include <customermanagerview.h>
 #include <transactioneditview.h>
 #include <transactionsviewer.h>
+#include <POS/UI/Window.hpp>
+#include <POS/UI/Screen/Home.hpp>
 
 class MainWindow : public QWidget
 {
@@ -20,7 +22,9 @@ public:
     QVBoxLayout *mainLayout;
 
     QPushButton *neworderbutton, *allordersbutton;
-    TransactionEditView* transactioneditor = nullptr;
+//    TransactionEditView* transactioneditor = nullptr;
+    TransactionContainer* internalWindowHolder = nullptr;
+    Home* transactioneditor = nullptr;
     TransactionsViewer* transactionsviewer = nullptr;
 
     void openOrderEditor();

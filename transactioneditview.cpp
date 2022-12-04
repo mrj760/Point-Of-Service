@@ -166,6 +166,9 @@ void TransactionEditView::addItem()
     }
 
     item->qty = qtyLineEdit->text().toInt();
+
+
+
     appendRow(item);
 }
 
@@ -244,12 +247,26 @@ void TransactionEditView::checkQty()
         return;
     }
 
-    int qty = qtyLineEdit->text().toInt();
-    if (qty > item->qty)
+    int qtyincart = 0;
+    QModelIndex parent = QModelIndex();
+    for (int row=0; row < itemsModel->rowCount(parent); ++row)
+    {
+        QModelIndex idx = itemsModel->index(row, 0, parent);
+        QString sku = itemsModel->data(idx).value<QString>();
+        if (sku == skuLineEdit->text())
+        {
+            idx = itemsModel->index(row, 2, parent);
+            qtyincart = itemsModel->data(idx).value<QString>().toInt();
+        }
+    }
+
+    int qtytoadd = qtyLineEdit->text().toInt();
+    int maxqty = item->qty + qtyincart;
+    if (qtytoadd > maxqty)
     {
         qtyLineEdit->setText(QString::number(item->qty));
     }
-    else if (qty < 0)
+    else if (qtytoadd < 0)
     {
         qtyLineEdit->setText("0");
     }

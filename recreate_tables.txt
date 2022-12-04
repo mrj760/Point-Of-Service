@@ -2,6 +2,8 @@ psql -a -U postgres -p 5432 -h localhost
 
 mypassword
 
+CREATE DATABASE posdb;
+
 \c posdb
 
 CREATE EXTENSION citext;
