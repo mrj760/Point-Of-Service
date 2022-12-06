@@ -1,4 +1,5 @@
 #include <POS/UI/Button/AImageButton.hpp>
+#include <iostream>
 
 // Constructors
 
@@ -22,9 +23,10 @@ AImageButton::AImageButton(
     : AImageButton{ window, filename, xPos, yPos, xSize, ySize }
 {
     this->setToolTip(tooltip.toStdString().c_str());
-    this->setIcon(::QIcon{ ("./" + filename).toStdString().c_str() });
+    this->setIcon(::QIcon{ (":icons/" + filename).toStdString().c_str() });
     this->setIconSize(QSize{ xSize, ySize });
-    this->setText(tooltip.split(QLatin1Char(' '))[0]);
+    std::cout << filename.toStdString().c_str() << std::endl;
+    //this->setText(tooltip.split(QLatin1Char(' '))[0]);
 }
 
 ///////////////////////////////////////////////////////////////////////////
