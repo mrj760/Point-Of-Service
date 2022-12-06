@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <POS/UI/Box/ATextBox.hpp>
 #include <POS/UI/Button/CustomText.hpp>
 #include <POS/UI/ProductContainer.hpp>

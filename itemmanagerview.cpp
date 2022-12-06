@@ -277,8 +277,8 @@ void ItemManagerView::editExisting()
                 "SET qty = :qty, cents = :cents, name = :name "
                 "WHERE sku = :sku;");
     upd.bindValue(":sku", sku.toLongLong());
-    upd.bindValue(":qty", qty=="" ? NULL : qty.toInt());
-    upd.bindValue(":cents", cents=="" ? NULL : cents.toInt());
+    upd.bindValue(":qty", (long long)(qty=="" ? NULL : qty.toInt()));
+    upd.bindValue(":cents", (long long)(cents=="" ? NULL : cents.toInt()));
     upd.bindValue(":name", name=="" ? NULL : name);
 
     if (!upd.exec())

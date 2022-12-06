@@ -9,7 +9,7 @@
 // Contains a QApplication and a QMainWindow window
 #include <functional>
 
-class TransactionContainer : public QWidget
+class TransactionContainer
 {
 
 public:

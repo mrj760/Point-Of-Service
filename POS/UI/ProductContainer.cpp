@@ -117,7 +117,7 @@ int ProductContainer::addFunds(const std::vector<QString>& values)
 {
     m_funds += (values[0]).toInt() * 100;
     if (auto it{ values[0].indexOf(".") }; it != -1) {
-        m_funds += (values[0].last(it + 1).toInt());
+        //m_funds += (values[0].last(it + 1).toInt());
     }
     this->printFunds();
     return m_funds;

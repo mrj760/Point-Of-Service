@@ -9,7 +9,7 @@ AImageButton::AImageButton(
         int xPos, int yPos, int xSize, int ySize ) noexcept
     : QPushButton{ &window }
 {
-    this->setIcon(::QIcon{ ("./" + filename).toStdString().c_str() });
+    this->setIcon(::QIcon{ (":icons/" + filename).toStdString().c_str() });
     this->setIconSize(QSize{ xSize, ySize });
     this->move(xPos, yPos);
     this->resize(xSize, ySize);
