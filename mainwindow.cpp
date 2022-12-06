@@ -83,7 +83,7 @@ void MainWindow::openOrderEditor()
 //    transactioneditor->show();
     if (internalWindowHolder == nullptr)
     {
-        internalWindowHolder = new TransactionContainer(500,500,"idk");
+        internalWindowHolder = new TransactionContainer(500,500,"New Order");
         transactioneditor = new Home(*internalWindowHolder);
 //        internalWindowHolder->linkVirtualKeyPad(transactioneditor->getVirtualKeyPad());
     }

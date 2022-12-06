@@ -14,7 +14,14 @@ CustomImage::CustomImage( QWidget& window, const QString& filepath, const QStrin
         std::function<void()> callback ) noexcept
     : AImageButton{ window, filepath, tooltip, xPos, yPos, xSize, ySize } , m_window{ window } , m_callback{ std::move(callback) }
 {}
-
+/*
+CustomImage::CustomImage(QWidget& window, const QString& filepath,
+                     const QString& tooltip, const QString& label,
+                     int xPos, int yPos, int xSize, int ySize,
+                     std::function<void()> callback) noexcept
+    : AImageButton{window, filepath, tooltip, label, xPos,yPos,xSize,ySize}, m_window{ window } , m_callback{ std::move(callback)}
+{}
+*/
 //Override
 
 ///////////////////////////////////////////////////////////////////////////

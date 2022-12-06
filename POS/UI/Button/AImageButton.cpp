@@ -8,7 +8,7 @@ AImageButton::AImageButton(
         int xPos, int yPos, int xSize, int ySize ) noexcept
     : QPushButton{ &window }
 {
-    this->setIcon(::QIcon{ ("./assets/icon/" + filename).toStdString().c_str() });
+    this->setIcon(::QIcon{ ("./" + filename).toStdString().c_str() });
     this->setIconSize(QSize{ xSize, ySize });
     this->move(xPos, yPos);
     this->resize(xSize, ySize);
@@ -22,7 +22,25 @@ AImageButton::AImageButton(
     : AImageButton{ window, filename, xPos, yPos, xSize, ySize }
 {
     this->setToolTip(tooltip.toStdString().c_str());
+    this->setIcon(::QIcon{ ("./" + filename).toStdString().c_str() });
+    this->setIconSize(QSize{ xSize, ySize });
+    this->setText(tooltip.split(QLatin1Char(' '))[0]);
 }
 
+///////////////////////////////////////////////////////////////////////////
+/// Constructor 3
+///////////////////////////////////////////////////////////////////////////
+/*
+AImageButton::AImageButton(
+        QWidget& window, const QString& filename, const QString& tooltip,
+        const QString& label, int xPos, int yPos, int xSize, int ySize) noexcept
+    : AImageButton{window, filename, tooltip, label, xPos, yPos, xSize, ySize }
+{
+    this->setToolTip(tooltip.toStdString().c_str());
+    this->setIcon(::QIcon{ (filename).toStdString().c_str() });
+    this->setIconSize(QSize{ xSize, ySize });
+    this->setText(label.toStdString().c_str());
+}
+*/
 ///////////////////////////////////////////////////////////////////////////
 AImageButton::~AImageButton() noexcept = default;

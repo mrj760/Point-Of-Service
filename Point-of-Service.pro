@@ -67,5 +67,43 @@ RESOURCES += \
 
 
 DISTFILES += \
+    POS/UI/assets/add.png \
+    POS/UI/assets/addFunds.png \
+    POS/UI/assets/amexlogo.png \
+    POS/UI/assets/checkmark.png \
+    POS/UI/assets/clear.png \
+    POS/UI/assets/create.png \
+    POS/UI/assets/dinersclublogo.png \
+    POS/UI/assets/discoverlogo.png \
+    POS/UI/assets/exit.png \
+    POS/UI/assets/jcblogo.png \
+    POS/UI/assets/load.png \
+    POS/UI/assets/maestrologo.png \
+    POS/UI/assets/mastercardlogo.png \
+    POS/UI/assets/pay.png \
+    POS/UI/assets/remove.png \
+    POS/UI/assets/removeFromDB.png \
+    POS/UI/assets/save.png \
+    POS/UI/assets/search.png \
+    POS/UI/assets/visalogo.png \
+    add.png \
+    addFunds.png \
+    amexlogo.png \
+    checkmark.png \
+    clear.png \
+    create.png \
+    dinersclublogo.png \
+    discoverlogo.png \
+    exit.png \
     ideas.txt \
-    modules.config
+    jcblogo.png \
+    load.png \
+    maestrologo.png \
+    mastercardlogo.png \
+    modules.config \
+    pay.png \
+    remove.png \
+    removeFromDB.png \
+    save.png \
+    search.png \
+    visalogo.png

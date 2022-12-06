@@ -4,8 +4,7 @@
 VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     int visibleXPos, int visibleYPos, int unvisibleXPos, int unvisibleYPos, int xSize, int ySize
 ) noexcept
-    : m_products{ products }
-    , m_window{ window }
+    : m_window{ window }
     , m_visibleXPos{ visibleXPos }
     , m_visibleYPos{ visibleYPos }
     , m_unvisibleXPos{ unvisibleXPos }
@@ -18,7 +17,8 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
         unvisibleYPos + m_buttonSize.height() * 0,
         xSize,
         (m_buttonSize.height())
-    } , m_buttons{
+    }
+    , m_buttons{
         CustomText{
             window,
             "clear",
@@ -150,7 +150,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
             (m_buttonSize.height()),
             [this](){ m_textBox.addText("."); m_textBox.print(); }
         }
-    }, m_textBoxAnimation {
+    } , m_products{ products }, m_textBoxAnimation {
         ::QPropertyAnimation{ &m_textBox, "pos" },
     }, m_buttonAnimations {
         ::QPropertyAnimation{ &m_buttons[0], "pos" },
@@ -188,7 +188,7 @@ void VirtualKeyPad::reveal(
     m_isVisible = true;
     m_validateCallback = validateCallback;
     m_remainingValues = numValues;
-    auto i{ 0uz };
+    size_t i{ 0 };
     {
         const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
         const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 4 };
@@ -506,7 +506,7 @@ void VirtualKeyPad::conceal()
     m_textBox.addLine("");
     m_textBox.print();
     m_values.clear();
-    auto i{ 0uz };
+    size_t i{ 0 };
     {
         const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
         const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 4 };

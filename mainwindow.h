@@ -21,7 +21,6 @@ public:
 
     QVBoxLayout *mainLayout;
 
-    QPushButton *neworderbutton, *allordersbutton;
 //    TransactionEditView* transactioneditor = nullptr;
     TransactionContainer* internalWindowHolder = nullptr;
     Home* transactioneditor = nullptr;
@@ -31,6 +30,7 @@ public:
     void openOrdersViewer();
 
     QPushButton *itemmgrbutton, *custmgrbutton;
+    QPushButton *neworderbutton, *allordersbutton;
     ItemManagerView* itemmgr = nullptr;
     CustomerManagerView* custmgr = nullptr;
 

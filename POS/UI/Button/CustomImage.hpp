@@ -20,8 +20,12 @@ public:
     explicit CustomImage(QWidget& window, const QString& filepath, const QString& tooltip,
                          int xPos, int yPos, int xSize, int ySize,
                          std::function<void()> callback) noexcept;
-
-
+/*
+    explicit CustomImage(QWidget& window, const QString& filepath,
+                         const QString& tooltip, const QString& label,
+                         int xPos, int yPos, int xSize, int ySize,
+                         std::function<void()> callback) noexcept;
+                         */
     // Override
 
     // Behavior on button click

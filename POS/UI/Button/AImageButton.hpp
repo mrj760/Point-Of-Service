@@ -18,7 +18,13 @@ public:
     //The filename is searched within the ./assets/icon directory
     explicit AImageButton(QWidget& window, const QString& filename, const QString& tooltip,
                           int xPos, int yPos, int xSize, int ySize) noexcept;
-
+    // Constructor with label and tooltip
+    //The filename is searched within the ./ directory
+    /*
+    explicit AImageButton(QWidget& window, const QString& filepath,
+                         const QString& tooltip, const QString& label,
+                         int xPos, int yPos, int xSize, int ySize) noexcept;
+                         */
 
     // Copy constructor
     AImageButton(const AImageButton& other) noexcept = delete;

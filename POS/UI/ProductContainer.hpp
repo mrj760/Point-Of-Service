@@ -5,7 +5,7 @@
 #include <fstream>
 #include <POS/UI/Box/ATextBox.hpp>
 #include <POS/UI/ErrorNotification.hpp>
-#include <POS/Product.hpp>
+//#include <POS/Product.hpp>
 #include <dbmanager.h>
 #include <template_item.h>
 #include <template_transaction.h>
