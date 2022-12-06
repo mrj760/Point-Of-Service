@@ -21,9 +21,6 @@ public:
 
     QVBoxLayout *mainLayout;
 
-//    TransactionEditView* transactioneditor = nullptr;
-    TransactionContainer* internalWindowHolder = nullptr;
-    Home* transactioneditor = nullptr;
     TransactionsViewer* transactionsviewer = nullptr;
 
     void openOrderEditor();
@@ -43,6 +40,10 @@ private:
     void setupOrderButtons();
     void setupMgrButtons();
     void setupCloseButton();
+
+    //    TransactionEditView* transactioneditor = nullptr;
+    TransactionContainer* internalWindowHolder = nullptr;
+    Home* transactioneditor = nullptr;
 };
 
 

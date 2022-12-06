@@ -81,12 +81,12 @@ void MainWindow::openOrderEditor()
 //    if (transactioneditor == nullptr)
 //        transactioneditor = new TransactionEditView;
 //    transactioneditor->show();
-    if (internalWindowHolder == nullptr)
-    {
-        internalWindowHolder = new TransactionContainer(500,500,"New Order");
-        transactioneditor = new Home(*internalWindowHolder);
-//        internalWindowHolder->linkVirtualKeyPad(transactioneditor->getVirtualKeyPad());
+    if (internalWindowHolder) {
+        delete transactioneditor;
     }
+    internalWindowHolder = new TransactionContainer(500,500,"New Order");
+    transactioneditor = new Home(*internalWindowHolder);
+//  internalWindowHolder->linkVirtualKeyPad(transactioneditor->getVirtualKeyPad());
     //internalWindowHolder->showFullScreen();
 }
 

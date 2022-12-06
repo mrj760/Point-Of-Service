@@ -5,7 +5,7 @@ TransactionContainer::TransactionContainer(int xSize, int ySize, const QString& 
     m_window.setWindowTitle(QApplication::translate("toplevel", name.toStdString().c_str()));
     this->resize(xSize, ySize);
     m_window.show();
-    //this->hide();
+    //  this->hide();
 }
 
 void TransactionContainer::resize( int xSize, int ySize )

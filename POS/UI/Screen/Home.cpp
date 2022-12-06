@@ -116,7 +116,9 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
        int(m_window.getSize().height() * 0.85),
        int(m_window.getSize().width() * 0.08),
        int(m_window.getSize().height() * 0.08),
-       [this](){ m_window.get().close();} }
+       [this](){
+            m_window.get().close();
+        }}
 
 {
 //    m_products.emplace(1uz, "article1"s, 10'20ll, 2uz);
