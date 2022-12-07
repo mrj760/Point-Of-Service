@@ -6,7 +6,7 @@ ErrorNotification::ErrorNotification( QWidget& window,const QString& text) noexc
     : QMessageBox{ &window }
 {
     this->setText(text.toStdString().c_str());
-    this->setWindowFlags(this->windowFlags() | ::Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(this->windowFlags() | Qt::WindowStaysOnTopHint);
     this->setStyleSheet(
                 "background-color: #FFFFFF; "
                 "color:rgb(255,0,0); "
@@ -16,7 +16,7 @@ ErrorNotification::ErrorNotification( QWidget& window,const QString& text) noexc
                 "border-width: 0px; }"
                 );
     this->setModal(false);
-    this->setStandardButtons(::QMessageBox::StandardButton::NoButton);
+    this->setStandardButtons(QMessageBox::StandardButton::NoButton);
     this->show();
     QTimer::singleShot(1500, this, SLOT(hide()));
     window.setFocus();

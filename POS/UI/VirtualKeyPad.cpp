@@ -1,504 +1,341 @@
 #include <POS/UI/VirtualKeyPad.hpp>
 
-
 VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
-    int visibleXPos, int visibleYPos, int unvisibleXPos, int unvisibleYPos, int xSize, int ySize
-) noexcept
-    : m_window{ window }
-    , m_visibleXPos{ visibleXPos }
-    , m_visibleYPos{ visibleYPos }
-    , m_unvisibleXPos{ unvisibleXPos }
-    , m_unvisibleYPos{ unvisibleYPos }
-    , m_buttonSize{ (xSize / 4), (ySize) / 5 }
-    , m_validateCallback{ std::nullopt }
-    , m_textBox{
-        window,
-        unvisibleXPos + m_buttonSize.width() * 0,
-        unvisibleYPos + m_buttonSize.height() * 0,
-        xSize,
-        (m_buttonSize.height())
-    }
-    , m_buttons{
-        CustomText{
-            window,
-            "clear",
-            unvisibleXPos + m_buttonSize.width() * 0,
-            unvisibleYPos + m_buttonSize.height() * 4,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.clearLine(); m_textBox.addLine(""); m_textBox.print(); }
-        }, CustomText{
-            window,
-            "0",
-            unvisibleXPos + m_buttonSize.width() * 1,
-            unvisibleYPos + m_buttonSize.height() * 4,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("0"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            "validate",
-            unvisibleXPos + m_buttonSize.width() * 2,
-            unvisibleYPos + m_buttonSize.height() * 4,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this, &window](){
-                this->validate();
-            }
-        }, CustomText{
-            window,
-            "close",
-            unvisibleXPos + m_buttonSize.width() * 3,
-            unvisibleYPos + m_buttonSize.height() * 4,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ this->conceal(); }
-        }, CustomText{
-            window,
-            "1",
-            unvisibleXPos + m_buttonSize.width() * 0,
-            unvisibleYPos + m_buttonSize.height() * 3,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("1"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            "2",
-            unvisibleXPos + m_buttonSize.width() * 1,
-            unvisibleYPos + m_buttonSize.height() * 3,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("2"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            "3",
-            unvisibleXPos + m_buttonSize.width() * 2,
-            unvisibleYPos + m_buttonSize.height() * 3,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("3"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            ".00",
-            unvisibleXPos + m_buttonSize.width() * 3,
-            unvisibleYPos + m_buttonSize.height() * 3,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText(".00"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            "4",
-            unvisibleXPos + m_buttonSize.width() * 0,
-            unvisibleYPos + m_buttonSize.height() * 2,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("4"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            "5",
-            unvisibleXPos + m_buttonSize.width() * 1,
-            unvisibleYPos + m_buttonSize.height() * 2,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("5"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            "6",
-            unvisibleXPos + m_buttonSize.width() * 2,
-            unvisibleYPos + m_buttonSize.height() * 2,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("6"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            ".0",
-            unvisibleXPos + m_buttonSize.width() * 3,
-            unvisibleYPos + m_buttonSize.height() * 2,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText(".0"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            "7",
-            unvisibleXPos + m_buttonSize.width() * 0,
-            unvisibleYPos + m_buttonSize.height() * 1,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("7"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            "8",
-            unvisibleXPos + m_buttonSize.width() * 1,
-            unvisibleYPos + m_buttonSize.height() * 1,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("8"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            "9",
-            unvisibleXPos + m_buttonSize.width() * 2,
-            unvisibleYPos + m_buttonSize.height() * 1,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("9"); m_textBox.print(); }
-        }, CustomText{
-            window,
-            ".",
-            unvisibleXPos + m_buttonSize.width() * 3,
-            unvisibleYPos + m_buttonSize.height() * 1,
-            (m_buttonSize.width()),
-            (m_buttonSize.height()),
-            [this](){ m_textBox.addText("."); m_textBox.print(); }
-        }
-    } , m_products{ products }, m_textBoxAnimation {
-        ::QPropertyAnimation{ &m_textBox, "pos" },
-    }, m_buttonAnimations {
-        ::QPropertyAnimation{ &m_buttons[0], "pos" },
-        ::QPropertyAnimation{ &m_buttons[1], "pos" },
-        ::QPropertyAnimation{ &m_buttons[2], "pos" },
-        ::QPropertyAnimation{ &m_buttons[3], "pos" },
-        ::QPropertyAnimation{ &m_buttons[4], "pos" },
-        ::QPropertyAnimation{ &m_buttons[5], "pos" },
-        ::QPropertyAnimation{ &m_buttons[6], "pos" },
-        ::QPropertyAnimation{ &m_buttons[7], "pos" },
-        ::QPropertyAnimation{ &m_buttons[8], "pos" },
-        ::QPropertyAnimation{ &m_buttons[9], "pos" },
-        ::QPropertyAnimation{ &m_buttons[10], "pos" },
-        ::QPropertyAnimation{ &m_buttons[11], "pos" },
-        ::QPropertyAnimation{ &m_buttons[12], "pos" },
-        ::QPropertyAnimation{ &m_buttons[13], "pos" },
-        ::QPropertyAnimation{ &m_buttons[14], "pos" },
-        ::QPropertyAnimation{ &m_buttons[15], "pos" }
-    }
+                             int visibleXPos, int visibleYPos, int unvisibleXPos, int unvisibleYPos, int xSize, int ySize
+                             ) noexcept
+    : m_window { window }
+    , m_visibleXPos { visibleXPos }
+    , m_visibleYPos { visibleYPos }
+    , m_unvisibleXPos { unvisibleXPos }
+    , m_unvisibleYPos { unvisibleYPos }
+    , m_buttonSize { ( xSize / 4), (ySize) / 5 }
+    , m_validateCallback { std::nullopt }
+    , m_textBox { window, unvisibleXPos, unvisibleYPos, xSize, (m_buttonSize.height()) }
+
+    // All the buttons in the keypad along with a lambda for their functionality
+    , m_buttons {
+
+          // Clear-Text Button
+          CustomText {
+          window,
+          "clear",
+          unvisibleXPos + m_buttonSize.width() * 0,
+          unvisibleYPos + m_buttonSize.height() * 4,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.clearLine();
+    m_textBox.addLine("");
+    m_textBox.print(); }},
+
+          // 0 Button
+          CustomText {
+          window,
+          "0",
+          unvisibleXPos + m_buttonSize.width() * 1,
+          unvisibleYPos + m_buttonSize.height() * 4,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // 0 button lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText("0");
+    m_textBox.print();}},
+
+          // Validate Button
+          CustomText {
+          window,
+          "validate",
+          unvisibleXPos + m_buttonSize.width() * 2,
+          unvisibleYPos + m_buttonSize.height() * 4,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // Validate button lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    this->validate();} },
+
+          // Close Button
+          CustomText {
+          window,
+          "close",
+          unvisibleXPos + m_buttonSize.width() * 3,
+          unvisibleYPos + m_buttonSize.height() * 4,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          // Close Button Lambda
+          [this](){ this->concealAll(); } },
+
+          // 1 Button
+          CustomText {
+          window,
+          "1",
+          unvisibleXPos + m_buttonSize.width() * 0,
+          unvisibleYPos + m_buttonSize.height() * 3,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // 1 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText("1");
+    m_textBox.print(); } },
+
+          // 2 Button
+          CustomText {
+          window,
+          "2",
+          unvisibleXPos + m_buttonSize.width() * 1,
+          unvisibleYPos + m_buttonSize.height() * 3,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // 2 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText("2");
+    m_textBox.print(); } },
+
+          // 3 Button
+          CustomText {
+          window,
+          "3",
+          unvisibleXPos + m_buttonSize.width() * 2,
+          unvisibleYPos + m_buttonSize.height() * 3,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // 3 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText("3");
+    m_textBox.print(); } },
+
+          // Double 0 cents Button
+          CustomText {
+          window,
+          ".00",
+          unvisibleXPos + m_buttonSize.width() * 3,
+          unvisibleYPos + m_buttonSize.height() * 3,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // .00 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText(".00");
+    m_textBox.print(); } },
+
+          // 4 Button
+          CustomText {
+          window,
+          "4",
+          unvisibleXPos + m_buttonSize.width() * 0,
+          unvisibleYPos + m_buttonSize.height() * 2,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // 4 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText("4");
+    m_textBox.print(); } },
+
+          // 5 Button
+          CustomText {
+          window,
+          "5",
+          unvisibleXPos + m_buttonSize.width() * 1,
+          unvisibleYPos + m_buttonSize.height() * 2,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // 5 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText("5");
+    m_textBox.print(); } },
+
+          // 6 Button
+          CustomText {
+          window,
+          "6",
+          unvisibleXPos + m_buttonSize.width() * 2,
+          unvisibleYPos + m_buttonSize.height() * 2,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // 6 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText("6");
+    m_textBox.print(); } },
+
+          // Single 0 cents Button
+          CustomText {
+          window,
+          ".0",
+          unvisibleXPos + m_buttonSize.width() * 3,
+          unvisibleYPos + m_buttonSize.height() * 2,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // .0 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText(".0");
+    m_textBox.print(); } },
+
+          // 7 Button
+          CustomText {
+          window,
+          "7",
+          unvisibleXPos + m_buttonSize.width() * 0,
+          unvisibleYPos + m_buttonSize.height() * 1,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // 7 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText("7");
+    m_textBox.print(); } },
+
+          // 8 Button
+          CustomText {
+          window,
+          "8",
+          unvisibleXPos + m_buttonSize.width() * 1,
+          unvisibleYPos + m_buttonSize.height() * 1,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // 8 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText("8");
+    m_textBox.print(); } },
+
+          // 9 Button
+          CustomText {
+          window,
+          "9",
+          unvisibleXPos + m_buttonSize.width() * 2,
+          unvisibleYPos + m_buttonSize.height() * 1,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // 9 Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText("9");
+    m_textBox.print(); } },
+
+          // Decimal Button
+          CustomText {
+          window,
+          ".",
+          unvisibleXPos + m_buttonSize.width() * 3,
+          unvisibleYPos + m_buttonSize.height() * 1,
+          (m_buttonSize.width()),
+          (m_buttonSize.height()),
+          [this](){
+    // . Button Lambda
+    if(mouseHeld) return;
+    mouseHeld = true;
+    m_textBox.addText(".");
+    m_textBox.print(); }
+
+}} // END BUTTONS
+
+    , m_products{ products }
+
+    , m_textBoxAnimation {
+          QPropertyAnimation{ &m_textBox, "pos" },
+          }
+
+    , m_buttonAnimations {}//{QPropertyAnimation{ &m_buttons[0], "pos" },QPropertyAnimation{ &m_buttons[1], "pos" },QPropertyAnimation{ &m_buttons[2], "pos" },QPropertyAnimation{ &m_buttons[3], "pos" },QPropertyAnimation{ &m_buttons[4], "pos" },QPropertyAnimation{ &m_buttons[5], "pos" },QPropertyAnimation{ &m_buttons[6], "pos" },QPropertyAnimation{ &m_buttons[7], "pos" },QPropertyAnimation{ &m_buttons[8], "pos" },QPropertyAnimation{ &m_buttons[9], "pos" },QPropertyAnimation{ &m_buttons[10], "pos" },QPropertyAnimation{ &m_buttons[11], "pos" },QPropertyAnimation{ &m_buttons[12], "pos" },QPropertyAnimation{ &m_buttons[13], "pos" },QPropertyAnimation{ &m_buttons[14], "pos" },QPropertyAnimation{ &m_buttons[15], "pos" }}
+
+    // Constructor Body
 {
+
+    for (int i=0; i < 16; ++i)
+    {
+        m_buttonAnimations[i] = new QPropertyAnimation(&m_buttons[i], "pos");
+    }
     m_textBox.setFontPointSize(25);
     m_textBox.addLine("");
+
+    mouseChecker = new QTimer();
+    mouseChecker->setInterval(50);
+    connect(mouseChecker, &QTimer::timeout, this, &VirtualKeyPad::checkMouse);
+    mouseChecker->start();
 }
 
-
-// Animatiton
+///////////////////////////////////////////////////////////////////////////
+void VirtualKeyPad::checkMouse()
+{
+    if (QGuiApplication::mouseButtons() != Qt::LeftButton)
+        mouseHeld = false;
+}
 
 ///////////////////////////////////////////////////////////////////////////
-void VirtualKeyPad::reveal(
-    std::function<void(const std::vector<QString>&)> validateCallback,
-    int numValues
-)
+// Animation
+///////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
+void VirtualKeyPad::revealAnimation(QPropertyAnimation& anim, int unvisW, int unvisH, int visW, int visH, int idx /* default -1 */)
+{
+    const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() *  unvisW};
+    const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * unvisH };
+    const auto endPosX{ m_visibleXPos + m_buttonSize.width() * visW };
+    const auto endPosY{ m_visibleYPos + m_buttonSize.height() * visH };
+    anim.setDuration(VirtualKeyPad::animationDuration);
+    anim.setStartValue(QPoint{(startPosX),(startPosY)});
+    anim.setEndValue(QPoint{(endPosX),(endPosY)});
+    anim.start();
+
+    if (idx != -1)
+        m_buttons[idx].raise();
+}
+
+///////////////////////////////////////////////////////////////////////////
+void VirtualKeyPad::revealAll(std::function<void(const std::vector<QString>&)> validateCallback,int numValues)
 {
     m_products.setReadOnly(true);
     m_isVisible = true;
     m_validateCallback = validateCallback;
     m_remainingValues = numValues;
-    size_t i{ 0 };
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 4 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 4 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 1 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 4 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 1 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 4 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 2 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 4 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 2 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 4 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 3 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 4 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 3 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 4 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 3 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 3 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 1 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 3 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 1 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 3 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 2 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 3 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 2 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 3 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 3 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 3 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 3 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 3 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 2 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 2 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 1 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 2 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 1 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 2 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 2 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 2 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 2 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 2 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 3 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 2 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 3 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 2 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 1 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 1 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 1 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 1 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 1 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 1 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 2 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 1 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 2 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 1 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 3 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 1 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 3 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 1 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-        m_buttons[i].raise();
-    }
-    {
-        const auto startPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
-        const auto startPosY{ m_unvisibleYPos + m_buttonSize.height() * 0 };
-        const auto endPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
-        const auto endPosY{ m_visibleYPos + m_buttonSize.height() * 0 };
-        m_textBoxAnimation.setDuration(VirtualKeyPad::animationDuration);
-        m_textBoxAnimation.setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_textBoxAnimation.setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_textBoxAnimation.start();
-        m_textBox.raise();
-    }
+
+    // short and fucky
+    int idx = 0;
+    for (int dec = 4; dec >= 1; --dec)
+        for (int inc = 0; inc <=3; ++inc)
+        { revealAnimation(*m_buttonAnimations[idx], inc, dec, inc, dec, idx); ++idx; }
+
+    revealAnimation(m_textBoxAnimation, 0,0,0,0);
+    m_textBox.raise();
 }
 
 ///////////////////////////////////////////////////////////////////////////
-///
+void VirtualKeyPad::concealAnimation(QPropertyAnimation& anim, int visW, int visH, int unvisW, int unvisH)
+{
+    const auto startPosX{ m_visibleXPos + m_buttonSize.width() * visW };
+    const auto startPosY{ m_visibleYPos + m_buttonSize.height() * visH };
+    const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * unvisW };
+    const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * unvisH };
+    anim.setDuration(VirtualKeyPad::animationDuration);
+    anim.setStartValue(QPoint{(startPosX),(startPosY)});
+    anim.setEndValue(QPoint{(endPosX),(endPosY)});
+    anim.start();
+}
+
 ///////////////////////////////////////////////////////////////////////////
-void VirtualKeyPad::conceal()
+void VirtualKeyPad::concealAll()
 {
     m_products.setReadOnly(false);
     m_isVisible = false;
@@ -506,300 +343,18 @@ void VirtualKeyPad::conceal()
     m_textBox.addLine("");
     m_textBox.print();
     m_values.clear();
-    size_t i{ 0 };
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 4 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 4 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 1 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 4 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 1 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 4 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 2 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 4 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 2 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 4 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 3 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 4 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 3 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 4 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 3 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 3 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 1 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 3 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 1 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 3 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 2 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 3 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 2 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 3 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 3 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 3 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 3 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 3 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 2 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 2 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 1 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 2 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 1 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 2 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 2 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 2 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 2 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 2 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 3 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 2 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 3 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 2 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 1 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 1 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 1 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 1 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 1 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 1 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 2 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 1 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 2 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 1 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    ++i;
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 3 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 1 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 3 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 1 };
-        m_buttonAnimations[i].setDuration(VirtualKeyPad::animationDuration);
-        m_buttonAnimations[i].setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_buttonAnimations[i].setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_buttonAnimations[i].start();
-    }
-    {
-        const auto startPosX{ m_visibleXPos + m_buttonSize.width() * 0 };
-        const auto startPosY{ m_visibleYPos + m_buttonSize.height() * 0 };
-        const auto endPosX{ m_unvisibleXPos + m_buttonSize.width() * 0 };
-        const auto endPosY{ m_unvisibleYPos + m_buttonSize.height() * 0 };
-        m_textBoxAnimation.setDuration(VirtualKeyPad::animationDuration);
-        m_textBoxAnimation.setStartValue(::QPoint{
-            (startPosX),
-            (startPosY)
-        });
-        m_textBoxAnimation.setEndValue(::QPoint{
-            (endPosX),
-            (endPosY)
-        });
-        m_textBoxAnimation.start();
-    }
+
+    // short and fucky
+    int idx=0;
+    for (int dec = 4; dec >= 1; --dec)
+        for (int inc = 0; inc <=3; ++inc)
+            concealAnimation(*m_buttonAnimations[idx++], inc, dec, inc, dec);
+
+    concealAnimation(m_textBoxAnimation, 0,0,0,0);
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void VirtualKeyPad::write(
-    const QString& str
-)
+void VirtualKeyPad::write(const QString& str)
 {
     if (m_isVisible) {
         m_textBox.addText(str);
@@ -824,6 +379,6 @@ void VirtualKeyPad::validate()
     }
 
     if (!m_remainingValues) {
-        this->conceal();
+        this->concealAll();
     }
 }

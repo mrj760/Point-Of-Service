@@ -8,7 +8,7 @@
 
 //Enable number typing with virtual key pad
 // 9 buttons and a text boxclass VirtualKeyPad
-class VirtualKeyPad {
+class VirtualKeyPad : public QWidget {
 
 public:
 
@@ -21,13 +21,17 @@ public:
 
     // Animation
 
-    void reveal(std::function<void(const std::vector<QString>&)> validateCallback, int numValues = 1);
+    void revealAll(std::function<void(const std::vector<QString>&)> validateCallback, int numValues = 1);
+    void revealAnimation(QPropertyAnimation& anim, int unvisW, int unvisH, int visW, int visH, int idx=-1);
 
-    void conceal();
+    void concealAll();
+    void concealAnimation(QPropertyAnimation& anim, int visW, int visH, int unvisW, int unvisH);
 
     void write(const QString& str);
 
     void validate();
+
+
 
 private:
 
@@ -39,6 +43,10 @@ private:
     int m_unvisibleXPos;
     int m_unvisibleYPos;
 
+    bool mouseHeld = false;
+    QTimer* mouseChecker;
+    void checkMouse();
+
     QSize m_buttonSize;
 
     std::optional<std::function<void(const std::vector<QString>&)>> m_validateCallback;
@@ -49,7 +57,7 @@ private:
     ProductContainer& m_products;
 
     QPropertyAnimation m_textBoxAnimation;
-    std::array<QPropertyAnimation, 16> m_buttonAnimations;
+    std::array<QPropertyAnimation*, 16> m_buttonAnimations;
 
     static inline constexpr const int animationDuration{ 200 };
 

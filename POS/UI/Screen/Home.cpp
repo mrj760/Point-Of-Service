@@ -38,7 +38,7 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
           int(m_window.getSize().width() * 0.08),
           int(m_window.getSize().height() * 0.08),
           [this]{
-            m_virtualKeyPad.reveal(std::bind(&ProductContainer::emplaceFromId, &m_products, std::placeholders::_1));
+            m_virtualKeyPad.revealAll(std::bind(&ProductContainer::emplaceFromId, &m_products, std::placeholders::_1));
           } },
 
       m_removeProductButton{
@@ -69,9 +69,7 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
           int(m_window.getSize().height() * 0.05),
           int(m_window.getSize().width() * 0.08),
           int(m_window.getSize().height() * 0.08),
-          [this]{
-            m_virtualKeyPad.reveal(std::bind(&ProductContainer::addFunds, &m_products, std::placeholders::_1));
-          } },
+          [this]{ m_virtualKeyPad.revealAll(std::bind(&ProductContainer::addFunds, &m_products, std::placeholders::_1));} },
 
       m_payButton{
           m_window.get(),
@@ -86,8 +84,7 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
         throw std::runtime_error{ "Nothing is present in the cart" };
     } else if (!m_products.pay()) {
         throw std::runtime_error{ "Not enough funds to pay" };
-    }
-} },
+    } } },
 
       m_saveCartButton{
        m_window.get(),
@@ -108,7 +105,7 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
        int(m_window.getSize().width() * 0.08),
        int(m_window.getSize().height() * 0.08),
        [this](){
-          m_virtualKeyPad.reveal([this](const std::vector<QString>& ids){
+          m_virtualKeyPad.revealAll([this](const std::vector<QString>& ids){
               m_products.load(ids[0]);
           });
       } },
@@ -116,15 +113,16 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
       m_exitButton{
        m_window.get(),
        "exit.png",
-       "Close the POS application",
+       "Close the Transaction Edit Screen",
        int(m_window.getSize().width() * 0.86),
        int(m_window.getSize().height() * 0.85),
        int(m_window.getSize().width() * 0.08),
        int(m_window.getSize().height() * 0.08),
-       [this](){
-            m_window.get().close();
-        }
-    }, m_createOnDataBaseButton{
+       [this](){ m_window.get().close(); }
+    }
+    /*
+    ,
+      m_createOnDataBaseButton{
         m_window.get(),
         "create.png",
         "Create a new product in the data base (will probably never work)",
@@ -133,11 +131,12 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
         static_cast<int>(m_window.getSize().width() * 0.08),
         static_cast<int>(m_window.getSize().height() * 0.08),
         [this](){
-            m_virtualKeyPad.reveal([](const ::std::vector<QString>& ids){
+            m_virtualKeyPad.revealAll([](const ::std::vector<QString>& ids){
                 throw ::std::runtime_error{ "TODO: createFromDB id: ("s + ids[0].toStdString() + ")" };
             });
         }
-    }, m_removeOnDataBaseButton{
+    },
+      m_removeOnDataBaseButton{
         m_window.get(),
         "removeFromDB.png",
         "Remove a product in the data base (will probably never work)",
@@ -146,7 +145,7 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
         static_cast<int>(m_window.getSize().width() * 0.08),
         static_cast<int>(m_window.getSize().height() * 0.08),
         [this](){
-            m_virtualKeyPad.reveal([](const ::std::vector<QString>& ids){
+            m_virtualKeyPad.revealAll([](const ::std::vector<QString>& ids){
                 throw ::std::runtime_error{ "TODO: removeFromDB ids: ("s + ids[0].toStdString() + ")" };
             });
         }
@@ -159,12 +158,12 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
         static_cast<int>(m_window.getSize().width() * 0.08),
         static_cast<int>(m_window.getSize().height() * 0.08),
         [this](){
-            m_virtualKeyPad.reveal([](const ::std::vector<QString>& ids){
+            m_virtualKeyPad.revealAll([](const ::std::vector<QString>& ids){
                 throw ::std::runtime_error{ "TODO: searchInformation ids: ("s + ids[0].toStdString() + ")" };
             });
         }
     }
-
+    */
 
 {
 //    m_products.emplace(1uz, "article1"s, 10'20ll, 2uz);
