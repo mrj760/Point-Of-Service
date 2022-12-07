@@ -1,4 +1,7 @@
 #include <POS/UI/Screen/Home.hpp>
+#include <iostream>
+
+using ::std::string_literals::operator""s;
 
 ///////////////////////////////////////////////////////////////////////////
 Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbProducts*/) noexcept
@@ -104,10 +107,10 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
        int(m_window.getSize().width() * 0.08),
        int(m_window.getSize().height() * 0.08),
        [this](){
-    m_virtualKeyPad.reveal([this](const std::vector<QString>& ids){
-        m_products.load(ids[0]);
-    });
-} },
+          m_virtualKeyPad.reveal([this](const std::vector<QString>& ids){
+              m_products.load(ids[0]);
+          });
+      } },
 
       m_exitButton{
        m_window.get(),
@@ -119,7 +122,48 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
        int(m_window.getSize().height() * 0.08),
        [this](){
             m_window.get().close();
-        }}
+        }
+    }, m_createOnDataBaseButton{
+        m_window.get(),
+        "create.png",
+        "Create a new product in the data base (will probably never work)",
+        static_cast<int>(m_window.getSize().width() * 0.86),
+        static_cast<int>(m_window.getSize().height() * 0.05),
+        static_cast<int>(m_window.getSize().width() * 0.08),
+        static_cast<int>(m_window.getSize().height() * 0.08),
+        [this](){
+            m_virtualKeyPad.reveal([](const ::std::vector<QString>& ids){
+                throw ::std::runtime_error{ "TODO: createFromDB id: ("s + ids[0].toStdString() + ")" };
+            });
+        }
+    }, m_removeOnDataBaseButton{
+        m_window.get(),
+        "removeFromDB.png",
+        "Remove a product in the data base (will probably never work)",
+        static_cast<int>(m_window.getSize().width() * 0.86),
+        static_cast<int>(m_window.getSize().height() * 0.15),
+        static_cast<int>(m_window.getSize().width() * 0.08),
+        static_cast<int>(m_window.getSize().height() * 0.08),
+        [this](){
+            m_virtualKeyPad.reveal([](const ::std::vector<QString>& ids){
+                throw ::std::runtime_error{ "TODO: removeFromDB ids: ("s + ids[0].toStdString() + ")" };
+            });
+        }
+    }, m_searchInformationOnDataBaseButton{
+        m_window.get(),
+        "search.png",
+        "Search information of a product in the data base",
+        static_cast<int>(m_window.getSize().width() * 0.86),
+        static_cast<int>(m_window.getSize().height() * 0.25),
+        static_cast<int>(m_window.getSize().width() * 0.08),
+        static_cast<int>(m_window.getSize().height() * 0.08),
+        [this](){
+            m_virtualKeyPad.reveal([](const ::std::vector<QString>& ids){
+                throw ::std::runtime_error{ "TODO: searchInformation ids: ("s + ids[0].toStdString() + ")" };
+            });
+        }
+    }
+
 
 {
 //    m_products.emplace(1uz, "article1"s, 10'20ll, 2uz);

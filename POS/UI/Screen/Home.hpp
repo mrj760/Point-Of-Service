@@ -38,4 +38,8 @@ private:
     CustomImage m_saveCartButton;
     CustomImage m_loadCartButton;
     CustomImage m_exitButton;
+    CustomImage m_createOnDataBaseButton;
+    CustomImage m_removeOnDataBaseButton;
+    CustomImage m_searchInformationOnDataBaseButton;
+
 };

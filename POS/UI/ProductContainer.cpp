@@ -93,7 +93,6 @@ int ProductContainer::add(Item *product)
                      new QTableWidgetItem{ product->name });
 
     this->printTotal();
-
     return index;
 }
 
@@ -108,8 +107,10 @@ int ProductContainer::emplaceFromId( const std::vector<QString>& ids)
 {
 //    return this->addProduct::getFromDataBase(ids[0], m_dbProducts));
     int id = ids[0].toInt();
-    Item *item = dbmanager::getItem(id);
-    return add(item); //, m_dbProducts));
+    if (Item *item = dbmanager::getItem(id)) {
+        return add(item); //, m_dbProducts));
+    }
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -25,8 +25,6 @@ AImageButton::AImageButton(
     this->setToolTip(tooltip.toStdString().c_str());
     this->setIcon(::QIcon{ (":icons/" + filename).toStdString().c_str() });
     this->setIconSize(QSize{ xSize, ySize });
-    std::cout << filename.toStdString().c_str() << std::endl;
-    //this->setText(tooltip.split(QLatin1Char(' '))[0]);
 }
 
 ///////////////////////////////////////////////////////////////////////////
