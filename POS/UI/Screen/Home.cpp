@@ -69,8 +69,9 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
           int(m_window.getSize().height() * 0.05),
           int(m_window.getSize().width() * 0.08),
           int(m_window.getSize().height() * 0.08),
-          //          [this] () { m_virtualKeyPad.reveal(std::bind_front(&ProductContainer::addFunds, &m_products)); }
-          []{}},
+          [this]{
+            m_virtualKeyPad.reveal(std::bind(&ProductContainer::addFunds, &m_products, std::placeholders::_1));
+          } },
 
       m_payButton{
           m_window.get(),

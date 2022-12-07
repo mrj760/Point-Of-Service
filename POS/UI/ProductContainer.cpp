@@ -116,10 +116,18 @@ int ProductContainer::emplaceFromId( const std::vector<QString>& ids)
 ///////////////////////////////////////////////////////////////////////////
 int ProductContainer::addFunds(const std::vector<QString>& values)
 {
-    m_funds += (values[0]).toInt() * 100;
-    if (auto it{ values[0].indexOf(".") }; it != -1) {
-        //m_funds += (values[0].last(it + 1).toInt());
+    // m_funds += (values[0]).toInt() * 100;
+    // if (auto it{ values[0].indexOf(".") }; it != -1) {
+        // m_funds += (values[0].toStdString().last(it + 1).toInt());
+    // }
+
+    auto value{ values[0].toStdString() };
+
+    m_funds += ::std::stoi(value) * 100;
+    if (auto it{ value.find(".") }; it != ::std::string::npos) {
+        m_funds += ::std::stoi(value.substr(it + 1));
     }
+
     this->printFunds();
     return m_funds;
 }
@@ -197,7 +205,7 @@ void ProductContainer::printTotal()
     QString centsstr = QString::number(total % 100);
     while (centsstr.size() < 2)
         centsstr = "0" + centsstr;
-    m_totalTextBox.addLine("Funds: $" + dollarsstr + "." + centsstr);
+    m_totalTextBox.addLine("Total: $" + dollarsstr + "." + centsstr);
     m_totalTextBox.print();
 }
 
