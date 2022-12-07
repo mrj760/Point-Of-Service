@@ -67,6 +67,7 @@ RESOURCES += \
 
 
 DISTFILES += \
+    Dark.qss \
     POS/UI/assets/add.png \
     POS/UI/assets/addFunds.png \
     POS/UI/assets/amexlogo.png \
