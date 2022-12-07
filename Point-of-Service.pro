@@ -14,6 +14,7 @@ SOURCES += \
     itemmanagerview.cpp \
     main.cpp \
     mainwindow.cpp \
+    stylehelper.cpp \
     transactioneditview.cpp \
     transactionsviewer.cpp \
     POS/UI/ErrorNotification.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     displaymessage.h \
     itemmanagerview.h \
     mainwindow.h \
+    stylehelper.h \
     template_customer.h \
     template_item.h \
     template_register.h \
