@@ -359,6 +359,9 @@ void VirtualKeyPad::write(const QString& str)
     if (m_isVisible) {
         m_textBox.addText(str);
         m_textBox.print();
+        if (m_textBox.getLineSize() >= 8) {
+            this->validate();
+        }
     }
 }
 

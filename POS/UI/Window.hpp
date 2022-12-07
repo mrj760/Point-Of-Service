@@ -28,13 +28,13 @@ public:
 
     QSize getSize() const;
 
-    //        void linkVirtualKeyPad(VirtualKeyPad& virtualKeyPad)
-    //        {
-    //            m_window.m_keyboardInputCallback =
-    //                std::bind_front(&VirtualKeyPad::write, &virtualKeyPad);
-    //            m_window.m_validateCallback =
-    //                std::bind_front(&VirtualKeyPad::validate, &virtualKeyPad);
-    //        }
+    void linkVirtualKeyPad(VirtualKeyPad& virtualKeyPad)
+    {
+        m_window.m_keyboardInputCallback =
+            std::bind(&VirtualKeyPad::write, &virtualKeyPad, std::placeholders::_1);
+        m_window.m_validateCallback =
+            std::bind(&VirtualKeyPad::validate, &virtualKeyPad);
+    }
 
 public:
 

@@ -86,7 +86,7 @@ void MainWindow::openOrderEditor()
     }
     internalWindowHolder = new TransactionContainer(720, 480,"New Order");
     transactioneditor = new Home(*internalWindowHolder);
-//  internalWindowHolder->linkVirtualKeyPad(transactioneditor->getVirtualKeyPad());
+    internalWindowHolder->linkVirtualKeyPad(transactioneditor->getVirtualKeyPad());
     //internalWindowHolder->showFullScreen();
 }
 

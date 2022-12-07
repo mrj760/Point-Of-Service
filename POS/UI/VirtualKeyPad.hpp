@@ -35,6 +35,12 @@ public:
 
 private:
 
+    void addText(const QString& str);
+
+
+
+private:
+
     QWidget& m_window;
 
     bool m_isVisible{ false };
