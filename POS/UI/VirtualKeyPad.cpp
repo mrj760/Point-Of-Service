@@ -29,7 +29,6 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     m_textBox.clearLine();
     if (m_isForMoney) {
         m_textBox.addLine("$0.00");
-        m_moneyDigitCount = 0;
     } else {
         m_textBox.addLine("");
     }
@@ -300,7 +299,6 @@ void VirtualKeyPad::revealAll(std::function<void(const std::vector<QString>&)> v
 {
     m_products.setReadOnly(true);
     m_isForMoney = isForMoney;
-    m_moneyDigitCount = 0;
     m_isVisible = true;
     m_validateCallback = validateCallback;
     m_remainingValues = numValues;
@@ -357,14 +355,15 @@ void VirtualKeyPad::write(const QString& str)
 {
     if (m_isVisible) {
         if (m_isForMoney) {
-            auto currentStr{ m_textBox.getText().toStdString() };
-            qDebug() << currentStr.c_str();
-            switch (m_moneyDigitCount) {
-            case 0: currentStr.replace(currentStr.size() - 1, 1, str.toStdString().c_str()); ++m_moneyDigitCount; break;
-            case 1: currentStr.replace(currentStr.size() - 2, 1, str.toStdString().c_str()); ++m_moneyDigitCount; break;
-            case 2: currentStr.replace(currentStr.size() - 4, 1, str.toStdString().c_str()); ++m_moneyDigitCount; break;
-            default: currentStr.insert(1, str.toStdString().c_str()); break;
+            auto currentStr{ m_textBox.getText().toStdString() + str.toStdString() };
+
+            if (currentStr[1] == '0') {
+                currentStr.replace(1, 1, "");
             }
+            auto it{ currentStr.find(".") };
+            currentStr.replace(it, 1, "");
+            currentStr.insert(it + 1, ".");
+            // currentStr.replace(currentStr.size() - 1, 1, str.toStdString().c_str());
             qDebug() << currentStr.c_str();
 
             m_textBox.clearLine();

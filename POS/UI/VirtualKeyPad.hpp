@@ -43,8 +43,6 @@ private:
 
     QWidget& m_window;
 
-    ::std::size_t m_moneyDigitCount;
-
     bool m_isForMoney{ false };
     bool m_isVisible{ false };
     int m_visibleXPos;

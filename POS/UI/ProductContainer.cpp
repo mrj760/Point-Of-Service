@@ -125,7 +125,7 @@ int ProductContainer::addFunds(const std::vector<QString>& values)
 
     m_funds += ::std::stoi(value) * 100;
     if (auto it{ value.find(".") }; it != ::std::string::npos) {
-        m_funds += ::std::stoi(value.substr(it + 1, it + 3));
+        m_funds += ::std::stoi(value.substr(it + 1, 2));
     }
 
     this->printFunds();
