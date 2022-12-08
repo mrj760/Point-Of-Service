@@ -78,15 +78,15 @@ void ATextBox::resize(int xSize,int ySize)
 ///////////////////////////////////////////////////////////////////////////
 auto ATextBox::getText() const -> QString
 {
-    QString str;
+    ::std::string str;
     for (const auto& line : m_lines) {
-        str += line;
+        str += line.toStdString();
         str += '\n';
     }
-//    if (!str.empty()) {
-//        str.erase(str.size() - 1);
-//    }
-    return str;
+    if (!str.empty()) {
+        str.erase(str.size() - 1);
+    }
+    return str.c_str();
 }
 
 ///////////////////////////////////////////////////////////////////////////

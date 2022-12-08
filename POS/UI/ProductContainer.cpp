@@ -121,11 +121,11 @@ int ProductContainer::addFunds(const std::vector<QString>& values)
         // m_funds += (values[0].toStdString().last(it + 1).toInt());
     // }
 
-    auto value{ values[0].toStdString() };
+    auto value{ values[0].toStdString().substr(1) };
 
     m_funds += ::std::stoi(value) * 100;
     if (auto it{ value.find(".") }; it != ::std::string::npos) {
-        m_funds += ::std::stoi(value.substr(it + 1));
+        m_funds += ::std::stoi(value.substr(it + 1, it + 3));
     }
 
     this->printFunds();
@@ -183,6 +183,9 @@ void ProductContainer::clear()
     }
     m_products.clear();
     this->printTotal();
+
+    m_funds = 0;
+    this->printFunds();
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -21,7 +21,7 @@ public:
 
     // Animation
 
-    void revealAll(std::function<void(const std::vector<QString>&)> validateCallback, int numValues = 1);
+    void revealAll(std::function<void(const std::vector<QString>&)> validateCallback, QString base = "", bool isForMoney = false, int numValues = 1);
     void revealAnimation(QPropertyAnimation& anim, int unvisW, int unvisH, int visW, int visH, int idx=-1);
 
     void concealAll();
@@ -43,6 +43,9 @@ private:
 
     QWidget& m_window;
 
+    ::std::size_t m_moneyDigitCount;
+
+    bool m_isForMoney{ false };
     bool m_isVisible{ false };
     int m_visibleXPos;
     int m_visibleYPos;

@@ -27,7 +27,12 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     if(mouseHeld) return;
     mouseHeld = true;
     m_textBox.clearLine();
-    m_textBox.addLine("");
+    if (m_isForMoney) {
+        m_textBox.addLine("$0.00");
+        m_moneyDigitCount = 0;
+    } else {
+        m_textBox.addLine("");
+    }
     m_textBox.print(); }},
 
           // 0 Button
@@ -42,8 +47,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // 0 button lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText("0");
-    m_textBox.print();}},
+    this->write("0");}},
 
           // Validate Button
           CustomText {
@@ -82,8 +86,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // 1 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText("1");
-    m_textBox.print(); } },
+    this->write("1"); } },
 
           // 2 Button
           CustomText {
@@ -97,8 +100,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // 2 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText("2");
-    m_textBox.print(); } },
+    this->write("2"); } },
 
           // 3 Button
           CustomText {
@@ -112,8 +114,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // 3 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText("3");
-    m_textBox.print(); } },
+    this->write("3"); } },
 
           // Double 0 cents Button
           CustomText {
@@ -127,8 +128,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // .00 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText(".00");
-    m_textBox.print(); } },
+    this->write(".00"); } },
 
           // 4 Button
           CustomText {
@@ -142,8 +142,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // 4 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText("4");
-    m_textBox.print(); } },
+    this->write("4"); } },
 
           // 5 Button
           CustomText {
@@ -157,8 +156,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // 5 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText("5");
-    m_textBox.print(); } },
+    this->write("5"); } },
 
           // 6 Button
           CustomText {
@@ -172,8 +170,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // 6 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText("6");
-    m_textBox.print(); } },
+    this->write("6"); } },
 
           // Single 0 cents Button
           CustomText {
@@ -187,8 +184,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // .0 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText(".0");
-    m_textBox.print(); } },
+    this->write(".0"); } },
 
           // 7 Button
           CustomText {
@@ -202,8 +198,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // 7 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText("7");
-    m_textBox.print(); } },
+    this->write("7"); } },
 
           // 8 Button
           CustomText {
@@ -217,8 +212,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // 8 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText("8");
-    m_textBox.print(); } },
+    this->write("8"); } },
 
           // 9 Button
           CustomText {
@@ -232,8 +226,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // 9 Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText("9");
-    m_textBox.print(); } },
+    this->write("9"); } },
 
           // Decimal Button
           CustomText {
@@ -247,8 +240,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     // . Button Lambda
     if(mouseHeld) return;
     mouseHeld = true;
-    m_textBox.addText(".");
-    m_textBox.print(); }
+    this->write("."); }
 
 }} // END BUTTONS
 
@@ -304,9 +296,11 @@ void VirtualKeyPad::revealAnimation(QPropertyAnimation& anim, int unvisW, int un
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void VirtualKeyPad::revealAll(std::function<void(const std::vector<QString>&)> validateCallback,int numValues)
+void VirtualKeyPad::revealAll(std::function<void(const std::vector<QString>&)> validateCallback, QString baseStr, bool isForMoney, int numValues)
 {
     m_products.setReadOnly(true);
+    m_isForMoney = isForMoney;
+    m_moneyDigitCount = 0;
     m_isVisible = true;
     m_validateCallback = validateCallback;
     m_remainingValues = numValues;
@@ -319,6 +313,11 @@ void VirtualKeyPad::revealAll(std::function<void(const std::vector<QString>&)> v
 
     revealAnimation(m_textBoxAnimation, 0,0,0,0);
     m_textBox.raise();
+
+    if (baseStr.size()) {
+        m_textBox.addText(baseStr);
+        m_textBox.print();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -357,10 +356,26 @@ void VirtualKeyPad::concealAll()
 void VirtualKeyPad::write(const QString& str)
 {
     if (m_isVisible) {
-        m_textBox.addText(str);
-        m_textBox.print();
-        if (m_textBox.getLineSize() >= 8) {
-            this->validate();
+        if (m_isForMoney) {
+            auto currentStr{ m_textBox.getText().toStdString() };
+            qDebug() << currentStr.c_str();
+            switch (m_moneyDigitCount) {
+            case 0: currentStr.replace(currentStr.size() - 1, 1, str.toStdString().c_str()); ++m_moneyDigitCount; break;
+            case 1: currentStr.replace(currentStr.size() - 2, 1, str.toStdString().c_str()); ++m_moneyDigitCount; break;
+            case 2: currentStr.replace(currentStr.size() - 4, 1, str.toStdString().c_str()); ++m_moneyDigitCount; break;
+            default: currentStr.insert(1, str.toStdString().c_str()); break;
+            }
+            qDebug() << currentStr.c_str();
+
+            m_textBox.clearLine();
+            m_textBox.addLine(currentStr.c_str());
+            m_textBox.print();
+        } else {
+            m_textBox.addText(str);
+            m_textBox.print();
+            if (m_textBox.getLineSize() >= 8) {
+                this->validate();
+            }
         }
     }
 }
