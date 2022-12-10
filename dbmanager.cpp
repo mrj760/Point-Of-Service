@@ -42,7 +42,9 @@ bool dbmanager::addItem(Item item)
     }
 
     QSqlQuery q;
-    q.prepare("insert into pos_schema.item values((select coalesce(MAX(sku::int)+1, 10000000) from pos_schema.item), :qty, :cents, :name);");
+    q.prepare("INSERT INTO pos_schema.item VALUES ((select coalesce(MAX(sku::int)+1, 10000000) from pos_schema.item), :qty, :cents, :name);");
+    //Below is for later reference by Syd
+    //q.bindValue(":sku", item.sku);
     q.bindValue(":qty", item.qty);
     qDebug() << item.qty;
     q.bindValue(":cents", item.cents);
@@ -168,8 +170,9 @@ Item* dbmanager::getItem(int sku)
     // see if item with given sku number exists in database
     QSqlQuery sel;
     sel.prepare("SELECT qty, cents, name FROM pos_schema.item WHERE sku = :sku");
-    long long longsku = sku;
-    sel.bindValue(":sku", longsku);
+    //I believe sku as Micah made it is just an int. Removing this just in case.
+    // long long longsku = sku;
+    sel.bindValue(":sku", sku);
 
     if (!sel.exec())
     {

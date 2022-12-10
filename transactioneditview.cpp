@@ -167,8 +167,6 @@ void TransactionEditView::addItem()
 
     item->qty = qtyLineEdit->text().toInt();
 
-
-
     appendRow(item);
 }
 

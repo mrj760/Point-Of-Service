@@ -182,7 +182,9 @@ ItemManagerView::ItemManagerView(QWidget* parent)
 
 void ItemManagerView::submitNew()
 {
+    //Adding sku functionality as part of getting things into the database so I can test reading from it
     QString
+            //sku=lineEdits[0]->text(), //Just comment this out later
             qty=lineEdits[1]->text(),
             cents=lineEdits[2]->text(),
             name=lineEdits[3]->text();
