@@ -7,7 +7,7 @@
 #include <itemmanagerview.h>
 #include <customermanagerview.h>
 #include <transactioneditview.h>
-#include <transactionsviewer.h>
+#include <all_transactions_view.h>
 #include <POS/UI/Window.hpp>
 #include <POS/UI/Screen/Home.hpp>
 
@@ -21,7 +21,7 @@ public:
 
     QVBoxLayout *mainLayout;
 
-    TransactionsViewer* transactionsviewer = nullptr;
+
 
     void openOrderEditor();
     void openOrdersViewer();
@@ -30,6 +30,7 @@ public:
     QPushButton *neworderbutton, *allordersbutton;
     ItemManagerView* itemmgr = nullptr;
     CustomerManagerView* custmgr = nullptr;
+    All_transactions_view* all_transaction_view = nullptr;
 
     void openItemMgr();
     void openCustMgr();

@@ -72,7 +72,7 @@ void MainWindow::setupCloseButton()
     QPushButton* closeButton = new QPushButton("Close");
     closeButtonHolder->layout()->addWidget(closeButton);
     closeButton->setObjectName("close_button");
-    connect(closeButton, &QPushButton::clicked, this, &exit);
+    //connect(closeButton, &QPushButton::clicked, this, &exit);
     mainLayout->addWidget(closeButtonHolder);
 }
 
@@ -92,9 +92,9 @@ void MainWindow::openOrderEditor()
 
 void MainWindow::openOrdersViewer()
 {
-    if (transactionsviewer == nullptr)
-        transactionsviewer = new TransactionsViewer;
-    transactionsviewer->showFullScreen();
+    if (all_transaction_view == nullptr)
+        all_transaction_view = new All_transactions_view;
+    all_transaction_view->showFullScreen();
 }
 
 void MainWindow::openItemMgr()
