@@ -42,9 +42,12 @@ bool dbmanager::addItem(Item item)
     }
 
     QSqlQuery q;
-    q.prepare("INSERT INTO pos_schema.item VALUES ((select coalesce(MAX(sku::int)+1, 10000000) from pos_schema.item), :qty, :cents, :name);");
+
+    q.prepare("INSERT INTO pos_schema.item VALUES "
+              "((select coalesce(MAX(sku::int)+1, 10000000) "
+              "from pos_schema.item), :qty, :cents, :name);");
     //Below is for later reference by Syd
-    //q.bindValue(":sku", item.sku);
+    q.bindValue(":sku", item.sku);
     q.bindValue(":qty", item.qty);
     qDebug() << item.qty;
     q.bindValue(":cents", item.cents);
