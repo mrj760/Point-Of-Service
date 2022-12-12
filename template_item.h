@@ -19,9 +19,6 @@ public:
     int qty;
     int cents;
     QString name;
-
-    bool operator==(const Item&); /* Return whether one Item is equal to another based on ID */
-    Item operator=(const Item&); /* Copy assigns the given item */
 };
 
 #endif // TEMPLATE_ITEM_H
