@@ -242,9 +242,18 @@ void ItemManagerView::editExisting()
     }
 
     // see if item with given sku number exists in database
+    Item* item;
+    if(!(item = dbmanager::getItem(sku.toInt())))
+    {
+        //dbmanager handles errors.
+        return;
+    }
+    /*
     QSqlQuery sel;
     sel.prepare("SELECT FROM pos_schema.item WHERE sku = :sku");
     sel.bindValue(":sku", sku.toLongLong());
+
+
 
     if (!sel.exec())
     {
@@ -258,9 +267,9 @@ void ItemManagerView::editExisting()
         qDebug() << "Item Selection Error in func \"editExisting\"" << sel.lastError().text();
         return;
     }
-
+    */
     // if item doesn't exist we have nothing to update
-    if (sel.size() == 0)
+    if (!item->sku)
     {
         QMessageBox error;
         error.setText("Item Update Failure");
@@ -272,7 +281,15 @@ void ItemManagerView::editExisting()
         return;
     }
 
+
     // actually make the update
+
+    if(!(dbmanager::updateItem(*item)))
+    {
+        //dbmanager handles errors.
+        return;
+    }
+    /*
     qDebug() << "sku: " << sku << ", qty: " << qty << ", cents: " << cents << ", name: " << name;
     QSqlQuery upd;
     upd.prepare("UPDATE pos_schema.item "
@@ -295,6 +312,7 @@ void ItemManagerView::editExisting()
         qDebug() << "Item update Error in func \"editExisitng\"" << upd.lastError().text();
         return;
     }
+    */
 
     QMessageBox scs;
     scs.setText("Item Update Success");
@@ -346,20 +364,12 @@ void ItemManagerView::dropItem()
         return;
     }
 
-    QSqlQuery drop;
-    drop.prepare("delete from pos_schema.item where sku = :sku;");
-    drop.bindValue(":sku", sku);
-    if (!drop.exec())
+    Item* item = new Item(sku.toInt(), qty.toInt(),
+                            itemInfoLabels[2]->text().toInt(),
+                            itemInfoLabels[3]->text());
+    if (!dbmanager::dropItem(*item))
     {
-        QMessageBox error;
-        error.setText("Item Drop Error");
-        error.setInformativeText(drop.lastError().text());
-        error.setIcon(QMessageBox::Warning);
-        error.setStandardButtons(QMessageBox::Ok);
-        error.setBaseSize(600,120);
-        error.exec();
-        qDebug() << "Item Drop Error: " << drop.lastError().text();
-        return;
+        return;//Errors are handled in dbmanager.dropItem()
     }
     QMessageBox scs;
     scs.setText("Item Drop Success");

@@ -28,6 +28,9 @@ public:
     static bool updateCustomer(Customer customer);
     static bool updateRegister(Register reg);
 
+    static bool dropItem(int sku, int qty);
+    static bool dropItem(Item item);
+
     static Item* getItem(int sku);
     static Item* getItem(Item item);
 

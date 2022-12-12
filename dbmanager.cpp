@@ -74,7 +74,7 @@ bool dbmanager::addTransaction(Transaction transaction)
     q.prepare("insert into pos_schema.transaction values((SELECT coalesce(MAX(id::int)+1, 1) from pos_schema.transaction WHERE pos_schema.transaction.date = CURRENT_DATE), "
               "NOW()::date, NOW()::time, :phone, :total_cents, :items, :payment_type, :tender, :change, :card_number, :card_exp, :card_cvv);");
     q.bindValue(":phone", transaction.customerPhone);
-    q.bindValue(":total_cents", transaction.totalCents);
+    q.bindValue(":total_price", transaction.totalCents);
     q.bindValue(":items", transaction.itemsAsString());
     q.bindValue(":payment_type", transaction.paymentType);
     q.bindValue(":tender", transaction.tender);
@@ -84,7 +84,7 @@ bool dbmanager::addTransaction(Transaction transaction)
     q.bindValue(":card_exp", transaction.cardExpiration);
     q.bindValue(":card_cvv", transaction.cardCVV);
 
-    if (q.exec())
+    if (!q.exec())
     {
         qDebug() << "Transaction Insertion Error:" << q.lastError().text();
         displayQueryError("Transaction Insertion", q);
@@ -149,19 +149,121 @@ bool dbmanager::addRegister(Register reg)
     displayQueryError("Register Insertion", q);
     return false;
 }
-
-
 /*  */
 /*  */
 /*------------------------------------- Updating Functions -------------------------------------*/
 /*  */
 /*  */
+/*Item Update Function*/
+bool dbmanager::updateItem(Item item){
+
+    QSqlQuery upd;
+    upd.prepare("UPDATE pos_schema.item "
+                "SET qty = :qty, cents = :cents, name = :name "
+                "WHERE sku = :sku;");
+    upd.bindValue(":sku", (long long)item.sku);
+    upd.bindValue(":qty", (long long)(item.qty==0 ? NULL : (int)item.qty));
+    upd.bindValue(":cents", (long long)(item.cents==0 ? NULL : (int)item.cents));
+    upd.bindValue(":name", item.name=="" ? NULL : item.name);
+    if (!upd.exec())
+    {
+        QMessageBox error;
+        error.setText("Item Update Error");
+        error.setInformativeText(upd.lastError().text());
+        error.setIcon(QMessageBox::Warning);
+        error.setStandardButtons(QMessageBox::Ok);
+        error.setBaseSize(600,120);
+        error.exec();
+        qDebug() << "Item update Error in func \"editExisitng\"" << upd.lastError().text();
+        return false;
+    }
+    return true;
+}
+/*Transaction Update function*/
+
+bool dbmanager::updateTransaction(Transaction transaction){
+    QSqlQuery q;
+    q.prepare("UPDATE pos_schema.transaction"
+              "SET values("
+              "NOW()::date, NOW()::time, :phone, :total_cents, "
+              ":items, :payment_type, :tender, :change, :card_number, "
+              ":card_exp, :card_cvv)"
+              "WHERE (SELECT coalesce(MAX(id::int)+1, 1)"
+              "FROM pos_schema.transaction"
+              "WHERE pos_schema.transaction.date = CURRENT_DATE);");
+
+    q.bindValue(":id",transaction.ID);
+    q.bindValue(":phone", transaction.customerPhone);
+    q.bindValue(":total_price", transaction.totalCents);
+    q.bindValue(":items", transaction.itemsAsString());
+    q.bindValue(":payment_type", transaction.paymentType);
+    q.bindValue(":tender", transaction.tender);
+    q.bindValue(":change", transaction.change);
+    q.bindValue(":card_number", transaction.cardNumber);
+    q.bindValue(":card_exp", transaction.cardExpiration);
+    q.bindValue(":card_cvv", transaction.cardCVV);
+
+    if (!q.exec())
+    {
+        qDebug() << "Transaction Update Error:" << q.lastError().text();
+        displayQueryError("Transaction Update", q);
+        return false;
+    }
 
 
+    QString id = q.lastInsertId().toString();
+
+    QMessageBox scs;
+    scs.setText("Transaction Update Success");
+    scs.setInformativeText("Transaction " + id + " submitted successfully");
+    scs.setIcon(QMessageBox::Information);
+    scs.setStandardButtons(QMessageBox::Ok);
+    scs.setBaseSize(600,120);
+    scs.exec();
+    return true;
+}
+
+/* Customer Update Function  */
+bool dbmanager::updateCustomer(Customer customer){
+    QSqlQuery q;
+
+    q.prepare("UPDATE pos_schema.customer"
+              "SET values("
+              ":name, :address, :zip) "
+              "WHERE phone = :phone;");
+    q.bindValue(":phone",customer.phone);
+    q.bindValue(":name",customer.name);
+    q.bindValue(":address",customer.address);
+    q.bindValue(":zip",customer.zip);
+    if (!q.exec())
+    {
+        qDebug() << "Customer Update Error:" << q.lastError().text();
+        displayQueryError("Transaction Update", q);
+        return false;
+    }
+    return true;
+}
+
+/* Register Update Function *///Unused & incomplete
+ /*
+bool dbmanager::updateRegister(Register reg){
+    QSqlQuery q;
+
+    q.prepare();
+    q.bindValue();
+    if (!q.exec())
+    {
+        qDebug() << "Register Update Error:" << q.lastError().text();
+        displayQueryError("Register Update", q);
+        return false;
+    }
+    return true;
+}
+*/
 
 /*  */
 /*  */
-/*------------------------------------- Selecting Functions -------------------------------------*/
+/*------------------------------------- Getting Functions -------------------------------------*/
 /*  */
 /*  */
 
@@ -191,7 +293,29 @@ Item* dbmanager::getItem(int sku)
     return new Item(sku, qty, cents, name);
 }
 
+/*  */
+/*  */
+/*------------------------------------- Removing Functions -------------------------------------*/
+/*  */
+/*  */
+bool dbmanager::dropItem(Item item){
+    QSqlQuery drop;
+    drop.prepare("delete from pos_schema.item where sku = :sku;");
+    drop.bindValue(":sku", item.sku);
+    if(!drop.exec()){
 
+        QMessageBox error;
+        error.setText("Item Drop Error");
+        error.setInformativeText(drop.lastError().text());
+        error.setIcon(QMessageBox::Warning);
+        error.setStandardButtons(QMessageBox::Ok);
+        error.setBaseSize(600,120);
+        error.exec();
+        qDebug() << "Item Drop Error: " << drop.lastError().text();
+        return false;
+    }
+    return true;
+}
 /*  */
 /*  */
 /*------------------------------------- Error Functions -------------------------------------*/
