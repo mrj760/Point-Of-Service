@@ -73,22 +73,32 @@ void ProductContainer::save()
 ///////////////////////////////////////////////////////////////////////////
 int ProductContainer::add(Item *product)
 {
-    m_products.push_back(product);
+    int index;
 
-    const auto index{ m_products.size() - 1 };
+    if (
+        auto it{ ::std::find_if(m_products.begin(), m_products.end(),
+            [product](const auto* elem){ return elem->sku == product->sku; }
+        ) };
+        it != m_products.end()
+    ) {
+        product = *it;
+        ++product->qty;
+        index = it - m_products.begin();
+    } else {
+        m_products.push_back(product);
+        index = m_products.size() - 1;
+        m_table->insertRow((index));
+    }
 
-    m_table->insertRow((index));
-    m_table->setCurrentIndex(m_table->model()->index((index), 0));
-
-    QString dollarstr = QString::number(m_funds / 100);
-    QString centstr = QString::number(m_funds % 100);
+    QString dollarstr = QString::number(product->cents * product->qty / 100);
+    QString centstr = QString::number(product->cents * product->qty % 100);
     while (centstr.size() < 2)
         centstr = "0" + centstr;
 
     m_table->setItem((index), 0,
                      new QTableWidgetItem{ "$" + dollarstr + "." + centstr });
     m_table->setItem((index), 1,
-                     new QTableWidgetItem{ product->qty });
+                     new QTableWidgetItem{ QString::number(product->qty) });
     m_table->setItem((index), 2,
                      new QTableWidgetItem{ product->name });
 
@@ -110,6 +120,7 @@ int ProductContainer::emplaceFromId( const std::vector<QString>& ids)
     if (Item *item = dbmanager::getItem(id)) {
         return add(item); //, m_dbProducts));
     }
+    // add(new Item(1, 1, 1234, "test"));
     return 0;
 }
 
