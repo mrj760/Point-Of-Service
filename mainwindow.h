@@ -6,6 +6,7 @@
 #include <dbmanager.h>
 #include <itemmanagerview.h>
 #include <customermanagerview.h>
+#include <template_transaction.h>
 #include <transactioneditview.h>
 #include <all_transactions_view.h>
 #include <POS/UI/Window.hpp>
@@ -31,6 +32,8 @@ public:
     ItemManagerView* itemmgr = nullptr;
     CustomerManagerView* custmgr = nullptr;
     All_transactions_view* all_transaction_view = nullptr;
+    All_transactions_view* childWidget;
+
 
     void openItemMgr();
     void openCustMgr();
@@ -45,6 +48,8 @@ private:
     //    TransactionEditView* transactioneditor = nullptr;
     TransactionContainer* internalWindowHolder = nullptr;
     Home* transactioneditor = nullptr;
+public slots:
+    void receiveObject(Transaction object);
 };
 
 

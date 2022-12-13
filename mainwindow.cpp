@@ -11,7 +11,8 @@ MainWindow::MainWindow(QWidget *parent): QWidget(parent)
     setupOrderButtons();
     setupMgrButtons();
     setupCloseButton();
-
+    childWidget = new All_transactions_view(this);
+    connect(childWidget, &All_transactions_view::objectSent, this, &MainWindow::receiveObject);
     this->setStyleSheet(
                 "QTableView{font: 16px; alignment: center;}"
                 "QPushButton{alignment: left; font: bold 14px; min-width:100px; max-width: 500px; min-height:90px; max-height: 250px; color: white; background-color: rgb(50,83,135);}"
@@ -116,4 +117,7 @@ void MainWindow::openRegisterMgr()
 {
 
 }
+void receiveObject(Transaction selected)
+{
 
+}

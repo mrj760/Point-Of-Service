@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <template_item.h>
-
+#include <vector>
 using std::tuple, std::vector;
 
 class POS;
@@ -37,10 +37,10 @@ public:
     int cardNumber;
     int cardExpiration;
     int cardCVV;
-
     QString itemsAsString()
     {
         QString ret = "";
+
         for (auto &item : items)
         {
             ret += QString::number(item.sku) + ", " + QString::number(item.qty);

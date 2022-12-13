@@ -5,8 +5,13 @@
 #include <QtSql>
 #include <dbmanager.h>
 #include <POS/UI/Screen/Home.hpp>
+#include "template_transaction.h"
+#include "dbmanager.h"
+#include "template_item.h"
+#include <vector>
 class All_transactions_view : public QWidget
 {
+    Q_OBJECT
     public:
         All_transactions_view(QWidget* parent = nullptr);
     private:
@@ -32,6 +37,16 @@ class All_transactions_view : public QWidget
 
         void filterResults(); // searching
         void openOrderEditor();
+        Transaction selectedTransaction();
+signals:
+    void objectSent(Transaction selected);
+public slots:
+        void sendObject(Transaction selected)
+        {
+            selected = selectedTransaction();
+            emit All_transactions_view::objectSent(selected);
+        }
+
 };
 
 #endif // ALL_TRANSACTIONS_VIEW_H
