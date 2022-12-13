@@ -4,7 +4,7 @@ TransactionContainer::TransactionContainer(int xSize, int ySize, const QString& 
 {
     m_window.setWindowTitle(QApplication::translate("toplevel", name.toStdString().c_str()));
     this->resize(xSize, ySize);
-    m_window.show();
+    m_window.showFullScreen();
     //  this->hide();
 }
 

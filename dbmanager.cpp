@@ -74,15 +74,8 @@ bool dbmanager::addItem(Item item)
 bool dbmanager::addTransaction(Transaction transaction)
 {
     QSqlQuery q;
-    q.prepare("UPDATE pos_schema.transaction"
-                  "SET values("
-                  "customer_phone=:phone, total_price=:total_cents, "
-                  "items=:items, payment_type=:payment_type, "
-                  "tender=:tender, change=:change, "
-                  "card_number=:card_number, "
-                  "card_exp=:card_exp, card_cvv=:card_cvv)"
-                  "FROM pos_schema.transaction"
-                  "WHERE id = :id AND date = NOW()::date);");
+    q.prepare("insert into pos_schema.transaction values((SELECT coalesce(MAX(id::int)+1, 1) from pos_schema.transaction WHERE pos_schema.transaction.date = CURRENT_DATE), "
+              "NOW()::date, NOW()::time, :phone, :total_cents, :items, :payment_type, :tender, :change, :card_number, :card_exp, :card_cvv);");
     q.bindValue(":phone", transaction.customerPhone);
     q.bindValue(":total_price", transaction.totalCents);
     q.bindValue(":items", transaction.itemsAsString());
@@ -171,9 +164,9 @@ bool dbmanager::updateItem(Item item){
     upd.prepare("UPDATE pos_schema.item "
                 "SET qty = :qty, cents = :cents, name = :name "
                 "WHERE sku = :sku;");
-    upd.bindValue(":sku", (long long)item.sku);
-    upd.bindValue(":qty", (long long)(item.qty==0 ? NULL : (int)item.qty));
-    upd.bindValue(":cents", (long long)(item.cents==0 ? NULL : (int)item.cents));
+    upd.bindValue(":sku", item.sku);
+    upd.bindValue(":qty", item.qty==0 ? NULL : item.qty);
+    upd.bindValue(":cents", item.cents==0 ? NULL : item.cents);
     upd.bindValue(":name", item.name=="" ? NULL : item.name);
     if (!upd.exec())
     {
@@ -194,14 +187,14 @@ bool dbmanager::updateItem(Item item){
 bool dbmanager::updateTransaction(Transaction transaction){
     QSqlQuery q;
     q.prepare("UPDATE pos_schema.transaction"
-                  "SET"
-                  "customer_phone=:phone, total_price=:total_cents, "
-                  "items = :items, payment_type = :payment_type, "
-                  "tender = :tender, change = :change, "
-                  "card_number = :card_number, "
-                  "card_exp = :card_exp, card_cvv = :card_cvv"
-                  "FROM pos_schema.transaction"
-                  "WHERE id = :id AND date = NOW()::date;");
+              "SET"
+              "customer_phone=:phone, total_price=:total_cents, "
+              "items = :items, payment_type = :payment_type, "
+              "tender = :tender, change = :change, "
+              "card_number = :card_number, "
+              "card_exp = :card_exp, card_cvv = :card_cvv"
+              "FROM pos_schema.transaction"
+              "WHERE id = :id AND date = NOW()::date;");
 
     q.bindValue(":id",transaction.ID);
     q.bindValue(":phone", transaction.customerPhone);
@@ -222,15 +215,15 @@ bool dbmanager::updateTransaction(Transaction transaction){
     }
 
 
-    QString id = q.lastInsertId().toString();
+//    QString id = q.lastInsertId().toString();
 
-    QMessageBox scs;
-    scs.setText("Transaction Update Success");
-    scs.setInformativeText("Transaction " + id + " submitted successfully");
-    scs.setIcon(QMessageBox::Information);
-    scs.setStandardButtons(QMessageBox::Ok);
-    scs.setBaseSize(600,120);
-    scs.exec();
+//    QMessageBox scs;
+//    scs.setText("Transaction Update Success");
+//    scs.setInformativeText("Transaction " + id + " submitted successfully");
+//    scs.setIcon(QMessageBox::Information);
+//    scs.setStandardButtons(QMessageBox::Ok);
+//    scs.setBaseSize(600,120);
+//    scs.exec();
     return true;
 }
 
@@ -239,9 +232,9 @@ bool dbmanager::updateCustomer(Customer customer){
     QSqlQuery q;
 
     q.prepare("UPDATE pos_schema.customer"
-                  "SET "
-                  "name = :name, address = :address, zip = :zip "
-                  "WHERE phone = :phone;");
+              "SET "
+              "name = :name, address = :address, zip = :zip "
+              "WHERE phone = :phone;");
     q.bindValue(":phone",customer.phone);
     q.bindValue(":name",customer.name);
     q.bindValue(":address",customer.address);

@@ -203,7 +203,7 @@ void ItemManagerView::submitNew()
     }
 
     // time to add the item
-    Item i = Item(0, qty.toInt(), cents.toInt(), name);
+    Item i = Item(0, qty == "" ? 0 : qty.toInt(), cents == "" ? 0 :cents.toInt(), name);
     if (!dbmanager::addItem(i))
     {
         // dbmanager takes care of displaying errors
@@ -242,78 +242,24 @@ void ItemManagerView::editExisting()
     }
 
     // see if item with given sku number exists in database
-    Item* item = new Item(sku.toInt(),qty.toInt(),
-                          cents.toInt(),name);
-    if(!(item = dbmanager::getItem(item->sku)))
+    Item* item = dbmanager::getItem(sku.toInt());
+    if(item == nullptr)
     {
         //dbmanager handles errors.
-        return;
-    }
-    /*
-    QSqlQuery sel;
-    sel.prepare("SELECT FROM pos_schema.item WHERE sku = :sku");
-    sel.bindValue(":sku", sku.toLongLong());
-
-
-
-    if (!sel.exec())
-    {
-        QMessageBox error;
-        error.setText("Item Update Error");
-        error.setInformativeText(sel.lastError().text());
-        error.setIcon(QMessageBox::Warning);
-        error.setStandardButtons(QMessageBox::Ok);
-        error.setBaseSize(600,120);
-        error.exec();
-        qDebug() << "Item Selection Error in func \"editExisting\"" << sel.lastError().text();
-        return;
-    }
-    */
-    // if item doesn't exist we have nothing to update
-    if (!item->sku)
-    {
-        QMessageBox error;
-        error.setText("Item Update Failure");
-        error.setInformativeText("Item SKU number does not exist.");
-        error.setIcon(QMessageBox::Warning);
-        error.setStandardButtons(QMessageBox::Ok);
-        error.setBaseSize(600,120);
-        error.exec();
         return;
     }
 
 
     // actually make the update
 
+    item->qty = qty == "" ? 0 : qty.toInt();
+    item->cents = cents == "" ? 0 :cents.toInt();
+    item->name = name;
     if(!(dbmanager::updateItem(*item)))
     {
         //dbmanager handles errors.
         return;
     }
-    /*
-    qDebug() << "sku: " << sku << ", qty: " << qty << ", cents: " << cents << ", name: " << name;
-    QSqlQuery upd;
-    upd.prepare("UPDATE pos_schema.item "
-                "SET qty = :qty, cents = :cents, name = :name "
-                "WHERE sku = :sku;");
-    upd.bindValue(":sku", sku.toLongLong());
-    upd.bindValue(":qty", (long long)(qty=="" ? NULL : qty.toInt()));
-    upd.bindValue(":cents", (long long)(cents=="" ? NULL : cents.toInt()));
-    upd.bindValue(":name", name=="" ? NULL : name);
-
-    if (!upd.exec())
-    {
-        QMessageBox error;
-        error.setText("Item Update Error");
-        error.setInformativeText(upd.lastError().text());
-        error.setIcon(QMessageBox::Warning);
-        error.setStandardButtons(QMessageBox::Ok);
-        error.setBaseSize(600,120);
-        error.exec();
-        qDebug() << "Item update Error in func \"editExisitng\"" << upd.lastError().text();
-        return;
-    }
-    */
 
     QMessageBox scs;
     scs.setText("Item Update Success");
