@@ -117,7 +117,7 @@ void MainWindow::openRegisterMgr()
 {
 
 }
-void receiveObject(Transaction selected)
+void MainWindow::receiveObject(Transaction selected)
 {
 
 }

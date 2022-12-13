@@ -87,7 +87,8 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
         throw std::runtime_error{ "Nothing is present in the cart" };
     } else if (!m_products.pay()) {
         throw std::runtime_error{ "Not enough funds to pay" };
-    } } },
+    }
+    } },
 
       m_saveCartButton{
        m_window.get(),
