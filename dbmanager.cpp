@@ -74,8 +74,13 @@ bool dbmanager::addItem(Item item)
 bool dbmanager::addTransaction(Transaction transaction)
 {
     QSqlQuery q;
-    q.prepare("insert into pos_schema.transaction values((SELECT coalesce(MAX(id::int)+1, 1) from pos_schema.transaction WHERE pos_schema.transaction.date = CURRENT_DATE), "
-              "NOW()::date, NOW()::time, :phone, :total_cents, :items, :payment_type, :tender, :change, :card_number, :card_exp, :card_cvv);");
+    q.prepare("insert into pos_schema.transaction"
+              "values((SELECT coalesce(MAX(id::int)+1, 1)" ""
+              "from pos_schema.transaction "
+              "WHERE pos_schema.transaction.date = CURRENT_DATE), "
+              "NOW()::date, NOW()::time, :phone, :total_cents, "
+              ":items, :payment_type, :tender, :change, :card_number, "
+              ":card_exp, :card_cvv);");
     q.bindValue(":phone", transaction.customerPhone);
     q.bindValue(":total_price", transaction.totalCents);
     q.bindValue(":items", transaction.itemsAsString());
@@ -296,6 +301,9 @@ Item* dbmanager::getItem(int sku)
 
     return new Item(sku, qty, cents, name);
 }
+
+/*  */
+/*  */
 
 /*  */
 /*  */

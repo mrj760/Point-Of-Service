@@ -33,6 +33,8 @@ public:
 
     static Item* getItem(int sku);
     static Item* getItem(Item item);
+    static Transaction* getTransaction(int id);
+    static Transaction* getTransaction(Transaction transaction);
 
      static void displayError(const QString& errorType, const QString& errorText);
      static void displayQueryError(const QString& errorType, const QSqlQuery& q);

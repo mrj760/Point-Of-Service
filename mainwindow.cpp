@@ -116,4 +116,3 @@ void MainWindow::openRegisterMgr()
 {
 
 }
-
