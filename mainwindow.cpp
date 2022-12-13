@@ -73,7 +73,7 @@ void MainWindow::setupCloseButton()
     QPushButton* closeButton = new QPushButton("Close");
     closeButtonHolder->layout()->addWidget(closeButton);
     closeButton->setObjectName("close_button");
-    connect(closeButton, &QPushButton::clicked, this, &exit);
+    QObject::connect(closeButton, &QPushButton::clicked, this, &QApplication::quit);
     mainLayout->addWidget(closeButtonHolder);
 }
 

@@ -227,7 +227,10 @@ Transaction All_transactions_view::selectedTransaction()
 
             }
         }
-        attrs.push_back(value);
+        else
+        {
+            attrs.push_back(value);
+        }
     }
     Transaction selectedTran(attrs[0].toInt(), attrs[1], attrs[2], attrs[3], items, attrs[5].toInt(), attrs[6].toInt(), attrs[7].toInt(), attrs[8],attrs[9].toInt(), attrs[10].toInt(), attrs[11].toInt(), attrs[12].toInt(), attrs[13].toInt());
     return selectedTran;
