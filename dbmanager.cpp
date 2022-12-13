@@ -74,8 +74,15 @@ bool dbmanager::addItem(Item item)
 bool dbmanager::addTransaction(Transaction transaction)
 {
     QSqlQuery q;
-    q.prepare("insert into pos_schema.transaction values((SELECT coalesce(MAX(id::int)+1, 1) from pos_schema.transaction WHERE pos_schema.transaction.date = CURRENT_DATE), "
-              "NOW()::date, NOW()::time, :phone, :total_cents, :items, :payment_type, :tender, :change, :card_number, :card_exp, :card_cvv);");
+    q.prepare("UPDATE pos_schema.transaction"
+                  "SET values("
+                  "customer_phone=:phone, total_price=:total_cents, "
+                  "items=:items, payment_type=:payment_type, "
+                  "tender=:tender, change=:change, "
+                  "card_number=:card_number, "
+                  "card_exp=:card_exp, card_cvv=:card_cvv)"
+                  "FROM pos_schema.transaction"
+                  "WHERE id = :id AND date = NOW()::date);");
     q.bindValue(":phone", transaction.customerPhone);
     q.bindValue(":total_price", transaction.totalCents);
     q.bindValue(":items", transaction.itemsAsString());
@@ -187,13 +194,14 @@ bool dbmanager::updateItem(Item item){
 bool dbmanager::updateTransaction(Transaction transaction){
     QSqlQuery q;
     q.prepare("UPDATE pos_schema.transaction"
-              "SET values("
-              "NOW()::date, NOW()::time, :phone, :total_cents, "
-              ":items, :payment_type, :tender, :change, :card_number, "
-              ":card_exp, :card_cvv)"
-              "WHERE (SELECT coalesce(MAX(id::int)+1, 1)"
-              "FROM pos_schema.transaction"
-              "WHERE pos_schema.transaction.date = CURRENT_DATE);");
+                  "SET"
+                  "customer_phone=:phone, total_price=:total_cents, "
+                  "items = :items, payment_type = :payment_type, "
+                  "tender = :tender, change = :change, "
+                  "card_number = :card_number, "
+                  "card_exp = :card_exp, card_cvv = :card_cvv"
+                  "FROM pos_schema.transaction"
+                  "WHERE id = :id AND date = NOW()::date;");
 
     q.bindValue(":id",transaction.ID);
     q.bindValue(":phone", transaction.customerPhone);
@@ -231,9 +239,9 @@ bool dbmanager::updateCustomer(Customer customer){
     QSqlQuery q;
 
     q.prepare("UPDATE pos_schema.customer"
-              "SET values("
-              ":name, :address, :zip) "
-              "WHERE phone = :phone;");
+                  "SET "
+                  "name = :name, address = :address, zip = :zip "
+                  "WHERE phone = :phone;");
     q.bindValue(":phone",customer.phone);
     q.bindValue(":name",customer.name);
     q.bindValue(":address",customer.address);

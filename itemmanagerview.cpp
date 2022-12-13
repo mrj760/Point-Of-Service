@@ -242,8 +242,9 @@ void ItemManagerView::editExisting()
     }
 
     // see if item with given sku number exists in database
-    Item* item;
-    if(!(item = dbmanager::getItem(sku.toInt())))
+    Item* item = new Item(sku.toInt(),qty.toInt(),
+                          cents.toInt(),name);
+    if(!(item = dbmanager::getItem(item->sku)))
     {
         //dbmanager handles errors.
         return;
