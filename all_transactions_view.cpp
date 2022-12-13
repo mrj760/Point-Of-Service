@@ -198,3 +198,38 @@ void All_transactions_view::openOrderEditor()
     internalWindowHolder->linkVirtualKeyPad(transactioneditor->getVirtualKeyPad());
     //internalWindowHolder->showFullScreen();
 }
+
+Transaction All_transactions_view::selectedTransaction()
+{
+    vector<QString> attrs;
+    vector<Item> items;
+    auto row = tableView->selectionModel()->selectedRows().begin()->row();
+
+    for (int i = 0; i < 14; ++i)
+    {
+        auto idx = tableView->model()->index(row, i);
+        auto data = tableView->model()->data(idx);
+        auto value = data.value<QString>();
+        lineEdits[i]->setText(value);
+        if(i == 5)
+        {
+            QStringList list1 = value.split(',');
+            for(int j = 0; j < list1.size(); j++)
+            {
+                Item* selected;
+                if(j % 2 == 0)
+                {
+                    selected = dbmanager::getItem(list1[j].toInt());
+                    selected->qty = list1[j+1].toInt();
+                    Item temp = *selected;
+                    items.push_back(temp);
+                }
+
+            }
+        }
+        attrs.push_back(value);
+    }
+    Transaction selectedTran(attrs[0].toInt(), attrs[1], attrs[2], attrs[3], items, attrs[5].toInt(), attrs[6].toInt(), attrs[7].toInt(), attrs[8],attrs[9].toInt(), attrs[10].toInt(), attrs[11].toInt(), attrs[12].toInt(), attrs[13].toInt());
+    return selectedTran;
+}
+
