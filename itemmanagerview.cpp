@@ -203,7 +203,7 @@ void ItemManagerView::submitNew()
     }
 
     // time to add the item
-    Item i = Item(0, qty.toInt(), cents.toInt(), name);
+    Item i = Item(0, qty == "" ? 0 : qty.toInt(), cents == "" ? 0 :cents.toInt(), name);
     if (!dbmanager::addItem(i))
     {
         // dbmanager takes care of displaying errors
@@ -242,8 +242,8 @@ void ItemManagerView::editExisting()
     }
 
     // see if item with given sku number exists in database
-    Item* item;
-    if(!(item = dbmanager::getItem(sku.toInt())))
+    Item* item = dbmanager::getItem(sku.toInt());
+    if(item == nullptr)
     {
         //dbmanager handles errors.
         return;
@@ -269,21 +269,24 @@ void ItemManagerView::editExisting()
     }
     */
     // if item doesn't exist we have nothing to update
-    if (!item->sku)
-    {
-        QMessageBox error;
-        error.setText("Item Update Failure");
-        error.setInformativeText("Item SKU number does not exist.");
-        error.setIcon(QMessageBox::Warning);
-        error.setStandardButtons(QMessageBox::Ok);
-        error.setBaseSize(600,120);
-        error.exec();
-        return;
-    }
+//    if (!item->sku)
+//    {
+//        QMessageBox error;
+//        error.setText("Item Update Failure");
+//        error.setInformativeText("Item SKU number does not exist.");
+//        error.setIcon(QMessageBox::Warning);
+//        error.setStandardButtons(QMessageBox::Ok);
+//        error.setBaseSize(600,120);
+//        error.exec();
+//        return;
+//    }
 
 
     // actually make the update
 
+    item->qty = qty == "" ? 0 : qty.toInt();
+    item->cents = cents == "" ? 0 :cents.toInt();
+    item->name = name;
     if(!(dbmanager::updateItem(*item)))
     {
         //dbmanager handles errors.

@@ -164,9 +164,9 @@ bool dbmanager::updateItem(Item item){
     upd.prepare("UPDATE pos_schema.item "
                 "SET qty = :qty, cents = :cents, name = :name "
                 "WHERE sku = :sku;");
-    upd.bindValue(":sku", (long long)item.sku);
-    upd.bindValue(":qty", (long long)(item.qty==0 ? NULL : (int)item.qty));
-    upd.bindValue(":cents", (long long)(item.cents==0 ? NULL : (int)item.cents));
+    upd.bindValue(":sku", item.sku);
+    upd.bindValue(":qty", item.qty==0 ? NULL : item.qty);
+    upd.bindValue(":cents", item.cents==0 ? NULL : item.cents);
     upd.bindValue(":name", item.name=="" ? NULL : item.name);
     if (!upd.exec())
     {
@@ -187,13 +187,14 @@ bool dbmanager::updateItem(Item item){
 bool dbmanager::updateTransaction(Transaction transaction){
     QSqlQuery q;
     q.prepare("UPDATE pos_schema.transaction"
-              "SET values("
-              "NOW()::date, NOW()::time, :phone, :total_cents, "
-              ":items, :payment_type, :tender, :change, :card_number, "
-              ":card_exp, :card_cvv)"
-              "WHERE (SELECT coalesce(MAX(id::int)+1, 1)"
+              "SET"
+              "customer_phone=:phone, total_price=:total_cents, "
+              "items = :items, payment_type = :payment_type, "
+              "tender = :tender, change = :change, "
+              "card_number = :card_number, "
+              "card_exp = :card_exp, card_cvv = :card_cvv"
               "FROM pos_schema.transaction"
-              "WHERE pos_schema.transaction.date = CURRENT_DATE);");
+              "WHERE id = :id AND date = NOW()::date;");
 
     q.bindValue(":id",transaction.ID);
     q.bindValue(":phone", transaction.customerPhone);
@@ -231,8 +232,8 @@ bool dbmanager::updateCustomer(Customer customer){
     QSqlQuery q;
 
     q.prepare("UPDATE pos_schema.customer"
-              "SET values("
-              ":name, :address, :zip) "
+              "SET "
+              "name = :name, address = :address, zip = :zip "
               "WHERE phone = :phone;");
     q.bindValue(":phone",customer.phone);
     q.bindValue(":name",customer.name);
