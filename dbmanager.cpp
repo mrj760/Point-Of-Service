@@ -215,15 +215,15 @@ bool dbmanager::updateTransaction(Transaction transaction){
     }
 
 
-    QString id = q.lastInsertId().toString();
+//    QString id = q.lastInsertId().toString();
 
-    QMessageBox scs;
-    scs.setText("Transaction Update Success");
-    scs.setInformativeText("Transaction " + id + " submitted successfully");
-    scs.setIcon(QMessageBox::Information);
-    scs.setStandardButtons(QMessageBox::Ok);
-    scs.setBaseSize(600,120);
-    scs.exec();
+//    QMessageBox scs;
+//    scs.setText("Transaction Update Success");
+//    scs.setInformativeText("Transaction " + id + " submitted successfully");
+//    scs.setIcon(QMessageBox::Information);
+//    scs.setStandardButtons(QMessageBox::Ok);
+//    scs.setBaseSize(600,120);
+//    scs.exec();
     return true;
 }
 

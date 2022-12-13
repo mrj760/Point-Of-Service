@@ -248,38 +248,6 @@ void ItemManagerView::editExisting()
         //dbmanager handles errors.
         return;
     }
-    /*
-    QSqlQuery sel;
-    sel.prepare("SELECT FROM pos_schema.item WHERE sku = :sku");
-    sel.bindValue(":sku", sku.toLongLong());
-
-
-
-    if (!sel.exec())
-    {
-        QMessageBox error;
-        error.setText("Item Update Error");
-        error.setInformativeText(sel.lastError().text());
-        error.setIcon(QMessageBox::Warning);
-        error.setStandardButtons(QMessageBox::Ok);
-        error.setBaseSize(600,120);
-        error.exec();
-        qDebug() << "Item Selection Error in func \"editExisting\"" << sel.lastError().text();
-        return;
-    }
-    */
-    // if item doesn't exist we have nothing to update
-//    if (!item->sku)
-//    {
-//        QMessageBox error;
-//        error.setText("Item Update Failure");
-//        error.setInformativeText("Item SKU number does not exist.");
-//        error.setIcon(QMessageBox::Warning);
-//        error.setStandardButtons(QMessageBox::Ok);
-//        error.setBaseSize(600,120);
-//        error.exec();
-//        return;
-//    }
 
 
     // actually make the update
@@ -292,30 +260,6 @@ void ItemManagerView::editExisting()
         //dbmanager handles errors.
         return;
     }
-    /*
-    qDebug() << "sku: " << sku << ", qty: " << qty << ", cents: " << cents << ", name: " << name;
-    QSqlQuery upd;
-    upd.prepare("UPDATE pos_schema.item "
-                "SET qty = :qty, cents = :cents, name = :name "
-                "WHERE sku = :sku;");
-    upd.bindValue(":sku", sku.toLongLong());
-    upd.bindValue(":qty", (long long)(qty=="" ? NULL : qty.toInt()));
-    upd.bindValue(":cents", (long long)(cents=="" ? NULL : cents.toInt()));
-    upd.bindValue(":name", name=="" ? NULL : name);
-
-    if (!upd.exec())
-    {
-        QMessageBox error;
-        error.setText("Item Update Error");
-        error.setInformativeText(upd.lastError().text());
-        error.setIcon(QMessageBox::Warning);
-        error.setStandardButtons(QMessageBox::Ok);
-        error.setBaseSize(600,120);
-        error.exec();
-        qDebug() << "Item update Error in func \"editExisitng\"" << upd.lastError().text();
-        return;
-    }
-    */
 
     QMessageBox scs;
     scs.setText("Item Update Success");
