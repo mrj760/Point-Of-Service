@@ -170,8 +170,8 @@ bool dbmanager::updateItem(Item item){
                 "SET qty = :qty, cents = :cents, name = :name "
                 "WHERE sku = :sku;");
     upd.bindValue(":sku", item.sku);
-    upd.bindValue(":qty", item.qty);
-    upd.bindValue(":cents", item.cents);
+    upd.bindValue(":qty", item.qty==0 ? NULL : item.qty);
+    upd.bindValue(":cents", item.cents==0 ? NULL : item.cents);
     upd.bindValue(":name", item.name=="" ? NULL : item.name);
     if (!upd.exec())
     {
