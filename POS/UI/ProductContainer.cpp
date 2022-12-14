@@ -147,10 +147,27 @@ int ProductContainer::addFunds(const std::vector<QString>& values)
 bool ProductContainer::pay()
 {
     int total{ 0 };
-    for (const auto& p : m_products) {
+    std::vector<Item> tempItems;/*
+    tempItems.reserve(m_products.size());
+    std::transform(std::begin(m_products),
+                   std::end(m_products),
+                   std::back_inserter(tempItems),
+                   [](Item* item){return *item;});
+                   */
+    for (auto p : m_products) {
         total += p->cents * p->qty;
+        Item tempItem = Item(p->sku,p->qty,p->cents,p->name);
+        tempItems.push_back(tempItem);
     }
+    Transaction* transaction =  new Transaction();
     if (m_funds >= total) {
+        transaction->totalCents = total;
+        transaction->items = tempItems;
+        transaction->change = (m_funds-total>0?m_funds-total:0);
+        transaction->paymentType = "Cash";
+        //Customer info access not yet implemented in product container
+//        transaction->customerPhone = m_customer;
+        dbmanager::addTransaction(*transaction);
         this->clear();
         m_funds -= total;
         this->printFunds();

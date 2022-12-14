@@ -4,6 +4,7 @@
 #include <QString>
 #include <template_item.h>
 #include <vector>
+#include <iostream>
 using std::tuple, std::vector;
 
 class POS;
@@ -21,7 +22,13 @@ public:
           subTotalCents(subTotalCents), salesTaxCents(salesTaxCents), totalCents(totalCents),
           paymentType(paymentType), tender(tender), change(change),
           cardNumber(cardNumber), cardExpiration(cardExpiration), cardCVV(cardCVV) {};
+    Transaction(){
+        ID=subTotalCents=salesTaxCents=totalCents=tender=
+                change=cardNumber=cardExpiration=cardCVV=0;
+        date=time=customerPhone=paymentType = "";
+        items = vector<Item>();
 
+    }
     /* Member Vars */
     int ID; /* ID of transaction */
     QString date; /* Day which the  transaction takes place */
@@ -44,11 +51,12 @@ public:
         for (auto &item : items)
         {
             ret += QString::number(item.sku) + ", " + QString::number(item.qty);
-            if (item.sku != items.end()->sku)
+            if (item.sku != items.back().sku)
             {
                 ret += ", ";
             }
         }
+        //std::cout << ret.toStdString() << std::endl;
         return ret;
     }
 };
