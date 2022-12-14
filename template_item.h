@@ -15,10 +15,25 @@ public:
     Item(const Item& i) :
         sku(i.sku), qty(i.qty), cents(i.cents), name(i.name) {};
 
+    Item(const Item* i) :
+        sku(i->sku), qty(i->qty), cents(i->cents), name(i->name) {};
+
     int sku;
     int qty;
     int cents;
     QString name;
+
+    Item& operator=(const Item& i)
+    {
+        if (this != &i)
+        {
+            sku = i.sku;
+            qty = i.qty;
+            cents = i.cents;
+            name = i.name;
+        }
+        return *this;
+    }
 };
 
 #endif // TEMPLATE_ITEM_H

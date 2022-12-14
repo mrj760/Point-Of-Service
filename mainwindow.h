@@ -1,57 +1,55 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
-#include <QMainWindow>
-#include <QSqlTableModel>
-#include <QSqlRecord>
-#include "qsqlquery.h"
-#include <QMessageBox>
-#include <QSqlError>
+#include <QtWidgets>
+#include <QtSql>
 #include <dbmanager.h>
 #include <itemmanagerview.h>
 #include <customermanagerview.h>
-#include <new_order_view.h>
-typedef QSqlQuery Query;
-typedef QSqlTableModel TableModel;
-typedef QSqlDatabase Database;
+#include <template_transaction.h>
+#include <transactioneditview.h>
+#include <all_transactions_view.h>
+#include <POS/UI/Window.hpp>
+#include <POS/UI/Screen/Home.hpp>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
-
-
-class MainWindow : public QMainWindow
+class MainWindow : public QWidget
 {
     Q_OBJECT
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    //~MainWindow();
 
-    void setDB(dbmanager*);
-    void setTableModel(const QString&);
+    QVBoxLayout *mainLayout;
 
+
+
+    void openOrderEditor();
+    void openOrdersViewer();
+
+    QPushButton *itemmgrbutton, *custmgrbutton;
+    QPushButton *neworderbutton, *allordersbutton;
     ItemManagerView* itemmgr = nullptr;
     CustomerManagerView* custmgr = nullptr;
-    NewOrderView* ordermgr = nullptr;
+    All_transactions_view* all_transaction_view = nullptr;
+//    All_transactions_view* childWidget;
 
 
-private slots:
-    void on_items_clicked();
-    void on_order_clicked();
-    void on_customers_clicked();
-
-    void on_save_clicked();
-
-    void on_transactions_clicked();
-
-    void on_registers_clicked();
+    void openItemMgr();
+    void openCustMgr();
+    void openRegisterMgr();
 
 private:
-//    dbmanager *dbmgr;
-    TableModel *tmodel;
-    Ui::MainWindow *ui;
+    void setupTitle();
+    void setupOrderButtons();
+    void setupMgrButtons();
+    void setupCloseButton();
+
+    //    TransactionEditView* transactioneditor = nullptr;
+    TransactionContainer* internalWindowHolder = nullptr;
+    Home* transactioneditor = nullptr;
+public slots:
+    void receiveObject(Transaction object);
 };
 
 
