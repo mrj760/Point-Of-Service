@@ -81,6 +81,7 @@ bool dbmanager::addTransaction(Transaction transaction)
               "FROM pos_schema.transaction WHERE date = CURRENT_DATE),"
               "CURRENT_DATE,CURRENT_TIME,:phone,:total_price,(:items),:payment_type, "
               ":tender,:change,:card_number, :card_exp, :card_cvv);");
+    //Test
     q.bindValue(":phone", transaction.customerPhone);
     q.bindValue(":total_price", transaction.totalCents);
     q.bindValue(":items", transaction.itemsAsString());
