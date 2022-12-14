@@ -75,19 +75,17 @@ bool dbmanager::addTransaction(Transaction transaction)
 {
     QSqlQuery q;
     q.prepare("insert into pos_schema.transaction"
-              "values((SELECT coalesce(MAX(id::int)+1, 1)" ""
-              "from pos_schema.transaction "
-              "WHERE pos_schema.transaction.date = CURRENT_DATE), "
-              "NOW()::date, NOW()::time, :phone, :total_cents, "
-              ":items, :payment_type, :tender, :change, :card_number, "
-              ":card_exp, :card_cvv);");
+              "values ( id = (SELECT coalesce(MAX(id::int)+1, 1) FROM pos_schema.transaction WHERE date = NOW()::date)"
+              "date = NOW()::date, time = NOW()::time, customer_phone = :phone, "
+              "total_price = :total_cents, items = :items, payment_type = :payment_type, "
+              "tender = :tender, change = :change, card_number = :card_number, "
+              "card_exp = :card_exp, card_cvv = :card_cvv);");
     q.bindValue(":phone", transaction.customerPhone);
     q.bindValue(":total_price", transaction.totalCents);
     q.bindValue(":items", transaction.itemsAsString());
     q.bindValue(":payment_type", transaction.paymentType);
     q.bindValue(":tender", transaction.tender);
     q.bindValue(":change", transaction.change);
-
     q.bindValue(":card_number", transaction.cardNumber);
     q.bindValue(":card_exp", transaction.cardExpiration);
     q.bindValue(":card_cvv", transaction.cardCVV);

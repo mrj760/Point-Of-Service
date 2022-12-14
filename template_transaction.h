@@ -4,6 +4,7 @@
 #include <QString>
 #include <template_item.h>
 #include <vector>
+#include <QStringList>
 using std::tuple, std::vector;
 
 class POS;
@@ -44,7 +45,7 @@ public:
         for (auto &item : items)
         {
             ret += QString::number(item.sku) + ", " + QString::number(item.qty);
-            if (item.sku != items.end()->sku)
+            if (item.sku != items.back().sku)
             {
                 ret += ", ";
             }

@@ -32,7 +32,7 @@ public:
     ItemManagerView* itemmgr = nullptr;
     CustomerManagerView* custmgr = nullptr;
     All_transactions_view* all_transaction_view = nullptr;
-    All_transactions_view* childWidget;
+//    All_transactions_view* childWidget;
 
 
     void openItemMgr();

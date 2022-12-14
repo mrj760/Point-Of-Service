@@ -11,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent): QWidget(parent)
     setupOrderButtons();
     setupMgrButtons();
     setupCloseButton();
-    childWidget = new All_transactions_view(this);
-    connect(childWidget, &All_transactions_view::objectSent, this, &MainWindow::receiveObject);
+    //    childWidget = new All_transactions_view(this);
+
     this->setStyleSheet(
                 "QTableView{font: 16px; alignment: center;}"
                 "QPushButton{alignment: left; font: bold 14px; min-width:100px; max-width: 500px; min-height:90px; max-height: 250px; color: white; background-color: rgb(50,83,135);}"
@@ -90,7 +90,10 @@ void MainWindow::openOrderEditor()
 void MainWindow::openOrdersViewer()
 {
     if (all_transaction_view == nullptr)
+    {
         all_transaction_view = new All_transactions_view;
+    }
+    connect(all_transaction_view, &All_transactions_view::objectSent, this, &MainWindow::receiveObject);
     all_transaction_view->showFullScreen();
 }
 
@@ -109,7 +112,7 @@ void MainWindow::openCustMgr()
     {
         custmgr = new CustomerManagerView(this);
     }
-        custmgr->showFullScreen();
+    custmgr->showFullScreen();
 }
 
 
@@ -117,7 +120,11 @@ void MainWindow::openRegisterMgr()
 {
 
 }
+
 void MainWindow::receiveObject(Transaction selected)
 {
-
+    if (selected.itemsAsString() == "")
+        qDebug() << "No items in transaction.";
+    else
+        qDebug() << (selected.itemsAsString());
 }

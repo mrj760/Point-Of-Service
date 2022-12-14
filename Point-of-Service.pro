@@ -16,7 +16,6 @@ SOURCES += \
     mainwindow.cpp \
     stylehelper.cpp \
     transactioneditview.cpp \
-    transactionsviewer.cpp \
     all_transactions_view.cpp \
     POS/UI/ErrorNotification.cpp \
     POS/UI/ProductContainer.cpp \
@@ -42,7 +41,6 @@ HEADERS += \
     template_register.h \
     template_transaction.h \
     transactioneditview.h \
-    transactionsviewer.h \
     all_transactions_view.h\
     POS/UI/ErrorNotification.hpp \
     POS/UI/ProductContainer.hpp \
