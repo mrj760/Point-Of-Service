@@ -223,10 +223,7 @@ void All_transactions_view::selectedTransaction()
                 }
             }
         }
-        else
-        {
-            attrs.push_back(value);
-        }
+        attrs.push_back(value);
     }
     Transaction selectedTran = Transaction(attrs[0].toInt(), attrs[1], attrs[2], attrs[3], items,
             attrs[5].toInt(), attrs[6].toInt(), attrs[7].toInt(), attrs[8],attrs[9].toInt(),
