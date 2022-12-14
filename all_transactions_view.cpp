@@ -102,7 +102,8 @@ All_transactions_view::All_transactions_view(QWidget* parent)
     // Button to edit item which already exits in db
     QPushButton *editExistingButton = new QPushButton("Edit Existing");
     editExistingButton->setObjectName("edit_button");
-    connect(editExistingButton, &QPushButton::clicked, this, &All_transactions_view::openOrderEditor);
+//    connect(editExistingButton, &QPushButton::clicked, this, &All_transactions_view::openOrderEditor);
+    connect(editExistingButton, &QPushButton::clicked, this, &All_transactions_view::selectedTransaction);
     searcheditbuttons->layout()->addWidget(editExistingButton);
 
     // Add labels, LineEdits, and buttons to container underneath table view
@@ -185,21 +186,8 @@ void All_transactions_view::filterResults()
         filterModels[i]->setFilterFixedString(lineEdits[i]->text());
     }
 }
-void All_transactions_view::openOrderEditor()
-{
-//    if (transactioneditor == nullptr)
-//        transactioneditor = new TransactionEditView;
-//    transactioneditor->show();
-    if (internalWindowHolder) {
-        delete transactioneditor;
-    }
-    internalWindowHolder = new TransactionContainer(720, 480,"New Order");
-    transactioneditor = new Home(*internalWindowHolder);
-    internalWindowHolder->linkVirtualKeyPad(transactioneditor->getVirtualKeyPad());
-    //internalWindowHolder->showFullScreen();
-}
 
-Transaction All_transactions_view::selectedTransaction()
+void All_transactions_view::selectedTransaction()
 {
     vector<QString> attrs;
     vector<Item> items;
@@ -210,26 +198,40 @@ Transaction All_transactions_view::selectedTransaction()
         auto idx = tableView->model()->index(row, i);
         auto data = tableView->model()->data(idx);
         auto value = data.value<QString>();
-        lineEdits[i]->setText(value);
-        if(i == 5)
+        if (i==4)
         {
-            QStringList list1 = value.split(',');
-            for(int j = 0; j < list1.size(); j++)
+            if (value == "")
             {
-                Item* selected;
-                if(j % 2 == 0)
+                items = vector<Item>();
+                continue;
+            }
+            QStringList list = value.split("','");
+            int i = 1;
+            Item *cur;
+            for (QString &str : list)
+            {
+                if (i++ % 2 == 1)
                 {
-                    selected = dbmanager::getItem(list1[j].toInt());
-                    selected->qty = list1[j+1].toInt();
-                    Item temp = *selected;
-                    items.push_back(temp);
+                    cur = dbmanager::getItem(str.toInt());
                 }
-
+                else
+                {
+                    cur->qty = str.toInt();
+                    items.push_back(*cur);
+                    delete cur;
+                    cur = nullptr;
+                }
             }
         }
-        attrs.push_back(value);
+        else
+        {
+            attrs.push_back(value);
+        }
     }
-    Transaction selectedTran(attrs[0].toInt(), attrs[1], attrs[2], attrs[3], items, attrs[5].toInt(), attrs[6].toInt(), attrs[7].toInt(), attrs[8],attrs[9].toInt(), attrs[10].toInt(), attrs[11].toInt(), attrs[12].toInt(), attrs[13].toInt());
-    return selectedTran;
+    Transaction selectedTran = Transaction(attrs[0].toInt(), attrs[1], attrs[2], attrs[3], items,
+            attrs[5].toInt(), attrs[6].toInt(), attrs[7].toInt(), attrs[8],attrs[9].toInt(),
+            attrs[10].toInt(), attrs[11].toInt(), attrs[12].toInt(), attrs[13].toInt());
+    emit(objectSent(selectedTran));
+    hide();
 }
 
