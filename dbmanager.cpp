@@ -75,12 +75,12 @@ bool dbmanager::addTransaction(Transaction transaction)
 {
     QSqlQuery q;
     q.prepare("insert into pos_schema.transaction"
-              "values((SELECT coalesce(MAX(id::int)+1, 1)" ""
-              "from pos_schema.transaction "
-              "WHERE pos_schema.transaction.date = CURRENT_DATE), "
-              "NOW()::date, NOW()::time, :phone, :total_cents, "
-              ":items, :payment_type, :tender, :change, :card_number, "
-              ":card_exp, :card_cvv);");
+              "(id,date,time,customer_phone,total_price,items,"
+              "payment_type,tender,change,card_number,card_exp,card_cvv)"
+              "values ((SELECT coalesce(MAX((id::int)+1), 1)"
+              "FROM pos_schema.transaction WHERE date = CURRENT_DATE),"
+              "CURRENT_DATE,CURRENT_TIME,:phone,:total_price,(:items),:payment_type, "
+              ":tender,:change,:card_number, :card_exp, :card_cvv);");
     q.bindValue(":phone", transaction.customerPhone);
     q.bindValue(":total_price", transaction.totalCents);
     q.bindValue(":items", transaction.itemsAsString());
@@ -88,9 +88,9 @@ bool dbmanager::addTransaction(Transaction transaction)
     q.bindValue(":tender", transaction.tender);
     q.bindValue(":change", transaction.change);
 
-    q.bindValue(":card_number", transaction.cardNumber);
-    q.bindValue(":card_exp", transaction.cardExpiration);
-    q.bindValue(":card_cvv", transaction.cardCVV);
+    q.bindValue(":card_number", QString::number(transaction.cardNumber));
+    q.bindValue(":card_exp", QString::number(transaction.cardExpiration));
+    q.bindValue(":card_cvv", QString::number(transaction.cardCVV));
 
     if (!q.exec())
     {
