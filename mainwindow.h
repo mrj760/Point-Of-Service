@@ -1,55 +1,57 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtWidgets>
-#include <QtSql>
+
+#include <QMainWindow>
+#include <QSqlTableModel>
+#include <QSqlRecord>
+#include "qsqlquery.h"
+#include <QMessageBox>
+#include <QSqlError>
 #include <dbmanager.h>
 #include <itemmanagerview.h>
 #include <customermanagerview.h>
-#include <template_transaction.h>
-#include <transactioneditview.h>
-#include <all_transactions_view.h>
-#include <POS/UI/Window.hpp>
-#include <POS/UI/Screen/Home.hpp>
+#include <new_order_view.h>
+typedef QSqlQuery Query;
+typedef QSqlTableModel TableModel;
+typedef QSqlDatabase Database;
 
-class MainWindow : public QWidget
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
+QT_END_NAMESPACE
+
+
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    //~MainWindow();
+    ~MainWindow();
 
-    QVBoxLayout *mainLayout;
+    void setDB(dbmanager*);
+    void setTableModel(const QString&);
 
-
-
-    void openOrderEditor();
-    void openOrdersViewer();
-
-    QPushButton *itemmgrbutton, *custmgrbutton;
-    QPushButton *neworderbutton, *allordersbutton;
     ItemManagerView* itemmgr = nullptr;
     CustomerManagerView* custmgr = nullptr;
-    All_transactions_view* all_transaction_view = nullptr;
-    All_transactions_view* childWidget;
+    NewOrderView* ordermgr = nullptr;
 
 
-    void openItemMgr();
-    void openCustMgr();
-    void openRegisterMgr();
+private slots:
+    void on_items_clicked();
+    void on_order_clicked();
+    void on_customers_clicked();
+
+    void on_save_clicked();
+
+    void on_transactions_clicked();
+
+    void on_registers_clicked();
 
 private:
-    void setupTitle();
-    void setupOrderButtons();
-    void setupMgrButtons();
-    void setupCloseButton();
-
-    //    TransactionEditView* transactioneditor = nullptr;
-    TransactionContainer* internalWindowHolder = nullptr;
-    Home* transactioneditor = nullptr;
-public slots:
-    void receiveObject(Transaction object);
+//    dbmanager *dbmgr;
+    TableModel *tmodel;
+    Ui::MainWindow *ui;
 };
 
 
