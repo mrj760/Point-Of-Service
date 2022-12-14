@@ -1,8 +1,6 @@
-psql -a -U postgres mydb -p 5432 -h localhost
+psql -a -U namcuong757 mydb -p 5432 -h localhost
 
 mypassword
-
-CREATE DATABASE posdb;
 
 \c posdb
 
