@@ -59,7 +59,7 @@ All_transactions_view::All_transactions_view(QWidget* parent)
     searchedit->layout()->addWidget(lineeditsholder);
 
     // Add Lables and LineEdits and FilterModels
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 2; ++i)
     {
         // Add Labels
         labelsholder->layout()->addWidget(new QLabel(this->itemFieldNames[i]));
@@ -78,13 +78,13 @@ All_transactions_view::All_transactions_view(QWidget* parent)
             filterModels[i]->setSourceModel(filterModels[i-1]);
     }
     // Set the TableView model to the last filterModel
-    tableView->setModel(filterModels[3]);
+    tableView->setModel(filterModels[1]);
 
     // Quantity and Cents LineEdits can only have digits
     lineEdits[0]->setValidator(new QIntValidator());
-    lineEdits[1]->setValidator(new QIntValidator());
-    lineEdits[2]->setValidator(new QIntValidator());
-    lineEdits[3]->setValidator(new QIntValidator());
+//    lineEdits[1]->setValidator(new QIntValidator());
+//    lineEdits[2]->setValidator(new QIntValidator());
+//    lineEdits[3]->setValidator(new QIntValidator());
     /*
     lineEdits[4]->setValidator(new QIntValidator());
     lineEdits[5]->setValidator(new QIntValidator());
@@ -99,12 +99,18 @@ All_transactions_view::All_transactions_view(QWidget* parent)
     QWidget* searcheditbuttons = new QWidget();
     searcheditbuttons->setLayout(new QVBoxLayout());
     searchedit->layout()->addWidget(searcheditbuttons);
+
     // Button to edit item which already exits in db
-    QPushButton *editExistingButton = new QPushButton("Edit Existing");
+    QPushButton *editExistingButton = new QPushButton("Edit Order");
     editExistingButton->setObjectName("edit_button");
 //    connect(editExistingButton, &QPushButton::clicked, this, &All_transactions_view::openOrderEditor);
     connect(editExistingButton, &QPushButton::clicked, this, &All_transactions_view::selectedTransaction);
     searcheditbuttons->layout()->addWidget(editExistingButton);
+
+    QPushButton *clearScreenButton = new QPushButton("Clear");
+    clearScreenButton->setObjectName("clear_button");
+    connect(clearScreenButton, &QPushButton::clicked, this, &All_transactions_view::clearScreen);
+    searcheditbuttons->layout()->addWidget(clearScreenButton);
 
     // Add labels, LineEdits, and buttons to container underneath table view
     searchedit->layout()->setAlignment(labelsholder, Qt::AlignRight);
@@ -152,13 +158,13 @@ All_transactions_view::All_transactions_view(QWidget* parent)
 }
 void All_transactions_view::clearScreen()
 {
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 2; ++i)
     {
         lineEdits[i]->setText("");
         transactionInfoLabels[i]->setText(itemFieldNames[i]);
+        lineEdits[i]->setReadOnly(false);
     }
     transactionInfoLabels[0]->setText("SKU");
-    lineEdits[0]->setReadOnly(false);
     tableModel->select();
     filterResults();
 }
@@ -169,19 +175,19 @@ void All_transactions_view::closeWindow()
 void All_transactions_view::highlightItem()
 {
     auto row = tableView->selectionModel()->selectedRows().begin()->row();
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 2; ++i)
     {
         auto idx = tableView->model()->index(row, i);
         auto data = tableView->model()->data(idx);
         auto value = data.value<QString>();
         transactionInfoLabels[i]->setText(value);
         lineEdits[i]->setText(value);
+        lineEdits[i]->setReadOnly(true);
     }
-    lineEdits[0]->setReadOnly(true);
 }
 void All_transactions_view::filterResults()
 {
-    for (int i=0; i < 4; ++i)
+    for (int i=0; i < 2; ++i)
     {
         filterModels[i]->setFilterFixedString(lineEdits[i]->text());
     }
@@ -225,10 +231,14 @@ void All_transactions_view::selectedTransaction()
         }
         attrs.push_back(value);
     }
-    Transaction selectedTran = Transaction(attrs[0].toInt(), attrs[1], attrs[2], attrs[3], items,
-            attrs[5].toInt(), attrs[6].toInt(), attrs[7].toInt(), attrs[8],attrs[9].toInt(),
-            attrs[10].toInt(), attrs[11].toInt(), attrs[12].toInt(), attrs[13].toInt());
+
+    Transaction selectedTran = Transaction(
+                /* id */attrs[0].toInt(), /* date */attrs[1], /* time */attrs[2], /* phone  */attrs[3], items,
+            /* subtotal */attrs[5].toInt(), /* sales tax */attrs[6].toInt(), /* total  */attrs[7].toInt(),
+             /* pay type */attrs[8], /* tender  */ attrs[9].toInt(), /* change  */attrs[10].toInt(),
+             /* card num */attrs[11].toInt(), /* card exp */attrs[12].toInt(), /* card cvv */attrs[13].toInt());
+
     emit(objectSent(selectedTran));
+    clearScreen();
     hide();
 }
-
