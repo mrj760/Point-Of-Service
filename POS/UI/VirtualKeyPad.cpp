@@ -257,6 +257,7 @@ VirtualKeyPad::VirtualKeyPad(QWidget& window,ProductContainer& products,
     for (int i=0; i < 16; ++i)
     {
         m_buttonAnimations[i] = new QPropertyAnimation(&m_buttons[i], "pos");
+        m_buttons[i].raise();
     }
     m_textBox.setFontPointSize(25);
     m_textBox.addLine("");

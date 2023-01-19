@@ -170,6 +170,7 @@ Home::Home( TransactionContainer& window /*, std::shared_ptr<::db::Products> dbP
     */
 
 {
+    m_clearCartButton.lower();
 //    m_products.emplace(1uz, "article1"s, 10'20ll, 2uz);
 //    m_products.emplace(1uz, "article2"s, 22'31ll, 1uz);
 }

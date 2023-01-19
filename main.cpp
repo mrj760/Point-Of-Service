@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     a.setStyle("Dark.qss");
     StyleHelper::setStyle("Dark.qss");
-    dbmanager("QPSQL","posdb", "postgres", "grant00--");
+    dbmanager("QPSQL","postgres", "namcuong757","Mypassword@1");
 
     MainWindow w;
     w.show();
